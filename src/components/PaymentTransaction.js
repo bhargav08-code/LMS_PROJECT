@@ -2,14 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import {
-  Grid,
-  GridItem,
   Input,
   FormControl,
   FormLabel,
   Box,
   Flex,
-  Center,
   useToast,
   VStack,
   Textarea,
@@ -26,11 +23,14 @@ import {
   Select,
   TableContainer,
 } from "@chakra-ui/react";
-
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 const PaymentTransaction = () => {
   const [displa, setdisplay] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [transactionIdToDelete, setTransactionIdToDelete] = useState(null);
 
   const [projectName, setProjectName] = useState("");
+
   const [blockName, setBlockname] = useState("");
   const [plotName, setPlotName] = useState("");
   const [contractorName, setcontractorName] = useState("");
@@ -266,16 +266,52 @@ const PaymentTransaction = () => {
     }
   };
 
+  // const calcAmounts = () => {
+  //   document.getElementById("totalBalance").innerHTML =
+  //     parseInt(document.getElementById("totalPayable").innerHTML) -
+  //     parseInt(document.getElementById("totalReceived").innerHTML);
+  //   document.getElementById("bankBalance").innerHTML =
+  //     parseInt(document.getElementById("bankPayable").innerHTML) -
+  //     parseInt(document.getElementById("bankReceived").innerHTML);
+  //   document.getElementById("cashBalance").innerHTML =
+  //     Number(document.getElementById("cashPayable").innerHTML) -
+  //     Number(document.getElementById("cashReceived").innerHTML);
+  //   // Number(document.getElementById("cashReceived").innerHTML) -
+  //   // Number(document.getElementById("cashPayable").innerHTML);
+  // };
   const calcAmounts = () => {
-    document.getElementById("totalBalance").innerHTML =
-      parseInt(document.getElementById("totalPayable").innerHTML) -
-      parseInt(document.getElementById("totalReceived").innerHTML);
-    document.getElementById("bankBalance").innerHTML =
-      parseInt(document.getElementById("bankPayable").innerHTML) -
-      parseInt(document.getElementById("bankReceived").innerHTML);
-    document.getElementById("cashBalance").innerHTML =
-      parseInt(document.getElementById("cashPayable").innerHTML) -
-      parseInt(document.getElementById("cashReceived").innerHTML);
+    const totalPayableElem = document.getElementById("totalPayable");
+    const totalReceivedElem = document.getElementById("totalReceived");
+    const bankPayableElem = document.getElementById("bankPayable");
+    const bankReceivedElem = document.getElementById("bankReceived");
+    const cashPayableElem = document.getElementById("cashPayable");
+    const cashReceivedElem = document.getElementById("cashReceived");
+
+    if (
+      totalPayableElem &&
+      totalReceivedElem &&
+      bankPayableElem &&
+      bankReceivedElem &&
+      cashPayableElem &&
+      cashReceivedElem
+    ) {
+      const totalPayable = parseInt(totalPayableElem.innerHTML) || 0;
+      const totalReceived = parseInt(totalReceivedElem.innerHTML) || 0;
+      const bankPayable = parseInt(bankPayableElem.innerHTML) || 0;
+      const bankReceived = parseInt(bankReceivedElem.innerHTML) || 0;
+      const cashPayable = Number(cashPayableElem.innerHTML) || 0;
+      const cashReceived = Number(cashReceivedElem.innerHTML) || 0;
+
+      document.getElementById("totalBalance").innerHTML =
+        totalPayable - totalReceived;
+      document.getElementById("bankBalance").innerHTML =
+        bankPayable - bankReceived;
+      document.getElementById("cashBalance").innerHTML =
+        cashPayable - cashReceived;
+    } else {
+      // Handle case where one or more elements are not found
+      console.log("One or more elements not found");
+    }
   };
 
   const loadTransactionlater = async () => {
@@ -470,11 +506,48 @@ const PaymentTransaction = () => {
   };
 
   useEffect(() => {
-    // Call the loadContractor function when the component mounts
     loadProjects();
     loadContractor();
   }, []);
+  const deletePayment = async () => {
+    const url = "https://lkgexcel.com/backend/setQuery.php";
+    let query =
+      "DELETE FROM transaction WHERE id = " + transactionIdToDelete + ";";
 
+    let fData = new FormData();
+    fData.append("query", query);
+
+    try {
+      const response = await axios.post(url, fData);
+      toast({
+        title: "Payment deleted successfully!",
+        status: "success",
+        duration: 3000,
+        position: "top",
+        isClosable: true,
+      });
+
+      // Call your load functions after deletion
+      loadAmounts();
+      loadTransaction();
+      loadAmountsBAR();
+      loadAmountsCAR();
+      setTimeout(function () {
+        calcAmounts();
+      }, 3000);
+    } catch (error) {
+      console.log(error.toJSON());
+    } finally {
+      // Reset the state after handling delete
+      setIsDeleteDialogOpen(false);
+      setTransactionIdToDelete(null);
+    }
+  };
+
+  const handleDeletePayment = (transactionId) => {
+    setTransactionIdToDelete(transactionId);
+    setIsDeleteDialogOpen(true);
+  };
   return (
     <Box display={"flex"} height={"100vh"} maxW={"100vw"}>
       <Box flex={"20%"} borderRight={"1px solid grey"}>
@@ -505,7 +578,6 @@ const PaymentTransaction = () => {
                     </option>
                   );
                 })}
-                {/* Add more projects as needed */}
               </Select>
             </Flex>
           </FormControl>
@@ -1033,19 +1105,19 @@ const PaymentTransaction = () => {
               </HStack>
             </Box>
             <VStack>
-              <Button colorScheme="orange" size={"sm"}>
+              <Button colorScheme="yellow" size={"sm"}>
                 Registry
               </Button>
-              <Button colorScheme="orange" size={"sm"}>
+              <Button colorScheme="yellow" size={"sm"}>
                 Cancel Plot
               </Button>
-              <Button colorScheme="orange" size={"sm"}>
+              <Button colorScheme="yellow" size={"sm"}>
                 Delete Plot
               </Button>
-              <Button colorScheme="orange" size={"sm"}>
+              <Button colorScheme="yellow" size={"sm"}>
                 Register Plot
               </Button>
-              <Button colorScheme="orange" size={"sm"}>
+              <Button colorScheme="yellow" size={"sm"}>
                 History
               </Button>
             </VStack>
@@ -1058,7 +1130,7 @@ const PaymentTransaction = () => {
           >
             <Text>Payment Transaction</Text>
             <Button
-              colorScheme="teal"
+              colorScheme="gray"
               size="sm"
               onClick={() => {
                 setdisplay(!displa);
@@ -1255,6 +1327,9 @@ const PaymentTransaction = () => {
                     border="1px solid black"
                   >
                     <Th color={"white"} border="1px solid black">
+                      SrNo.
+                    </Th>
+                    <Th color={"white"} border="1px solid black">
                       Date
                     </Th>
                     <Th color={"white"} border="1px solid black">
@@ -1281,11 +1356,15 @@ const PaymentTransaction = () => {
                     <Th color={"white"} border="1px solid black">
                       Remarks
                     </Th>
+                    <Th color={"white"} border="1px solid black">
+                      Action
+                    </Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {transactionData.map((res) => (
+                  {transactionData.map((res, index) => (
                     <tr key={res.date}>
+                      <Td border="1px solid black">{index + 1}</Td>
                       <Td border="1px solid black"> {res.date}</Td>
                       <Td border="1px solid black">{res.paymentType}</Td>
                       <Td border="1px solid black">{res.amount}</Td>
@@ -1320,6 +1399,24 @@ const PaymentTransaction = () => {
                       </Td>
                       <Td border="1px solid black">{res.statusDate}</Td>
                       <Td border="1px solid black">{res.remarks}</Td>
+                      <Td
+                        display={"flex"}
+                        gap={"10px"}
+                        border="1px solid black"
+                      >
+                        <Button colorScheme="green">Edit</Button>
+                        <Button
+                          colorScheme="red"
+                          onClick={() => handleDeletePayment(res.id)}
+                        >
+                          Delete
+                        </Button>
+                        <DeleteConfirmationDialog
+                          isOpen={isDeleteDialogOpen}
+                          onClose={() => setIsDeleteDialogOpen(false)}
+                          onConfirm={deletePayment}
+                        />
+                      </Td>
                     </tr>
                   ))}
                 </Tbody>
