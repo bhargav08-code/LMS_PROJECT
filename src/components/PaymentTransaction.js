@@ -21,6 +21,10 @@ import {
   Tbody,
   Td,
   Select,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
   TableContainer,
 } from "@chakra-ui/react";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
@@ -548,6 +552,68 @@ const PaymentTransaction = () => {
     setTransactionIdToDelete(transactionId);
     setIsDeleteDialogOpen(true);
   };
+  // const cancelPlot = async () => {
+  //   const url = "https://lkgexcel.com/backend/setQuery.php";
+  //   let query =
+  //     "UPDATE plot SET plotStatus = 'Available' WHERE plotNo = '" +
+  //     plotName +
+  //     "';";
+
+  //   let fData = new FormData();
+  //   fData.append("query", query);
+
+  //   try {
+  //     const response = await axios.post(url, fData);
+  //     alert("Plot canceled successfully!");
+  //   } catch (error) {
+  //     console.log(error.toJSON());
+  //     alert("Failed to cancel plot. Please try again.");
+  //   }
+  // };
+  const cancelPlot = async () => {
+    // Display a confirmation dialog
+    const userConfirmed = window.confirm(
+      "Do you really want to cancel the plot?"
+    );
+
+    // Check if the user confirmed
+    if (userConfirmed) {
+      const url = "https://lkgexcel.com/backend/setQuery.php";
+      let query =
+        "UPDATE plot SET plotStatus = 'Available' WHERE plotNo = '" +
+        plotName +
+        "';";
+
+      let fData = new FormData();
+      fData.append("query", query);
+
+      try {
+        const response = await axios.post(url, fData);
+
+        // Show success toast
+        toast({
+          title: "Plot canceled successfully!",
+          status: "success",
+          duration: 3000,
+          position: "top",
+          isClosable: true,
+        });
+        window.location.reload();
+      } catch (error) {
+        console.log(error.toJSON());
+
+        // Show error toast
+        toast({
+          title: "Failed to cancel plot. Please try again.",
+          status: "error",
+          duration: 3000,
+          position: "top",
+          isClosable: true,
+        });
+      }
+    }
+  };
+
   return (
     <Box display={"flex"} height={"100vh"} maxW={"100vw"}>
       <Box flex={"20%"} borderRight={"1px solid grey"}>
@@ -1108,7 +1174,7 @@ const PaymentTransaction = () => {
               <Button colorScheme="yellow" size={"sm"}>
                 Registry
               </Button>
-              <Button colorScheme="yellow" size={"sm"}>
+              <Button colorScheme="yellow" size={"sm"} onClick={cancelPlot}>
                 Cancel Plot
               </Button>
               <Button colorScheme="yellow" size={"sm"}>
