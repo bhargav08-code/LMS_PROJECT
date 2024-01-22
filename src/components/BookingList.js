@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   Thead,
@@ -13,183 +13,38 @@ import {
   Heading,
   Button,
 } from "@chakra-ui/react";
-const testData = [
-  {
-    srNo: 1,
-    projectName: "Project 1",
-    blockName: "Block A",
-    plotNo: "A101",
-    plotType: "Residential",
-    custName: "John Doe",
-    customerAddress: "123 Main St, City",
-    customerContact: "123-456-7890",
-    registryGender: "Male",
-    areaSqft: 1200,
-    rateAreaSqft: 150,
-    totalAmount: 180000,
-    discountApplicable: true,
-    discountPercent: 10,
-    netAmount: 162000,
-    registryAmount: 5000,
-    serviceAmount: 2000,
-    maintenanceAmount: 1000,
-    miscAmount: 500,
-    grandTotal: 169500,
-    constructionApplicable: true,
-    constructionContractor: "ABC Builders",
-    constructionAmount: 25000,
-    totalAmountPayable: 194500,
-    guidelineAmount: 200000,
-    registryPercent: 80,
-    bankAmountPayable: 150000,
-    bookingDate: "2024-01-01",
-    cashAmountPayable: 44500,
-    remarks: "Sample remarks",
-    registryDate: "2024-01-15",
-    status: "Not Tally",
-  },
-  {
-    srNo: 2,
-    projectName: "Project 1",
-    blockName: "Block A",
-    plotNo: "A101",
-    plotType: "Residential",
-    custName: "John Doe",
-    customerAddress: "123 Main St, City",
-    customerContact: "123-456-7890",
-    registryGender: "Male",
-    areaSqft: 1200,
-    rateAreaSqft: 150,
-    totalAmount: 180000,
-    discountApplicable: true,
-    discountPercent: 10,
-    netAmount: 162000,
-    registryAmount: 5000,
-    serviceAmount: 2000,
-    maintenanceAmount: 1000,
-    miscAmount: 500,
-    grandTotal: 169500,
-    constructionApplicable: true,
-    constructionContractor: "ABC Builders",
-    constructionAmount: 25000,
-    totalAmountPayable: 194500,
-    guidelineAmount: 200000,
-    registryPercent: 80,
-    bankAmountPayable: 150000,
-    bookingDate: "2024-01-01",
-    cashAmountPayable: 44500,
-    remarks: "Sample remarks",
-    registryDate: "2024-01-15",
-    status: "Not Tally",
-  },
-  {
-    srNo: 3,
-    projectName: "Project 1",
-    blockName: "Block A",
-    plotNo: "A101",
-    plotType: "Residential",
-    custName: "John Doe",
-    customerAddress: "123 Main St, City",
-    customerContact: "123-456-7890",
-    registryGender: "Male",
-    areaSqft: 1200,
-    rateAreaSqft: 150,
-    totalAmount: 180000,
-    discountApplicable: true,
-    discountPercent: 10,
-    netAmount: 162000,
-    registryAmount: 5000,
-    serviceAmount: 2000,
-    maintenanceAmount: 1000,
-    miscAmount: 500,
-    grandTotal: 169500,
-    constructionApplicable: true,
-    constructionContractor: "ABC Builders",
-    constructionAmount: 25000,
-    totalAmountPayable: 194500,
-    guidelineAmount: 200000,
-    registryPercent: 80,
-    bankAmountPayable: 150000,
-    bookingDate: "2024-01-01",
-    cashAmountPayable: 44500,
-    remarks: "Sample remarks",
-    registryDate: "2024-01-15",
-    status: "Not Tally",
-  },
-  {
-    srNo: 4,
-    projectName: "Project 1",
-    blockName: "Block A",
-    plotNo: "A101",
-    plotType: "Residential",
-    custName: "John Doe",
-    customerAddress: "123 Main St, City",
-    customerContact: "123-456-7890",
-    registryGender: "Male",
-    areaSqft: 1200,
-    rateAreaSqft: 150,
-    totalAmount: 180000,
-    discountApplicable: true,
-    discountPercent: 10,
-    netAmount: 162000,
-    registryAmount: 5000,
-    serviceAmount: 2000,
-    maintenanceAmount: 1000,
-    miscAmount: 500,
-    grandTotal: 169500,
-    constructionApplicable: true,
-    constructionContractor: "ABC Builders",
-    constructionAmount: 25000,
-    totalAmountPayable: 194500,
-    guidelineAmount: 200000,
-    registryPercent: 80,
-    bankAmountPayable: 150000,
-    bookingDate: "2024-01-01",
-    cashAmountPayable: 44500,
-    remarks: "Sample remarks",
-    registryDate: "2024-01-15",
-    status: "Not Tally",
-  },
-  {
-    srNo: 5,
-    projectName: "Project 1",
-    blockName: "Block A",
-    plotNo: "A101",
-    plotType: "Residential",
-    custName: "John Doe",
-    customerAddress: "123 Main St, City",
-    customerContact: "123-456-7890",
-    registryGender: "Male",
-    areaSqft: 1200,
-    rateAreaSqft: 150,
-    totalAmount: 180000,
-    discountApplicable: true,
-    discountPercent: 10,
-    netAmount: 162000,
-    registryAmount: 5000,
-    serviceAmount: 2000,
-    maintenanceAmount: 1000,
-    miscAmount: 500,
-    grandTotal: 169500,
-    constructionApplicable: true,
-    constructionContractor: "ABC Builders",
-    constructionAmount: 25000,
-    totalAmountPayable: 194500,
-    guidelineAmount: 200000,
-    registryPercent: 80,
-    bankAmountPayable: 150000,
-    bookingDate: "2024-01-01",
-    cashAmountPayable: 44500,
-    remarks: "Sample remarks",
-    registryDate: "2024-01-15",
-    status: "Not Tally",
-  },
-];
+import axios from "axios";
 const BookingList = () => {
+  const [plotsData, setPlotsData] = useState([]);
+
+  const loadBooking = async () => {
+    let query = "SELECT * FROM booking;";
+
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    let fData = new FormData();
+
+    fData.append("query", query);
+
+    try {
+      const response = await axios.post(url, fData);
+
+      if (response && response.data) {
+        if (response.data.phpresult) {
+          setPlotsData(response.data.phpresult);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
+  };
+  useEffect(() => {
+    loadBooking();
+  }, []);
+
   return (
     <>
       <Center>
-        <Heading size={"md"}>Booking List</Heading>
+        <Heading size={"lg"}>Booking List</Heading>
       </Center>
       <Box maxW={"100%"} overflowX={"scroll"}>
         <Table variant="simple">
@@ -226,27 +81,27 @@ const BookingList = () => {
                 <Th>bookingDate</Th>
                 <Th>cashAmountPayable</Th>
                 <Th>remarks</Th>
-                <Th>registryDate</Th>
+                {/* <Th>registryDate</Th>
                 <Th>Action</Th>
-                <Th>Status</Th>
+                <Th>Status</Th> */}
               </Tr>
             </Thead>
             <Tbody>
-              {testData.map((data) => (
+              {plotsData.map((data, index) => (
                 <Tr key={data.srNo}>
-                  <Td>{data.srNo}</Td>
+                  <Td>{index + 1}</Td>
                   <Td>{data.projectName}</Td>
                   <Td>{data.blockName}</Td>
                   <Td>{data.plotNo}</Td>
                   <Td>{data.plotType}</Td>
-                  <Td>{data.custName}</Td>
+                  <Td>{data.customerName}</Td>
                   <Td>{data.customerAddress}</Td>
                   <Td>{data.customerContact}</Td>
                   <Td>{data.registryGender}</Td>
                   <Td>{data.areaSqft}</Td>
                   <Td>{data.rateAreaSqft}</Td>
                   <Td>{data.totalAmount}</Td>
-                  <Td>{data.discountApplicable ? "Yes" : "No"}</Td>
+                  <Td>{data.discountApplicable}</Td>
                   <Td>{data.discountPercent}</Td>
                   <Td>{data.netAmount}</Td>
                   <Td>{data.registryAmount}</Td>
@@ -254,7 +109,7 @@ const BookingList = () => {
                   <Td>{data.maintenanceAmount}</Td>
                   <Td>{data.miscAmount}</Td>
                   <Td>{data.grandTotal}</Td>
-                  <Td>{data.constructionApplicable ? "Yes" : "No"}</Td>
+                  <Td>{data.constructionApplicable}</Td>
                   <Td>{data.constructionContractor}</Td>
                   <Td>{data.constructionAmount}</Td>
                   <Td>{data.totalAmountPayable}</Td>
@@ -264,11 +119,11 @@ const BookingList = () => {
                   <Td>{data.bookingDate}</Td>
                   <Td>{data.cashAmountPayable}</Td>
                   <Td>{data.remarks}</Td>
-                  <Td>{data.registryDate}</Td>
-                  <Td>
+                  {/* <Td>{data.registryDate}</Td> */}
+                  {/* <Td>
                     <Button colorScheme="teal">Tally</Button>
                   </Td>
-                  <Td>{data.status}</Td>
+                  <Td>{data.status}</Td> */}
                 </Tr>
               ))}
             </Tbody>

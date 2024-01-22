@@ -606,6 +606,47 @@ const PaymentTransaction = () => {
         toast({
           title: "Failed to cancel plot. Please try again.",
           status: "error",
+
+          duration: 3000,
+          position: "top",
+          isClosable: true,
+        });
+      }
+    }
+  };
+  const deletePlot = async () => {
+    const userConfirmed = window.confirm(
+      "Do you really want to delete the plot?"
+    );
+
+    if (userConfirmed) {
+      const url = "https://lkgexcel.com/backend/setQuery.php";
+      let query = "DELETE FROM plot WHERE plotNo = '" + plotName + "';";
+
+      let fData = new FormData();
+      fData.append("query", query);
+
+      try {
+        const response = await axios.post(url, fData);
+
+        // Show success toast
+        toast({
+          title: "Plot deleted successfully!",
+          status: "success",
+          duration: 3000,
+          position: "top",
+          isClosable: true,
+        });
+
+        // Reload the page
+        window.location.reload();
+      } catch (error) {
+        console.log(error.toJSON());
+
+        // Show error toast
+        toast({
+          title: "Failed to delete plot. Please try again.",
+          status: "error",
           duration: 3000,
           position: "top",
           isClosable: true,
@@ -1177,7 +1218,7 @@ const PaymentTransaction = () => {
               <Button colorScheme="yellow" size={"sm"} onClick={cancelPlot}>
                 Cancel Plot
               </Button>
-              <Button colorScheme="yellow" size={"sm"}>
+              <Button colorScheme="yellow" size={"sm"} onClick={deletePlot}>
                 Delete Plot
               </Button>
               <Button colorScheme="yellow" size={"sm"}>

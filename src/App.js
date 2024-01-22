@@ -22,6 +22,7 @@ import AddBroker from "./components/AddBroker";
 import BookingStatus from "./components/BookingStatus";
 import PaymentTransaction from "./components/PaymentTransaction";
 import BookingList from "./components/BookingList";
+import TransactionReport from "./components/TransactionReport";
 
 const App = () => {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -254,6 +255,19 @@ const App = () => {
                     handleLogout={handleLogout}
                   />{" "}
                   <BookingList />{" "}
+                </>
+              }
+            />
+            <Route
+              path="/transactionreport"
+              element={
+                <>
+                  {" "}
+                  <Nav
+                    isLoggedIn={isLoggedIn}
+                    handleLogout={handleLogout}
+                  />{" "}
+                  <TransactionReport />{" "}
                 </>
               }
             />
