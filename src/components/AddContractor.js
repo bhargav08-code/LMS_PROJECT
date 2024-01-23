@@ -451,7 +451,7 @@ const AddContractor = () => {
           </Grid>
         </form>
       </Box>
-      <Container maxW="10xl" px={{ base: 6, md: 3 }} py={14}>
+      {/* <Container maxW="10xl" px={{ base: 6, md: 3 }} py={14}>
         <Stack
           direction={{ base: "column", md: "row" }}
           justifyContent="center"
@@ -539,8 +539,8 @@ const AddContractor = () => {
               <ModalHeader>Edit Block</ModalHeader>
               <ModalCloseButton />
               <form onSubmit={handleEditPlotSubmit}>
-                <ModalBody>
-                  {/*   <FormControl mb={4}>
+                <ModalBody> */}
+      {/*   <FormControl mb={4}>
                 <FormLabel>Contractor ID</FormLabel>
                 <Input
                   type="number"
@@ -549,7 +549,7 @@ const AddContractor = () => {
                   disabled
                 />
               </FormControl> */}
-                  <FormControl mb={4}>
+      {/* <FormControl mb={4}>
                     <FormLabel>Company Name</FormLabel>
                     <Input type="text" name="areaSqft" id="mi2" required />
                   </FormControl>
@@ -605,7 +605,7 @@ const AddContractor = () => {
             </ModalContent>
           </Modal>
         </Stack>
-      </Container>
+      </Container> */}
     </>
   );
 };
