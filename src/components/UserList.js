@@ -24,89 +24,37 @@ import {
   FormControl,
   FormLabel,
   Input,
-  useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
-import PaginationControl from "./PaginationControl";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredMaster, setFilteredMaster] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({});
 
-  //fetching user
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://lkgexcel.com/backend/getuser.php"
-        );
-        setUsers(response.data);
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: `${error}. Please try again later`,
-          status: "error",
-          duration: 5000,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [toast]);
-  // useEffect(() => {
-  //   // Filter master data based on the search query
-  //   const filteredData = users.filter((item) =>
-  //     item.userName.toLowerCase().includes(searchQuery.toLowerCase())
-  //   );
-  //   setFilteredMaster(filteredData);
-  // }, [users, searchQuery]);
-  const [totalItems, setTotalItems] = useState(0);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Set the number of items per page according to your preference
-  // const [searchResults, setSearchResults] = useState([]);
-
-  // useEffect(() => {
-  //   // Filter master data based on the search query
-  //   const filteredData = users.filter((item) =>
-  //     item.userName.toLowerCase().includes(searchQuery.toLowerCase())
-  //   );
-  //   setSearchResults(filteredData);
-  // }, [users, searchQuery]);
-  useEffect(() => {
-    // Filter master data based on the search query
-    console.log("users:", users); // Log the users array
-    const filteredData = users.filter(
-      (item) =>
-        item.userName &&
-        item.userName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    console.log("filteredData:", filteredData); // Log the filteredData
-    setFilteredMaster(filteredData);
-    setTotalItems(filteredData.length);
-  }, [users, searchQuery]);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredMaster.slice(indexOfFirstItem, indexOfLastItem);
-
-  const changePage = (newPage) => {
-    setCurrentPage(newPage);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://lkgexcel.com/backend/getuser.php"
+      );
+      // console.log(response.data); // Log the response data
+      setUsers(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
-
+  useEffect(() => {
+    fetchData();
+  }, []);
   const handleDeleteUser = async (userId) => {
     try {
-      // Make a DELETE request to your API endpoint for deleting a user
       await axios.delete(
         `https://lkgexcel.com/backend/deleteuser.php?id=${userId}`
       );
 
-      // Update the users state after successful deletion
       setUsers((prevUsers) =>
         prevUsers.filter((user) => user.userId !== userId)
       );
@@ -127,12 +75,12 @@ const UserList = () => {
       });
     }
   };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editFormData, setEditFormData] = useState({});
+
   const handleEditUserChange = (e) => {
     const { name, value } = e.target;
     setEditFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     const url = "https://lkgexcel.com/backend/edituser.php";
@@ -144,11 +92,11 @@ const UserList = () => {
     formData.append("userCity", editFormData.userCity);
     formData.append("userState", editFormData.userState);
     formData.append("userAddress", editFormData.userAddress);
+
     try {
       const response = await axios.post(url, formData);
       console.log("Response:", response);
       if (response && response.data && response.data.status === "success") {
-        // Handle success, e.g., fetch updated data, show a toast
         console.log("User updated successfully:", response.data.message);
         toast({
           title: "User updated successfully!",
@@ -163,12 +111,8 @@ const UserList = () => {
               : user
           )
         );
-        // Close the modal after successful edit
         setIsModalOpen(false);
-
-        // Implement any additional logic you need here
       } else {
-        // Handle error response
         console.error("Error updating user:", response.data.message);
 
         toast({
@@ -178,11 +122,9 @@ const UserList = () => {
           isClosable: true,
         });
 
-        // Still close the modal in case of an error
         setIsModalOpen(false);
       }
     } catch (error) {
-      // Handle network or other errors
       console.error("Error in handleUpdateUser:", error);
 
       toast({
@@ -192,7 +134,6 @@ const UserList = () => {
         isClosable: true,
       });
 
-      // Still close the modal in case of an error
       setIsModalOpen(false);
     }
   };
@@ -203,13 +144,6 @@ const UserList = () => {
         <Center mb={"15px"}>
           <VStack>
             <Heading fontSize={"28px"}>User Details</Heading>
-            <Input
-              type="text"
-              w={"100%"}
-              placeholder="Search by User Name"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
           </VStack>
         </Center>
         {loading ? (
@@ -245,58 +179,45 @@ const UserList = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {Array.isArray(currentItems) ? (
-                currentItems.map((user) => (
-                  <Tr key={user.userId}>
-                    <Td>{user.userId}</Td>
-                    <Td>{user.userName}</Td>
-                    <Td>{user.userEmail}</Td>
-                    <Td>{user.userAddress}</Td>
-                    <Td>{user.userCity}</Td>
-                    <Td>{user.userState}</Td>
-                    <Td>
-                      <HStack>
-                        <Button
-                          colorScheme="teal"
-                          onClick={() => {
-                            setIsModalOpen(true);
-                            setEditFormData({
-                              userId: user.userId,
-                              userName: user.userName,
-                              userEmail: user.userEmail,
-                              userAddress: user.userAddress,
-                              userCity: user.userCity,
-                              userState: user.userState,
-                            });
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          colorScheme="red"
-                          onClick={() => handleDeleteUser(user.userId)}
-                        >
-                          Delete
-                        </Button>
-                      </HStack>
-                    </Td>
-                  </Tr>
-                ))
-              ) : (
-                // Handle the case where users is not an array, e.g., show a loading spinner or a message
-                <Tr>
-                  <Td colSpan={7}>Loading...</Td>
+              {users.map((user) => (
+                <Tr key={user.userId}>
+                  <Td>{user.userId}</Td>
+                  <Td>{user.userName}</Td>
+                  <Td>{user.userEmail}</Td>
+                  <Td>{user.userAddress}</Td>
+                  <Td>{user.userCity}</Td>
+                  <Td>{user.userState}</Td>
+                  <Td>
+                    <HStack>
+                      <Button
+                        colorScheme="teal"
+                        onClick={() => {
+                          setIsModalOpen(true);
+                          setEditFormData({
+                            userId: user.userId,
+                            userName: user.userName,
+                            userEmail: user.userEmail,
+                            userAddress: user.userAddress,
+                            userCity: user.userCity,
+                            userState: user.userState,
+                          });
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        colorScheme="red"
+                        onClick={() => handleDeleteUser(user.userId)}
+                      >
+                        Delete
+                      </Button>
+                    </HStack>
+                  </Td>
                 </Tr>
-              )}
+              ))}
             </Tbody>
           </Table>
         )}
-        <PaginationControl
-          changePage={changePage}
-          page={currentPage}
-          total={totalItems}
-          limit={itemsPerPage}
-        />
       </Box>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalOverlay />

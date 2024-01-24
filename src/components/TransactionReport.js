@@ -346,14 +346,17 @@ const TransactionReport = () => {
                         backgroundColor:
                           data.transactionStatus === "Clear"
                             ? "#22c35e"
-                            : // Set background color to red for "Bounced"
-                            data.transactionStatus === "Provisional"
+                            : data.transactionStatus === "Provisional" ||
+                              data.transactionStatus === "Pending" ||
+                              data.transactionStatus === "PDC"
                             ? "#ECC94B"
                             : "inherit",
                         color:
                           data.transactionStatus === "Clear"
                             ? "white"
-                            : data.transactionStatus === "Provisional"
+                            : data.transactionStatus === "Provisional" ||
+                              data.transactionStatus === "Pending" ||
+                              data.transactionStatus === "PDC"
                             ? "black"
                             : data.transactionStatus === "Bounced"
                             ? "#E53E3E"

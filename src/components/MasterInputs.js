@@ -115,6 +115,8 @@ const MasterInputs = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
   const onAddMaster = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+
     const isDuplicate = master.some(
       (item) => item.projectName === formData.projectName
     );
@@ -155,7 +157,7 @@ const MasterInputs = () => {
       "', '" +
       formData.brokerageValue +
       "');";
-    alert(query);
+
     let fData = new FormData();
     fData.append("query", query);
 
@@ -172,13 +174,17 @@ const MasterInputs = () => {
 
       // Clear the form data after successful submission
       setFormData({
-        companyName: "",
-        contractorName: "",
-        contact: "",
-        email: "",
-        address: "",
-        city: "",
-        state: "",
+        projectName: "",
+        guideline: "",
+        registryMalePercent: "",
+        registryFemalePercent: "",
+        serviceType: "",
+        serviceValue: "",
+        maintenanceType: "",
+        maintenanceValue: "",
+        miscType: "",
+        miscValue: "",
+        brokerageValue: "",
       });
     } catch (error) {
       console.log(error.toJSON());

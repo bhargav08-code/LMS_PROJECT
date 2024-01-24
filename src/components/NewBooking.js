@@ -13,6 +13,7 @@
 //   GridItem,
 //   useToast,
 // } from "@chakra-ui/react";
+// //import { getFormSubmissionInfo } from "react-router-dom/dist/dom";
 
 // import axios from "axios";
 
@@ -61,6 +62,171 @@
 //     constructionAmount: "",
 //     remarks: "",
 //   });
+
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prevData) => ({ ...prevData, [name]: value }));
+//   };
+//   /*
+//   const onAddBook = async (e) => {
+
+//     e.preventDefault();
+//     const url = "https://lkgexcel.com/backend/newbooking.php";
+
+//     const fData = new FormData();
+//     fData.append("projectName", document.getElementById("projectName").value);
+//     fData.append("blockName", document.getElementById("blockName").value);
+//     fData.append("plotNo", document.getElementById("plotNo").value);
+//     fData.append("plotType", document.getElementById("plotType").value);
+//     fData.append("customerName", document.getElementById("customerName").value);
+//     fData.append(
+//       "customerAddress",
+//       document.getElementById("customerAddress").value
+//     );
+//     fData.append(
+//       "customerContact",
+//       document.getElementById("customerContact").value
+//     );
+//     fData.append(
+//       "registryGender",
+//       document.getElementById("registryGender").value
+//     );
+//     fData.append("areaSqmt", document.getElementById("areaSqmt").value);
+//     fData.append("ratePerSqmt", document.getElementById("ratePerSqmt").value);
+//     fData.append("totalAmount", document.getElementById("totalAmount").value);
+//     fData.append(
+//       "discountApplicable",
+//       document.getElementById("discountApplicable").value
+//     );
+//     fData.append(
+//       "discountPercent",
+//       document.getElementById("discountPercent").value
+//     );
+//     fData.append("netAmount", document.getElementById("netAmount").value);
+//     fData.append(
+//       "registryAmount",
+//       document.getElementById("registryAmount").value
+//     );
+//     fData.append(
+//       "serviceAmount",
+//       document.getElementById("serviceAmount").value
+//     );
+//     fData.append(
+//       "maintenanceAmount",
+//       document.getElementById("maintenanceAmount").value
+//     );
+//     fData.append("miscAmount", document.getElementById("miscAmount").value);
+//     fData.append("grandTotal", document.getElementById("grandTotal").value);
+//     fData.append(
+//       "constructionApplicable",
+//       document.getElementById("constructionApplicable").value
+//     );
+//     fData.append(
+//       "constructionContractor",
+//       document.getElementById("constructionContractor").value
+//     );
+//     fData.append(
+//       "totalAmountPayable",
+//       document.getElementById("totalAmountPayable").value
+//     );
+//     fData.append(
+//       "guidelineAmount",
+//       document.getElementById("guidelineAmount").value
+//     );
+//     fData.append(
+//       "registryPercent",
+//       document.getElementById("registryPercent").value
+//     );
+//     fData.append(
+//       "bankAmountPayable",
+//       document.getElementById("bankAmountPayable").value
+//     );
+//     fData.append(
+//       "cashAmountPayable",
+//       document.getElementById("cashAmountPayable").value
+//     );
+//     fData.append("bookingDate", document.getElementById("bookingDate").value);
+//     fData.append(
+//       "constructionAmount",
+//       document.getElementById("constructionAmount").value
+//     );
+//     fData.append("remarks", document.getElementById("remarks").value);
+
+//     try {
+//       const response = await axios.post(url, fData);
+//       console.log(response);
+//       updatePlotStatus();
+//       toast({
+//         title: "Booking added successfully!",
+//         status: "success",
+//         duration: 3000,
+//         isClosable: true,
+//         position: "top-right",
+//       });
+//       // Clear the form data after successful submission
+//       // setFormData({
+//       //   projectName: "",
+//       //   blockName: "",
+//       //   plotNo: "",
+//       //   plotType: "",
+//       //   customerName: "",
+//       //   customerAddress: "",
+//       //   customerContact: "",
+//       //   registryGender: "",
+//       //   areaSqmt: "",
+//       //   ratePerSqmt: "",
+//       //   totalAmount: "",
+//       //   discountApplicable: "No",
+//       //   discountPercent: "",
+//       //   netAmount: "",
+//       //   registryAmount: "",
+//       //   serviceAmount: "",
+//       //   maintenanceAmount: "",
+//       //   miscAmount: "",
+//       //   grandTotal: "",
+//       //   constructionApplicable: "No",
+//       //   constructionContractor: "",
+//       //   totalAmountPayable: "",
+//       //   guidelineAmount: "",
+//       //   registryPercent: "",
+//       //   bankAmountPayable: "",
+//       //   cashAmountPayable: "",
+//       //   bookingDate: "",
+//       //   constructionAmount: "",
+//       //   remarks: "",
+//       // });
+//     } catch (error) {
+//       console.log(error.toJSON());
+//     }
+//   };
+//  */
+
+//   /*   const onAddBook = async () =>{
+
+//     const url = "https://lkgexcel.com/backend/setQuery.php";
+//    let query="INSERT INTO booking (id, projectName, blockName, plotNo, plotType, customerName, customerAddress, customerContact, registryGender, areaSqft, rateAreaSqft, totalAmount, discountApplicable, discountPercent, netAmount, registryAmount, serviceAmount, maintenanceAmount, miscAmount, grandTotal, constructionApplicable, constructionContractor, constructionAmount, totalAmountPayable, guidelineAmount, registryPercent, bankAmountPayable, bookingDate, cashAmountPayable, remarks, registryDate) VALUES (NULL, '"+document.getElementById("projectName").value+"', '"+document.getElementById("blockName").value+"', '"+document.getElementById("plotNo").value+"', '"+document.getElementById("plotType").value+"', '"+document.getElementById("customerName").value+"', '"+document.getElementById("customerAddress").value+"', '"+document.getElementById("customerContact").value+"', '"+document.getElementById("registryGender").value+"', '"+document.getElementById("areaSqmt").value+"', '"+document.getElementById("ratePerSqmt").value+"', '"+document.getElementById("totalAmount").value+"', '"+document.getElementById("discountApplicable").value+"', '"+document.getElementById("discountPercent").value+"', '"+document.getElementById("netAmount").value+"', '"+document.getElementById("registryAmount").value+"', '"+document.getElementById("serviceAmount").value+"', '"+document.getElementById("maintenanceAmount").value+"', '"+document.getElementById("miscAmount").value+"', '"+document.getElementById("grandTotal").value+"', '"+document.getElementById("constructionApplicable").value+"', '"+document.getElementById("constructionContractor").value+"', '"+document.getElementById("constructionAmount").value+"', '"+document.getElementById("totalAmountPayable").value+"', '"+document.getElementById("guidelineAmount").value+"', '"+document.getElementById("registryPercent").value+"', '"+document.getElementById("bankAmountPayable").value+"', '"+document.getElementById("bookingDate").value+"', '"+document.getElementById("cashAmountPayable").value+"', '"+document.getElementById("remarks").value+"', '');";
+//       alert(query)
+//       let fData = new FormData();
+//       fData.append("query", query);
+
+//       try {
+//         const response = await axios.post(url, fData);
+//         toast({
+//           title: "Booking added successfully!",
+//           status: "success",
+//           duration: 3000,
+//           position: "top",
+//           isClosable: true,
+//         });
+//     //    loadContractor();
+
+//         // Clear the form data after successful submission
+
+//       } catch (error) {
+//         console.log(error.toJSON());
+//       }
+//     }
+//  */
 
 //   const onAddBook = async () => {
 //     const url = "https://lkgexcel.com/backend/setQuery.php";
@@ -331,8 +497,9 @@
 //               }
 
 //               document.getElementById("registryAmount").value =
-//                 (document.getElementById("guidelineAmount").value / 100) *
-//                 document.getElementById("registryPercent").value;
+//                 (document.getElementById("guidelineAmount").value *
+//                   document.getElementById("registryPercent").value) /
+//                 100;
 //               if (response1.data.phpresult[0]["serviceType"] == "Lumpsum") {
 //                 document.getElementById("serviceAmount").value =
 //                   response1.data.phpresult[0]["serviceValue"];
@@ -364,11 +531,11 @@
 //               }
 
 //               document.getElementById("grandTotal").value =
-//                 Number(document.getElementById("netAmount").value) +
-//                 Number(document.getElementById("registryAmount").value) +
-//                 Number(document.getElementById("serviceAmount").value) +
-//                 Number(document.getElementById("maintenanceAmount").value) +
-//                 Number(document.getElementById("miscAmount").value);
+//                 parseFloat(document.getElementById("netAmount").value) +
+//                 parseFloat(document.getElementById("registryAmount").value) +
+//                 parseFloat(document.getElementById("serviceAmount").value) +
+//                 parseFloat(document.getElementById("maintenanceAmount").value) +
+//                 parseFloat(document.getElementById("miscAmount").value);
 
 //               document.getElementById("constructionApplicable").value = "No";
 
@@ -383,8 +550,7 @@
 //                 //document.getElementById('constructionAmount').style.backgroundColor = 'gray';
 
 //                 document.getElementById("totalAmountPayable").value =
-//                   Number(document.getElementById("grandTotal").value) +
-//                   Number(document.getElementById("constructionAmount").value);
+//                   document.getElementById("grandTotal").value;
 //               }
 //               if (
 //                 document.getElementById("constructionApplicable").value == "Yes"
@@ -397,15 +563,19 @@
 //                 //document.getElementById('constructionAmount').style.backgroundColor = 'white';
 
 //                 document.getElementById("totalAmountPayable").value =
-//                   Number(document.getElementById("grandTotal").value) +
-//                   Number(document.getElementById("constructionAmount").value);
+//                   parseFloat(document.getElementById("grandTotal").value) +
+//                   parseFloat(
+//                     document.getElementById("constructionAmount").value
+//                   );
 //               }
 
 //               document.getElementById("bankAmountPayable").value =
-//                 document.getElementById("guidelineAmount").value;
+//                 (document.getElementById("guidelineAmount").value *
+//                   document.getElementById("registryPercent").value) /
+//                 100;
 //               document.getElementById("cashAmountPayable").value =
 //                 Number(document.getElementById("totalAmountPayable").value) -
-//                 document.getElementById("guidelineAmount").value;
+//                 document.getElementById("bankAmountPayable").value;
 //               setplottype(response.data.phpresult[0]["plotType"]);
 //             }
 //           }
@@ -417,109 +587,99 @@
 //   };
 
 //   const updateOnChange = () => {
-//     const areaSqmt = parseFloat(document.getElementById("areaSqmt").value) || 0;
-//     const ratePerSqmt =
-//       parseFloat(document.getElementById("ratePerSqmt").value) || 0;
-
-//     document.getElementById("totalAmount").value = areaSqmt * ratePerSqmt;
+//     document.getElementById("totalAmount").value =
+//       document.getElementById("areaSqmt").value *
+//       document.getElementById("ratePerSqmt").value;
 //     document.getElementById("netAmount").value =
 //       document.getElementById("totalAmount").value;
 
-//     const discountApplicable =
-//       document.getElementById("discountApplicable").value;
-//     if (discountApplicable === "Yes") {
-//       const discountPercent =
-//         parseFloat(document.getElementById("discountPercent").value) || 0;
+//     if (document.getElementById("discountApplicable").value == "Yes") {
 //       document.getElementById("netAmount").value =
 //         document.getElementById("totalAmount").value -
-//         (document.getElementById("totalAmount").value / 100) * discountPercent;
-//     } else if (discountApplicable === "No") {
+//         (document.getElementById("totalAmount").value / 100) *
+//           document.getElementById("discountPercent").value;
+//     } else if (document.getElementById("discountApplicable").value == "No") {
 //       document.getElementById("discountPercent").value = 0;
 //       document.getElementById("netAmount").value =
 //         document.getElementById("totalAmount").value;
 //     }
 
 //     document.getElementById("guidelineAmount").value =
-//       plotData[0]?.areaSqmt * master[0]?.guideline || 0;
+//       plotData[0]["areaSqmt"] * master[0]["guideline"];
 
-//     const registryGender = document.getElementById("registryGender").value;
-//     if (registryGender === "Male") {
+//     if (document.getElementById("registryGender").value == "Male") {
 //       document.getElementById("registryPercent").value =
-//         master[0]?.registryMalePercent || 0;
-//     } else if (registryGender === "Female") {
+//         master[0]["registryMalePercent"];
+//     }
+//     if (document.getElementById("registryGender").value == "Female") {
 //       document.getElementById("registryPercent").value =
-//         master[0]?.registryFemalePercent || 0;
+//         master[0]["registryFemalePercent"];
 //     }
 
 //     document.getElementById("registryAmount").value =
-//       (document.getElementById("guidelineAmount").value / 100) *
-//       document.getElementById("registryPercent").value;
-
-//     const serviceType = master[0]?.serviceType;
-//     if (serviceType === "Lumpsum") {
+//       (document.getElementById("guidelineAmount").value *
+//         document.getElementById("registryPercent").value) /
+//       100;
+//     if (master[0]["serviceType"] == "Lumpsum") {
 //       document.getElementById("serviceAmount").value =
-//         master[0]?.serviceValue || 0;
-//     } else if (serviceType === "PerSqmt") {
+//         master[0]["serviceValue"];
+//     }
+//     if (master[0]["serviceType"] == "PerSqmt") {
 //       document.getElementById("serviceAmount").value =
-//         master[0]?.serviceValue * plotData[0]?.areaSqft || 0;
+//         master[0]["serviceValue"] * plotData[0]["areaSqft"];
 //     }
 
-//     const maintenanceType = master[0]?.maintenanceType;
-//     if (maintenanceType === "Lumpsum") {
+//     if (master[0]["maintenanceType"] == "Lumpsum") {
 //       document.getElementById("maintenanceAmount").value =
-//         master[0]?.maintenanceValue || 0;
-//     } else if (maintenanceType === "PerSqmt") {
+//         master[0]["maintenanceValue"];
+//     }
+//     if (master[0]["maintenanceType"] == "PerSqmt") {
 //       document.getElementById("maintenanceAmount").value =
-//         master[0]?.maintenanceValue * plotData[0]?.areaSqft || 0;
+//         master[0]["maintenanceValue"] * plotData[0]["areaSqft"];
 //     }
 
-//     const miscType = master[0]?.miscType;
-//     if (miscType === "Lumpsum") {
-//       document.getElementById("miscAmount").value = master[0]?.miscValue || 0;
-//     } else if (miscType === "PerSqmt") {
-//       const miscAmountValue = master[0]?.miscValue * plotData[0]?.areaSqft || 0;
-//       document.getElementById("miscAmount").value = miscAmountValue;
-
-//       // Check if miscAmountValue is zero, then set the input field to zero
-//       if (miscAmountValue === 0 || miscAmountValue === "") {
-//         document.getElementById("miscAmount").value = 0;
-//       }
+//     if (master[0]["miscType"] == "Lumpsum") {
+//       document.getElementById("miscAmount").value = master[0]["miscValue"];
+//     }
+//     if (master[0]["miscType"] == "PerSqmt") {
+//       document.getElementById("miscAmount").value =
+//         master[0]["miscValue"] * plotData[0]["areaSqft"];
 //     }
 
-//     const grandTotal =
-//       parseInt(document.getElementById("netAmount").value) +
-//       Number(document.getElementById("registryAmount").value) +
-//       parseInt(document.getElementById("serviceAmount").value) +
-//       parseInt(document.getElementById("maintenanceAmount").value) +
-//       parseInt(document.getElementById("miscAmount").value);
+//     document.getElementById("grandTotal").value =
+//       parseFloat(document.getElementById("netAmount").value) +
+//       parseFloat(document.getElementById("registryAmount").value) +
+//       parseFloat(document.getElementById("serviceAmount").value) +
+//       parseFloat(document.getElementById("maintenanceAmount").value) +
+//       parseFloat(document.getElementById("miscAmount").value);
 
-//     document.getElementById("grandTotal").value = isNaN(grandTotal)
-//       ? 0
-//       : grandTotal;
-
-//     const constructionApplicable = document.getElementById(
-//       "constructionApplicable"
-//     ).value;
-//     if (constructionApplicable === "Yes") {
+//     if (document.getElementById("constructionApplicable").value == "Yes") {
 //       document.getElementById("constructionContractor").disabled = false;
+//       //document.getElementById('constructionContractor').style.backgroundColor = 'white';
 //       document.getElementById("constructionAmount").disabled = false;
+//       //document.getElementById('constructionAmount').style.backgroundColor = 'white';
 
 //       document.getElementById("totalAmountPayable").value =
 //         Number(document.getElementById("grandTotal").value) +
 //         Number(document.getElementById("constructionAmount").value);
-//     } else if (constructionApplicable === "No") {
+//     }
+//     if (document.getElementById("constructionApplicable").value == "No") {
 //       document.getElementById("constructionContractor").disabled = true;
+//       //document.getElementById('constructionContractor').style.backgroundColor = 'gray';
 //       document.getElementById("constructionAmount").disabled = true;
+//       //document.getElementById('constructionAmount').style.backgroundColor = 'gray';
 
 //       document.getElementById("totalAmountPayable").value =
 //         document.getElementById("grandTotal").value;
 //     }
 
 //     document.getElementById("bankAmountPayable").value =
-//       document.getElementById("guidelineAmount").value;
+//       (document.getElementById("guidelineAmount").value *
+//         document.getElementById("registryPercent").value) /
+//       100;
 //     document.getElementById("cashAmountPayable").value =
-//       Number(document.getElementById("totalAmountPayable").value) -
-//       document.getElementById("guidelineAmount").value;
+//       document.getElementById("totalAmountPayable").value -
+//       document.getElementById("bankAmountPayable").value;
 //   };
 
 //   useEffect(() => {
@@ -821,7 +981,7 @@
 //               <Input
 //                 onChange={updateOnChange}
 //                 id="miscAmount"
-//                 type="number"
+//                 type="text"
 //                 name="miscAmount"
 
 //                 //onChange={handleChange}
@@ -832,7 +992,7 @@
 //               <Input
 //                 onChange={updateOnChange}
 //                 id="grandTotal"
-//                 type="number"
+//                 type="text"
 //                 name="grandTotal"
 //                 //onChange={handleChange}
 //                 bg={"yellow"}
@@ -897,7 +1057,7 @@
 //               <Input
 //                 onChange={updateOnChange}
 //                 id="totalAmountPayable"
-//                 type="number"
+//                 type="text"
 //                 name="totalAmountPayable"
 //                 //onChange={handleChange}
 //                 bg={"yellow"}
@@ -916,13 +1076,18 @@
 //             </FormControl>
 
 //             <FormControl>
-//               <FormLabel>Registry Percent</FormLabel>
+//               <FormLabel>Registry</FormLabel>
+//               <Input
+//                 type="text"
+//                 value="100"
+//                 //onChange={handleChange}
+//               />
 //               <Input
 //                 onChange={updateOnChange}
 //                 id="registryPercent"
 //                 type="text"
 //                 name="registryPercent"
-
+//                 style={{ display: "none" }}
 //                 //onChange={handleChange}
 //               />
 //             </FormControl>
@@ -939,7 +1104,7 @@
 //                 <Input
 //                   onChange={updateOnChange}
 //                   id="bankAmountPayable"
-//                   type="number"
+//                   type="text"
 //                   name="bankAmountPayable"
 //                   //onChange={handleChange}
 //                   bg={"yellow"}
@@ -1572,13 +1737,9 @@ const NewBooking = () => {
               }
 
               document.getElementById("bankAmountPayable").value =
-                (document.getElementById("guidelineAmount").value *
-                  document.getElementById("registryPercent").value) /
-                100;
-              document.getElementById("cashAmountPayable").value =
-                Number(document.getElementById("totalAmountPayable").value) -
-                document.getElementById("bankAmountPayable").value;
-              setplottype(response.data.phpresult[0]["plotType"]);
+                document.getElementById("guidelineAmount").value;
+              document.getElementById("cashAmountPayable").value = 0;
+              document.getElementById("registry").value = 100;
             }
           }
         }
@@ -1677,8 +1838,9 @@ const NewBooking = () => {
 
     document.getElementById("bankAmountPayable").value =
       (document.getElementById("guidelineAmount").value *
-        document.getElementById("registryPercent").value) /
+        document.getElementById("registry").value) /
       100;
+
     document.getElementById("cashAmountPayable").value =
       document.getElementById("totalAmountPayable").value -
       document.getElementById("bankAmountPayable").value;
@@ -2081,7 +2243,8 @@ const NewBooking = () => {
               <FormLabel>Registry Percent</FormLabel>
               <Input
                 type="text"
-                value="100"
+                onChange={updateOnChange}
+                id="registry"
                 //onChange={handleChange}
               />
               <Input
