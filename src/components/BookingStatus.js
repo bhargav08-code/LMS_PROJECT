@@ -288,7 +288,7 @@ const BookingStatus = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [highlightedRow, setHighlightedRow] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [date, setDate] = useState([]);
   const handleSelectChange = (event, setter) => {
     setter(event.target.value);
     setHighlightedRow(null);
@@ -304,6 +304,27 @@ const BookingStatus = () => {
 
   const loadBooking = async () => {
     let query = "SELECT * FROM booking;";
+    let query2 = "SELECT registryDate FROM registry;";
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    let fData = new FormData();
+
+    fData.append("query", query);
+    fData.append("query2", query2);
+
+    try {
+      const response = await axios.post(url, fData);
+
+      if (response && response.data) {
+        if (response.data.phpresult) {
+          setStatus(response.data.phpresult);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
+  };
+  const loadDate = async () => {
+    let query = "SELECT registryDate FROM registry;";
 
     const url = "https://lkgexcel.com/backend/getQuery.php";
     let fData = new FormData();
@@ -315,7 +336,7 @@ const BookingStatus = () => {
 
       if (response && response.data) {
         if (response.data.phpresult) {
-          setStatus(response.data.phpresult);
+          setDate(response.data.phpresult);
         }
       }
     } catch (error) {
@@ -339,6 +360,7 @@ const BookingStatus = () => {
   useEffect(() => {
     fetchData();
     loadBooking();
+    loadDate();
   }, []);
 
   const getUniqueValues = (key) => {
@@ -553,7 +575,7 @@ const BookingStatus = () => {
                         ? "yellow"
                         : plotItem.plotStatus === "Booked"
                         ? "red"
-                        : plotItem.plotStatus === "Registry"
+                        : plotItem.plotStatus === "Registered"
                         ? "green"
                         : "gray"
                     }
@@ -571,10 +593,11 @@ const BookingStatus = () => {
                   .map((book) => (
                     <React.Fragment key={book.id}>
                       <Td>{book.bookingDate}</Td>
-                      <Td textAlign={"center"}>
-                        {book.registryDate === "0000-00-00"
-                          ? "----"
-                          : book.registryDate}
+                      <Td>
+                        {date
+                          .filter((res) => res.plotNo === plotItem.plotNo)
+                          .map((res) => res.registryDate)
+                          .join(", ") || "----"}
                       </Td>
                       <Td>{book.customerName}</Td>
                       <Td>{book.customerContact}</Td>

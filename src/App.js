@@ -24,6 +24,7 @@ import PaymentTransaction from "./components/PaymentTransaction";
 import BookingList from "./components/BookingList";
 import TransactionReport from "./components/TransactionReport";
 import Footer from "./Footer";
+import BalanceReport from "./components/BalanceReport";
 
 const App = () => {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -269,6 +270,19 @@ const App = () => {
                     handleLogout={handleLogout}
                   />{" "}
                   <TransactionReport />{" "}
+                </>
+              }
+            />
+            <Route
+              path="/balancereport"
+              element={
+                <>
+                  {" "}
+                  <Nav
+                    isLoggedIn={isLoggedIn}
+                    handleLogout={handleLogout}
+                  />{" "}
+                  <BalanceReport />{" "}
                 </>
               }
             />

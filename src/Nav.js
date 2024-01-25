@@ -123,7 +123,13 @@ const Nav = ({ isLoggedIn, handleLogout }) => {
                 <MenuItem as={Link} to="/transactionreport">
                   Transaction Report
                 </MenuItem>
-                <MenuItem>Balance Report</MenuItem>
+                <MenuItem
+                  as={Link}
+                  to="/balancereport
+                "
+                >
+                  Balance Report
+                </MenuItem>
                 <MenuItem>Historical Transaction Report</MenuItem>
               </MenuList>
             </Menu>
