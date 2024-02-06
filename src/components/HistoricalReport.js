@@ -23,7 +23,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-const BalanceReport = () => {
+const HistoricalReport = () => {
   const [transaction, setTransaction] = useState([]);
   const [selectedProject, setSelectedProject] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,7 +123,7 @@ const BalanceReport = () => {
   return (
     <>
       <Center>
-        <Heading size={"md"}>Balance Report</Heading>
+        <Heading size={"md"}>Historical Transaction Report</Heading>
       </Center>
       <Box maxW={"100%"} overflowX={"scroll"} marginTop={"2rem"}>
         <Flex justifyContent={"space-evenly"} p={"30px"}>
@@ -289,41 +289,41 @@ const BalanceReport = () => {
                     {" "}
                     SrNo
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Project Name
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Block Name
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Plot No
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Date
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Payment Type
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Amount
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Bank Mode
                   </Th>
 
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Cheq No
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Bank Name
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Transaction Status
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Status Date
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"18px"}>
                     Remakrs
                   </Th>
                 </Tr>
@@ -382,4 +382,4 @@ const BalanceReport = () => {
   );
 };
 
-export default BalanceReport;
+export default HistoricalReport;

@@ -214,7 +214,7 @@
 //                         ? "yellow"
 //                         : plotItem.plotStatus === "Booked"
 //                         ? "red"
-//                         : plotItem.plotStatus === "Registry"
+//                         : plotItem.plotStatus === "Registered"
 //                         ? "green"
 //                         : "gray"
 //                     }
@@ -282,13 +282,14 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 const BookingStatus = () => {
   const [bookings, setBooking] = useState([]);
   const [status, setStatus] = useState([]);
+  const [date, setDate] = useState([]);
+
   const [selectedProject, setSelectedProject] = useState([]);
   const [selectedBlock, setSelectedBlock] = useState([]);
   const [selectedPlot, setSelectedPlot] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [highlightedRow, setHighlightedRow] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [date, setDate] = useState([]);
   const handleSelectChange = (event, setter) => {
     setter(event.target.value);
     setHighlightedRow(null);
@@ -304,12 +305,11 @@ const BookingStatus = () => {
 
   const loadBooking = async () => {
     let query = "SELECT * FROM booking;";
-    let query2 = "SELECT registryDate FROM registry;";
+
     const url = "https://lkgexcel.com/backend/getQuery.php";
     let fData = new FormData();
 
     fData.append("query", query);
-    fData.append("query2", query2);
 
     try {
       const response = await axios.post(url, fData);
@@ -391,7 +391,7 @@ const BookingStatus = () => {
     setSelectedDate("");
     setHighlightedRow(null);
   };
-
+  console.log(date);
   return (
     <>
       <Box mb={4}>
@@ -546,9 +546,10 @@ const BookingStatus = () => {
               <Th>PlotType</Th>
               <Th>PlotStatus</Th>
               <Th>BookingDate</Th>
-              <Th>RegistryDate</Th>
+
               <Th>CustName</Th>
               <Th>CustNo.</Th>
+              <Th>RegistryDate</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -583,6 +584,7 @@ const BookingStatus = () => {
                     {plotItem.plotStatus}
                   </Badge>
                 </Td>
+
                 {status
                   .filter(
                     (book) =>
@@ -593,16 +595,23 @@ const BookingStatus = () => {
                   .map((book) => (
                     <React.Fragment key={book.id}>
                       <Td>{book.bookingDate}</Td>
-                      <Td>
-                        {date
-                          .filter((res) => res.plotNo === plotItem.plotNo)
-                          .map((res) => res.registryDate)
-                          .join(", ") || "----"}
-                      </Td>
+
                       <Td>{book.customerName}</Td>
                       <Td>{book.customerContact}</Td>
                     </React.Fragment>
                   ))}
+                <Td>
+                  {plotItem.plotStatus === "Registered" && (
+                    <span>
+                      {date.map((rd, index) => (
+                        <React.Fragment key={index}>
+                          <span>{rd.registryDate}</span>
+                          {index !== date.length - 1 && ", "}
+                        </React.Fragment>
+                      ))}
+                    </span>
+                  )}
+                </Td>
               </Tr>
             ))}
           </Tbody>
