@@ -289,41 +289,41 @@ const TransactionReport = () => {
                     {" "}
                     SrNo
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Project Name
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Block Name
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Plot No
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Date
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Payment Type
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Amount
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Bank Mode
                   </Th>
 
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Cheq No
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Bank Name
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Transaction Status
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Status Date
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"18px"}>
+                  <Th border="1px solid black" color={"white"} p={"20px"}>
                     Remakrs
                   </Th>
                 </Tr>

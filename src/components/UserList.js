@@ -39,16 +39,30 @@ const UserList = () => {
       const response = await axios.get(
         "https://lkgexcel.com/backend/getuser.php"
       );
-      // console.log(response.data); // Log the response data
-      setUsers(response.data);
+      // Uncomment to log the response data
+      console.log(response.data);
+      if (Array.isArray(response.data)) {
+        setUsers(response.data);
+      } else {
+        throw new Error("Response data is not an array");
+      }
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
+      toast({
+        title: "Error fetching data",
+        description: error.message, // Display the error message in the toast
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      setLoading(false); // Ensure loading state is set to false to stop spinner
     }
   };
   useEffect(() => {
     fetchData();
   }, []);
+
   const handleDeleteUser = async (userId) => {
     try {
       await axios.delete(
@@ -179,42 +193,43 @@ const UserList = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {users.map((user) => (
-                <Tr key={user.userId}>
-                  <Td>{user.userId}</Td>
-                  <Td>{user.userName}</Td>
-                  <Td>{user.userEmail}</Td>
-                  <Td>{user.userAddress}</Td>
-                  <Td>{user.userCity}</Td>
-                  <Td>{user.userState}</Td>
-                  <Td>
-                    <HStack>
-                      <Button
-                        colorScheme="teal"
-                        onClick={() => {
-                          setIsModalOpen(true);
-                          setEditFormData({
-                            userId: user.userId,
-                            userName: user.userName,
-                            userEmail: user.userEmail,
-                            userAddress: user.userAddress,
-                            userCity: user.userCity,
-                            userState: user.userState,
-                          });
-                        }}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        colorScheme="red"
-                        onClick={() => handleDeleteUser(user.userId)}
-                      >
-                        Delete
-                      </Button>
-                    </HStack>
-                  </Td>
-                </Tr>
-              ))}
+              {Array.isArray(users) &&
+                users.map((user) => (
+                  <Tr key={user.userId}>
+                    <Td>{user.userId}</Td>
+                    <Td>{user.userName}</Td>
+                    <Td>{user.userEmail}</Td>
+                    <Td>{user.userAddress}</Td>
+                    <Td>{user.userCity}</Td>
+                    <Td>{user.userState}</Td>
+                    <Td>
+                      <HStack>
+                        <Button
+                          colorScheme="teal"
+                          onClick={() => {
+                            setIsModalOpen(true);
+                            setEditFormData({
+                              userId: user.userId,
+                              userName: user.userName,
+                              userEmail: user.userEmail,
+                              userAddress: user.userAddress,
+                              userCity: user.userCity,
+                              userState: user.userState,
+                            });
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          colorScheme="red"
+                          onClick={() => handleDeleteUser(user.userId)}
+                        >
+                          Delete
+                        </Button>
+                      </HStack>
+                    </Td>
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
         )}

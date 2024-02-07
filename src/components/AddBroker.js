@@ -1,15 +1,16 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Box,
-  Button,
+  Center,
+  Heading,
+  Grid,
   FormControl,
   FormLabel,
   Input,
   Select,
-  Grid,
-  GridItem,
-  Center,
-  Heading,
+  Button,
+  useToast,
 } from "@chakra-ui/react";
 
 const states = [
@@ -53,6 +54,7 @@ const states = [
 
 const AddBroker = () => {
   const [formData, setFormData] = useState({
+    companyName: "",
     brokerName: "",
     contact: "",
     email: "",
@@ -61,15 +63,39 @@ const AddBroker = () => {
     state: "",
   });
 
+  const toast = useToast();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add your logic for form submission
-    console.log("Form Data:", formData);
+  const onAdd = async () => {
+    const url = "https://lkgexcel.com/backend/setQuery.php";
+    const query = `INSERT INTO broker (companyName, brokerName, contact, emailid, address, city, state) VALUES ('${formData.companyName}', '${formData.brokerName}', '${formData.contact}', '${formData.email}', '${formData.address}', '${formData.city}', '${formData.state}')`;
+
+    try {
+      await axios.post(url, { query });
+      toast({
+        title: "Broker added successfully!",
+        status: "success",
+        duration: 3000,
+        position: "top",
+        isClosable: true,
+      });
+      // Clear the form data after successful submission
+      setFormData({
+        companyName: "",
+        brokerName: "",
+        contact: "",
+        email: "",
+        address: "",
+        city: "",
+        state: "",
+      });
+    } catch (error) {
+      console.log(error.toJSON());
+    }
   };
 
   return (
@@ -77,102 +103,84 @@ const AddBroker = () => {
       <Center pb={8}>
         <Heading>Add Broker</Heading>
       </Center>
-      <form onSubmit={handleSubmit}>
-        <Grid templateColumns="repeat(4, 1fr)" gap={4}>
-          <GridItem colSpan={1}>
-            <FormControl isRequired>
-              <FormLabel>Broker (Company)</FormLabel>
-              <Input
-                type="text"
-                name="brokerName"
-                value={formData.brokerName}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </GridItem>
-          <GridItem colSpan={1}>
-            <FormControl isRequired>
-              <FormLabel>Broker Name</FormLabel>
-              <Input
-                type="text"
-                name="contact"
-                value={formData.contact}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </GridItem>
-          <GridItem colSpan={1}>
-            <FormControl isRequired>
-              <FormLabel>Contact</FormLabel>
-              <Input
-                type="text"
-                name="contact"
-                value={formData.contact}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </GridItem>
-
-          <GridItem colSpan={1}>
-            <FormControl isRequired>
-              <FormLabel>Email ID</FormLabel>
-              <Input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </GridItem>
-
-          <GridItem colSpan={1}>
-            <FormControl isRequired>
-              <FormLabel>Address</FormLabel>
-              <Input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </GridItem>
-
-          <GridItem colSpan={1}>
-            <FormControl isRequired>
-              <FormLabel>City</FormLabel>
-              <Input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </GridItem>
-
-          <GridItem colSpan={1}>
-            <FormControl isRequired>
-              <FormLabel>State</FormLabel>
-              <Select
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                placeholder="Select State"
-              >
-                {states.map((state) => {
-                  const [code, name] = state.split("|");
-                  return (
-                    <option key={code} value={code}>
-                      {name}
-                    </option>
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </GridItem>
-          <Button mt={8} colorScheme="blue" type="submit">
-            Add Broker
-          </Button>
+      <form onSubmit={onAdd}>
+        <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+          <FormControl colSpan={3} isRequired>
+            <FormLabel>Company Name</FormLabel>
+            <Input
+              type="text"
+              name="companyName"
+              value={formData.companyName}
+              onChange={handleChange}
+            />
+          </FormControl>
+          <FormControl colSpan={3} isRequired>
+            <FormLabel>Broker Name</FormLabel>
+            <Input
+              type="text"
+              name="brokerName"
+              value={formData.brokerName}
+              onChange={handleChange}
+            />
+          </FormControl>
+          <FormControl colSpan={1} isRequired>
+            <FormLabel>Contact</FormLabel>
+            <Input
+              type="text"
+              name="contact"
+              value={formData.contact}
+              onChange={handleChange}
+            />
+          </FormControl>
+          <FormControl colSpan={1} isRequired>
+            <FormLabel>Email</FormLabel>
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </FormControl>
+          <FormControl colSpan={2} isRequired>
+            <FormLabel>Address</FormLabel>
+            <Input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+            />
+          </FormControl>
+          <FormControl colSpan={1} isRequired>
+            <FormLabel>City</FormLabel>
+            <Input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+            />
+          </FormControl>
+          <FormControl colSpan={1} isRequired>
+            <FormLabel>State</FormLabel>
+            <Select
+              name="state"
+              value={formData.state}
+              onChange={handleChange}
+              placeholder="Select State"
+            >
+              {states.map((state) => {
+                const [code, name] = state.split("|");
+                return (
+                  <option key={name} value={name}>
+                    {name}
+                  </option>
+                );
+              })}
+            </Select>
+          </FormControl>
         </Grid>
+        <Button colorScheme="blue" type="submit" mt={8}>
+          Add Broker
+        </Button>
       </form>
     </Box>
   );

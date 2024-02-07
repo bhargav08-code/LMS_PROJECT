@@ -25,6 +25,9 @@ import axios from "axios";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 const BalanceReport = () => {
   const [transaction, setTransaction] = useState([]);
+  const [plotSatus, setPlotStatus] = useState([]);
+  const [booking, setBooking] = useState([]);
+  const [date, setDate] = useState([]);
   const [selectedProject, setSelectedProject] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBlock, setSelectedBlock] = useState([]);
@@ -62,16 +65,70 @@ const BalanceReport = () => {
       console.error("Error fetching booking data:", error);
     }
   };
+  const loadDate = async () => {
+    let query = "SELECT registryDate FROM registry;";
+
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    let fData = new FormData();
+
+    fData.append("query", query);
+
+    try {
+      const response = await axios.post(url, fData);
+
+      if (response && response.data) {
+        if (response.data.phpresult) {
+          setDate(response.data.phpresult);
+        }
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
+  };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://lkgexcel.com/backend/getplot.php"
+      );
+      setPlotStatus(response.data);
+    } catch (error) {
+      console.error("Error fetching plot data:", error);
+    }
+  };
+  const loadBooking = async () => {
+    let query = "SELECT * FROM booking;";
+
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    let fData = new FormData();
+
+    fData.append("query", query);
+
+    try {
+      const response = await axios.post(url, fData);
+
+      if (response && response.data) {
+        if (response.data.phpresult) {
+          setBooking(response.data.phpresult);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
+  };
+
   useEffect(() => {
     loadTransaction();
+    fetchData();
+    loadBooking();
+    loadDate();
   }, []);
   const getUniqueValues = (key) => {
     return [...new Set(transaction.map((item) => item[key]))];
   };
 
   const projectOptions = getUniqueValues("projectName");
-  // const blockOptions = getUniqueValues("blockName");
-  // const plotOptions = getUniqueValues("plotno");
+
   const filteredBookings = transaction.filter(
     (item) =>
       (!selectedProject.length ||
@@ -120,13 +177,21 @@ const BalanceReport = () => {
     );
     setFilteredPlots([...plots]);
   }, [selectedProject, transaction]);
+  console.log(plotSatus);
+  console.log(booking);
+  console.log(date);
   return (
     <>
       <Center>
         <Heading size={"md"}>Balance Report</Heading>
       </Center>
       <Box maxW={"100%"} overflowX={"scroll"} marginTop={"2rem"}>
-        <Flex justifyContent={"space-evenly"} p={"30px"}>
+        <Flex
+          justifyContent={"space-evenly"}
+          p={"30px"}
+          pos={"sticky"}
+          left={0}
+        >
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               Select Projects
@@ -285,92 +350,170 @@ const BalanceReport = () => {
             <TableContainer>
               <Thead>
                 <Tr border="1px solid black" bg={"#121212"}>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
                     {" "}
                     SrNo
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
                     Project Name
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
                     Block Name
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
                     Plot No
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
-                    Date
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Cust Name
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
-                    Payment Type
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Cust Contact
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
-                    Amount
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Const App
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
-                    Bank Mode
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Total Bal
                   </Th>
-
-                  <Th border="1px solid black" color={"white"}>
-                    Cheq No
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Bank Bal
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
-                    Bank Name
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Cash Bal
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
-                    Transaction Status
-                  </Th>
-                  <Th border="1px solid black" color={"white"}>
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Total Received
+                  </Th>{" "}
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Bank Received
+                  </Th>{" "}
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Cash Received
+                  </Th>{" "}
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
                     Status Date
                   </Th>
-                  <Th border="1px solid black" color={"white"}>
-                    Remakrs
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Plot Status
+                  </Th>
+                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                    Registry Date
                   </Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {filteredBookings.map((data, index) => (
                   <Tr key={data.srNo}>
-                    <Td border="1px solid black">{index + 1}</Td>
-                    <Td border="1px solid black">{data.projectName}</Td>
-                    <Td border="1px solid black">{data.blockName}</Td>
-                    <Td border="1px solid black">{data.plotno}</Td>
-                    <Td border="1px solid black">{data.date}</Td>
-                    <Td border="1px solid black">{data.paymentType}</Td>
-                    <Td border="1px solid black">{data.amount}</Td>
-                    <Td border="1px solid black">{data.bankMode}</Td>
-                    <Td border="1px solid black">{data.cheqNo}</Td>
-                    <Td border="1px solid black">{data.bankName}</Td>
-                    <Td
-                      style={{
-                        backgroundColor:
-                          data.transactionStatus === "Clear"
-                            ? "#22c35e"
-                            : data.transactionStatus === "Provisional" ||
-                              data.transactionStatus === "Pending" ||
-                              data.transactionStatus === "PDC"
-                            ? "#ECC94B"
-                            : "inherit",
-                        color:
-                          data.transactionStatus === "Clear"
-                            ? "white"
-                            : data.transactionStatus === "Provisional" ||
-                              data.transactionStatus === "Pending" ||
-                              data.transactionStatus === "PDC"
-                            ? "black"
-                            : data.transactionStatus === "Bounced"
-                            ? "#E53E3E"
-                            : "inherit",
-                        textDecoration:
-                          data.transactionStatus === "Bounced"
-                            ? "line-through"
-                            : "none",
-                      }}
-                    >
-                      {data.transactionStatus}
+                    <Td border="1px solid black" p={"8px"}>
+                      {index + 1}
                     </Td>
-                    <Td border="1px solid black">{data.statusDate}</Td>
-                    <Td border="1px solid black">{data.remarks}</Td>
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.projectName}
+                    </Td>
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.blockName}
+                    </Td>
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.plotno}
+                    </Td>
+                    {/* {plotSatus
+                      .filter(
+                        (stat) =>
+                          stat.projectName === data.projectName &&
+                          stat.blockName === data.blockName &&
+                          stat.plotNo === data.plotno
+                      )
+                      .map((stat) => (
+                        <React.Fragment key={stat.id}>
+                          <Td border="1px solid black">{stat.plotStatus}</Td>
+                          
+                        </React.Fragment>
+                      ))} */}
+                    {booking
+                      .filter(
+                        (stat) =>
+                          stat.projectName === data.projectName &&
+                          stat.blockName === data.blockName &&
+                          stat.plotNo === data.plotno
+                      )
+                      .map((stat) => (
+                        <React.Fragment key={stat.id}>
+                          <Td border="1px solid black" p={"8px"}>
+                            {stat.customerName}
+                          </Td>
+                          <Td border="1px solid black" p={"8px"}>
+                            {stat.customerContact}
+                          </Td>
+                          <Td border="1px solid black" p={"8px"}>
+                            {stat.constructionApplicable}
+                          </Td>
+                        </React.Fragment>
+                      ))}
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.totalBalance}
+                    </Td>
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.bankBalance}
+                    </Td>
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.cashBalance}
+                    </Td>
+
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.totalReceived}
+                    </Td>
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.bankReceived}
+                    </Td>
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.cashReceived}
+                    </Td>
+                    <Td border="1px solid black" p={"8px"}>
+                      {data.statusDate}
+                    </Td>
+                    {/* {date.map((d) => (
+                      <React.Fragment key={d.id}>
+                        {plotSatus.some(
+                          (plot) => plot.plotStatus === "Registered"
+                        ) && <Td border="1px solid black">{d.registryDate}</Td>}
+                      </React.Fragment>
+                    ))} */}
+
+                    {/* {plotSatus.filter((stat)=>(
+                      stat.plotStatus==="Registered" && {date.map((stat)=>(
+                        <>
+                        <Td>{stat.registryDate}</Td>
+                        </>
+                      ))}
+                    ))} */}
+                    {plotSatus
+                      .filter(
+                        (stat) =>
+                          stat.projectName === data.projectName &&
+                          stat.blockName === data.blockName &&
+                          stat.plotNo === data.plotno
+                      )
+                      .map((stat) => (
+                        <React.Fragment key={stat.id}>
+                          <Td border="1px solid black" p={"8px"}>
+                            {stat.plotStatus}
+                          </Td>
+                          {stat.plotStatus === "Registered" &&
+                          date.length > 0 ? (
+                            date.map((rd, index) => (
+                              <Td
+                                key={index}
+                                border="1px solid black"
+                                p={"8px"}
+                              >
+                                {rd.registryDate}
+                              </Td>
+                            ))
+                          ) : (
+                            <Td border="1px solid black">----</Td>
+                          )}
+                        </React.Fragment>
+                      ))}
                   </Tr>
                 ))}
               </Tbody>
