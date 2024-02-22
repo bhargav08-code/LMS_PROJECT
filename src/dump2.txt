@@ -7199,3 +7199,83 @@ export default AddPlot;
 // };
 
 // export default BookingStatus;
+// const onAddBook = async () => {
+  //   const url = "https://lkgexcel.com/backend/setQuery.php";
+  //   let query =
+  //     "INSERT INTO booking (id, projectName, blockName, plotNo, plotType, customerName, customerAddress, customerContact, registryGender, areaSqft, rateAreaSqft, totalAmount, discountApplicable, discountPercent, netAmount, registryAmount, serviceAmount, maintenanceAmount, miscAmount, grandTotal, constructionApplicable, constructionContractor, constructionAmount, totalAmountPayable, guidelineAmount, registryPercent, bankAmountPayable, bookingDate, cashAmountPayable, remarks, registryDate) VALUES (NULL, '" +
+  //     document.getElementById("projectName").value +
+  //     "', '" +
+  //     document.getElementById("blockName").value +
+  //     "', '" +
+  //     document.getElementById("plotNo").value +
+  //     "', '" +
+  //     document.getElementById("plotType").value +
+  //     "', '" +
+  //     document.getElementById("customerName").value +
+  //     "', '" +
+  //     document.getElementById("customerAddress").value +
+  //     "', '" +
+  //     document.getElementById("customerContact").value +
+  //     "', '" +
+  //     document.getElementById("registryGender").value +
+  //     "', '" +
+  //     document.getElementById("areaSqft").value +
+  //     "', '" +
+  //     document.getElementById("rateAreaSqft").value +
+  //     "', '" +
+  //     document.getElementById("totalAmount").value +
+  //     "', '" +
+  //     document.getElementById("discountApplicable").value +
+  //     "', '" +
+  //     document.getElementById("discountPercent").value +
+  //     "', '" +
+  //     document.getElementById("netAmount").value +
+  //     "', '" +
+  //     document.getElementById("registryAmount").value +
+  //     "', '" +
+  //     document.getElementById("serviceAmount").value +
+  //     "', '" +
+  //     document.getElementById("maintenanceAmount").value +
+  //     "', '" +
+  //     document.getElementById("miscAmount").value +
+  //     "', '" +
+  //     document.getElementById("grandTotal").value +
+  //     "', '" +
+  //     document.getElementById("constructionApplicable").value +
+  //     "', '" +
+  //     document.getElementById("constructionContractor").value +
+  //     "', '" +
+  //     document.getElementById("constructionAmount").value +
+  //     "', '" +
+  //     document.getElementById("totalAmountPayable").value +
+  //     "', '" +
+  //     document.getElementById("guidelineAmount").value +
+  //     "', '" +
+  //     document.getElementById("registryPercent").value +
+  //     "', '" +
+  //     document.getElementById("bankAmountPayable").value +
+  //     "', '" +
+  //     document.getElementById("bookingDate").value +
+  //     "', '" +
+  //     document.getElementById("cashAmountPayable").value +
+  //     "', '" +
+  //     document.getElementById("remarks").value +
+  //     "', '');";
+  //   console.log(query);
+  //   let fData = new FormData();
+  //   fData.append("query", query);
+
+  //   try {
+  //     const response = await axios.post(url, fData);
+  //     updatePlotStatus();
+  //     toast({
+  //       title: "Booking added successfully!",
+  //       status: "success",
+  //       duration: 3000,
+  //       position: "top",
+  //       isClosable: true,
+  //     });
+  //   } catch (error) {
+  //     console.log(error.toJSON());
+  //   }
+  // };

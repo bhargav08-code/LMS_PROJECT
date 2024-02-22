@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -68,7 +67,6 @@ const NewBooking = () => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-  
 
   const onAddBook = async () => {
     const url = "https://lkgexcel.com/backend/setQuery.php";

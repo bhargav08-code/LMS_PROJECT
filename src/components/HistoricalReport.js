@@ -330,11 +330,27 @@ const HistoricalReport = () => {
               </Thead>
               <Tbody>
                 {filteredBookings.map((data, index) => (
-                  <Tr key={data.srNo}>
+                  <Tr
+                    key={data.srNo}
+                    style={{
+                      textDecoration:
+                        data.Status === "Cancelled" ? "line-through" : "none",
+                      color: data.Status === "Cancelled" ? "red" : "inherit",
+                    }}
+                  >
                     <Td border="1px solid black">{index + 1}</Td>
                     <Td border="1px solid black">{data.projectName}</Td>
                     <Td border="1px solid black">{data.blockName}</Td>
-                    <Td border="1px solid black">{data.plotno}</Td>
+                    <Td
+                      border="1px solid black"
+                      style={{
+                        textDecoration:
+                          data.Status === "Cancelled" ? "line-through" : "none",
+                        color: data.Status === "Cancelled" ? "red" : "inherit",
+                      }}
+                    >
+                      {data.plotno}
+                    </Td>
                     <Td border="1px solid black">{data.date}</Td>
                     <Td border="1px solid black">{data.paymentType}</Td>
                     <Td border="1px solid black">{data.amount}</Td>
@@ -342,9 +358,12 @@ const HistoricalReport = () => {
                     <Td border="1px solid black">{data.cheqNo}</Td>
                     <Td border="1px solid black">{data.bankName}</Td>
                     <Td
+                      border="1px solid black"
                       style={{
                         backgroundColor:
-                          data.transactionStatus === "Clear"
+                          data.Status === "Cancelled"
+                            ? "inherit"
+                            : data.transactionStatus === "Clear"
                             ? "#22c35e"
                             : data.transactionStatus === "Provisional" ||
                               data.transactionStatus === "Pending" ||
@@ -352,23 +371,26 @@ const HistoricalReport = () => {
                             ? "#ECC94B"
                             : "inherit",
                         color:
-                          data.transactionStatus === "Clear"
+                          data.Status === "Cancelled"
+                            ? "inherit"
+                            : data.transactionStatus === "Clear"
                             ? "white"
                             : data.transactionStatus === "Provisional" ||
                               data.transactionStatus === "Pending" ||
                               data.transactionStatus === "PDC"
                             ? "black"
-                            : data.transactionStatus === "Bounced"
-                            ? "#E53E3E"
                             : "inherit",
                         textDecoration:
-                          data.transactionStatus === "Bounced"
+                          data.Status === "Cancelled"
+                            ? "line-through"
+                            : data.transactionStatus === "Bounced"
                             ? "line-through"
                             : "none",
                       }}
                     >
                       {data.transactionStatus}
                     </Td>
+
                     <Td border="1px solid black">{data.statusDate}</Td>
                     <Td border="1px solid black">{data.remarks}</Td>
                   </Tr>

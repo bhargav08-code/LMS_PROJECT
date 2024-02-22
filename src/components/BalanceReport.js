@@ -20,10 +20,12 @@ import {
   Input,
   Button,
   FormLabel,
+  Badge,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 const BalanceReport = () => {
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [transaction, setTransaction] = useState([]);
   const [plotSatus, setPlotStatus] = useState([]);
   const [booking, setBooking] = useState([]);
@@ -36,12 +38,19 @@ const BalanceReport = () => {
   const [filteredPlots, setFilteredPlots] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedStatusDate, setSelectedStatusDate] = useState(null);
+
+  const [statusOptions, setStatusOptions] = useState([]);
+
   const handleCheckboxChange = (value, state, setter) => {
     if (state.includes(value)) {
       setter(state.filter((item) => item !== value));
     } else {
       setter([...state, value]);
     }
+  };
+
+  const handleStatusChange = (status) => {
+    setSelectedStatus(status);
   };
 
   const loadTransaction = async () => {
@@ -92,6 +101,8 @@ const BalanceReport = () => {
         "https://lkgexcel.com/backend/getplot.php"
       );
       setPlotStatus(response.data);
+      const statusOptions = response.data.map((plot) => plot.plotStatus);
+      setStatusOptions([...new Set(statusOptions)]);
     } catch (error) {
       console.error("Error fetching plot data:", error);
     }
@@ -153,6 +164,7 @@ const BalanceReport = () => {
     setSelectedPlot([]);
     setSelectedDate(null);
     setSelectedStatusDate(null);
+    setSelectedStatus("All");
   };
   useEffect(() => {
     const blocks = getUniqueValues("blockName").filter(
@@ -299,6 +311,23 @@ const BalanceReport = () => {
               ))}
             </MenuList>
           </Menu>
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              Select Status
+            </MenuButton>
+            <MenuList>
+              {statusOptions.map((status) => (
+                <MenuItem key={status}>
+                  <Checkbox
+                    isChecked={selectedStatus === status}
+                    onChange={() => handleStatusChange(status)}
+                  >
+                    {status}
+                  </Checkbox>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
           <Box display={"flex"}>
             <FormLabel
               textAlign={"center"}
@@ -350,53 +379,53 @@ const BalanceReport = () => {
             <TableContainer>
               <Thead>
                 <Tr border="1px solid black" bg={"#121212"}>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     {" "}
                     SrNo
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Project Name
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Block Name
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Plot No
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Cust Name
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Cust Contact
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Const App
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Total Bal
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Bank Bal
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Cash Bal
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Total Received
                   </Th>{" "}
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Bank Received
                   </Th>{" "}
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Cash Received
                   </Th>{" "}
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Status Date
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Plot Status
                   </Th>
-                  <Th border="1px solid black" color={"white"} p={"8px"}>
+                  <Th border="1px solid black" color={"white"} p={"7px"}>
                     Registry Date
                   </Th>
                 </Tr>
@@ -404,16 +433,16 @@ const BalanceReport = () => {
               <Tbody>
                 {filteredBookings.map((data, index) => (
                   <Tr key={data.srNo}>
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {index + 1}
                     </Td>
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.projectName}
                     </Td>
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.blockName}
                     </Td>
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.plotno}
                     </Td>
                     {/* {plotSatus
@@ -438,37 +467,37 @@ const BalanceReport = () => {
                       )
                       .map((stat) => (
                         <React.Fragment key={stat.id}>
-                          <Td border="1px solid black" p={"8px"}>
+                          <Td border="1px solid black" p={"7px"}>
                             {stat.customerName}
                           </Td>
-                          <Td border="1px solid black" p={"8px"}>
+                          <Td border="1px solid black" p={"7px"}>
                             {stat.customerContact}
                           </Td>
-                          <Td border="1px solid black" p={"8px"}>
+                          <Td border="1px solid black" p={"7px"}>
                             {stat.constructionApplicable}
                           </Td>
                         </React.Fragment>
                       ))}
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.totalBalance}
                     </Td>
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.bankBalance}
                     </Td>
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.cashBalance}
                     </Td>
 
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.totalReceived}
                     </Td>
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.bankReceived}
                     </Td>
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.cashReceived}
                     </Td>
-                    <Td border="1px solid black" p={"8px"}>
+                    <Td border="1px solid black" p={"7px"}>
                       {data.statusDate}
                     </Td>
                     {/* {date.map((d) => (
@@ -495,8 +524,20 @@ const BalanceReport = () => {
                       )
                       .map((stat) => (
                         <React.Fragment key={stat.id}>
-                          <Td border="1px solid black" p={"8px"}>
-                            {stat.plotStatus}
+                          <Td border="1px solid black">
+                            <Badge
+                              colorScheme={
+                                stat.plotStatus === "Available"
+                                  ? "yellow"
+                                  : stat.plotStatus === "Booked"
+                                  ? "red"
+                                  : stat.plotStatus === "Registered"
+                                  ? "green"
+                                  : "gray"
+                              }
+                            >
+                              {stat.plotStatus}
+                            </Badge>
                           </Td>
                           {stat.plotStatus === "Registered" &&
                           date.length > 0 ? (
@@ -504,7 +545,7 @@ const BalanceReport = () => {
                               <Td
                                 key={index}
                                 border="1px solid black"
-                                p={"8px"}
+                                p={"7px"}
                               >
                                 {rd.registryDate}
                               </Td>

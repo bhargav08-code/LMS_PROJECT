@@ -33,12 +33,16 @@ const TransactionReport = () => {
   const [filteredPlots, setFilteredPlots] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedStatusDate, setSelectedStatusDate] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("All");
   const handleCheckboxChange = (value, state, setter) => {
     if (state.includes(value)) {
       setter(state.filter((item) => item !== value));
     } else {
       setter([...state, value]);
     }
+  };
+  const handleStatusChange = (status) => {
+    setSelectedStatus(status);
   };
 
   const loadTransaction = async () => {
@@ -70,8 +74,7 @@ const TransactionReport = () => {
   };
 
   const projectOptions = getUniqueValues("projectName");
-  // const blockOptions = getUniqueValues("blockName");
-  // const plotOptions = getUniqueValues("plotno");
+
   const filteredBookings = transaction.filter(
     (item) =>
       (!selectedProject.length ||
@@ -87,7 +90,8 @@ const TransactionReport = () => {
         new Date(item.date).toISOString().split("T")[0] === selectedDate) &&
       (!selectedStatusDate ||
         new Date(item.statusDate).toISOString().split("T")[0] ===
-          selectedStatusDate)
+          selectedStatusDate) &&
+      (selectedStatus === "All" || item.transactionStatus === selectedStatus)
   );
 
   const clearFilters = () => {
@@ -96,6 +100,7 @@ const TransactionReport = () => {
     setSelectedPlot([]);
     setSelectedDate(null);
     setSelectedStatusDate(null);
+    setSelectedStatus("All");
   };
   useEffect(() => {
     const blocks = getUniqueValues("blockName").filter(
@@ -234,6 +239,61 @@ const TransactionReport = () => {
               ))}
             </MenuList>
           </Menu>
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              Select Status
+            </MenuButton>
+            <MenuList>
+              <MenuItem>
+                <Checkbox
+                  isChecked={selectedStatus === "All"}
+                  onChange={() => handleStatusChange("All")}
+                >
+                  All
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  isChecked={selectedStatus === "Pending"}
+                  onChange={() => handleStatusChange("Pending")}
+                >
+                  Pending
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  isChecked={selectedStatus === "Clear"}
+                  onChange={() => handleStatusChange("Clear")}
+                >
+                  Clear
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  isChecked={selectedStatus === "PDC"}
+                  onChange={() => handleStatusChange("PDC")}
+                >
+                  PDC
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  isChecked={selectedStatus === "Provisional"}
+                  onChange={() => handleStatusChange("Provisional")}
+                >
+                  Provisional
+                </Checkbox>
+              </MenuItem>
+              <MenuItem>
+                <Checkbox
+                  isChecked={selectedStatus === "Bounced"}
+                  onChange={() => handleStatusChange("Bounced")}
+                >
+                  Bounced
+                </Checkbox>
+              </MenuItem>
+            </MenuList>
+          </Menu>
           <Box display={"flex"}>
             <FormLabel
               textAlign={"center"}
@@ -342,6 +402,7 @@ const TransactionReport = () => {
                     <Td border="1px solid black">{data.cheqNo}</Td>
                     <Td border="1px solid black">{data.bankName}</Td>
                     <Td
+                      border="1px solid black"
                       style={{
                         backgroundColor:
                           data.transactionStatus === "Clear"
@@ -359,7 +420,7 @@ const TransactionReport = () => {
                               data.transactionStatus === "PDC"
                             ? "black"
                             : data.transactionStatus === "Bounced"
-                            ? "#E53E3E"
+                            ? "red" // Set text color to red when status is "Bounced"
                             : "inherit",
                         textDecoration:
                           data.transactionStatus === "Bounced"
@@ -369,6 +430,7 @@ const TransactionReport = () => {
                     >
                       {data.transactionStatus}
                     </Td>
+
                     <Td border="1px solid black">{data.statusDate}</Td>
                     <Td border="1px solid black">{data.remarks}</Td>
                   </Tr>
