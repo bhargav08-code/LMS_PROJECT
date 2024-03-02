@@ -13,6 +13,7 @@ import {
   Flex,
   Spinner,
   Checkbox,
+  Tfoot,
   Menu,
   MenuButton,
   MenuList,
@@ -20,6 +21,7 @@ import {
   Input,
   Button,
   FormLabel,
+  Text,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -125,6 +127,11 @@ const TransactionReport = () => {
     );
     setFilteredPlots([...plots]);
   }, [selectedProject, transaction]);
+  const totalAmount = filteredBookings.reduce(
+    (total, booking) => total + parseFloat(booking.amount),
+    0
+  );
+
   return (
     <>
       <Center>
@@ -341,103 +348,122 @@ const TransactionReport = () => {
             />
           </Flex>
         ) : (
-          <Table variant="simple">
-            <TableContainer>
-              <Thead>
-                <Tr border="1px solid black" bg={"#121212"}>
-                  <Th border="1px solid black" color={"white"}>
-                    {" "}
-                    SrNo
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Project Name
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Block Name
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Plot No
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Date
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Payment Type
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Amount
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Bank Mode
-                  </Th>
+          <>
+            <Text p={5} fontWeight={"bold"}>
+              Count :- {filteredBookings.length}
+            </Text>
+            <Table variant="simple">
+              <TableContainer>
+                <Thead>
+                  <Tr border="1px solid black" bg={"#121212"}>
+                    <Th border="1px solid black" color={"white"}>
+                      {" "}
+                      SrNo
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Project Name
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Block Name
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Plot No
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Date
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Payment Type
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Amount
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Bank Mode
+                    </Th>
 
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Cheq No
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Bank Name
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Transaction Status
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Status Date
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"20px"}>
-                    Remakrs
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filteredBookings.map((data, index) => (
-                  <Tr key={data.srNo}>
-                    <Td border="1px solid black">{index + 1}</Td>
-                    <Td border="1px solid black">{data.projectName}</Td>
-                    <Td border="1px solid black">{data.blockName}</Td>
-                    <Td border="1px solid black">{data.plotno}</Td>
-                    <Td border="1px solid black">{data.date}</Td>
-                    <Td border="1px solid black">{data.paymentType}</Td>
-                    <Td border="1px solid black">{data.amount}</Td>
-                    <Td border="1px solid black">{data.bankMode}</Td>
-                    <Td border="1px solid black">{data.cheqNo}</Td>
-                    <Td border="1px solid black">{data.bankName}</Td>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Cheq No
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Bank Name
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Transaction Status
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Status Date
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"20px"}>
+                      Remakrs
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {filteredBookings.map((data, index) => (
+                    <Tr key={data.srNo}>
+                      <Td border="1px solid black">{index + 1}</Td>
+                      <Td border="1px solid black">{data.projectName}</Td>
+                      <Td border="1px solid black">{data.blockName}</Td>
+                      <Td border="1px solid black">{data.plotno}</Td>
+                      <Td border="1px solid black">{data.date}</Td>
+                      <Td border="1px solid black">{data.paymentType}</Td>
+                      <Td border="1px solid black">{data.amount}</Td>
+                      <Td border="1px solid black">{data.bankMode}</Td>
+                      <Td border="1px solid black">{data.cheqNo}</Td>
+                      <Td border="1px solid black">{data.bankName}</Td>
+                      <Td
+                        border="1px solid black"
+                        style={{
+                          backgroundColor:
+                            data.transactionStatus === "Clear"
+                              ? "#22c35e"
+                              : data.transactionStatus === "Provisional" ||
+                                data.transactionStatus === "Pending" ||
+                                data.transactionStatus === "PDC"
+                              ? "#ECC94B"
+                              : "inherit",
+                          color:
+                            data.transactionStatus === "Clear"
+                              ? "white"
+                              : data.transactionStatus === "Provisional" ||
+                                data.transactionStatus === "Pending" ||
+                                data.transactionStatus === "PDC"
+                              ? "black"
+                              : data.transactionStatus === "Bounced"
+                              ? "red" // Set text color to red when status is "Bounced"
+                              : "inherit",
+                          textDecoration:
+                            data.transactionStatus === "Bounced"
+                              ? "line-through"
+                              : "none",
+                        }}
+                      >
+                        {data.transactionStatus}
+                      </Td>
+
+                      <Td border="1px solid black">{data.statusDate}</Td>
+                      <Td border="1px solid black">{data.remarks}</Td>
+                    </Tr>
+                  ))}
+                  <Tr>
+                    <Td colSpan={6}></Td>
                     <Td
+                      textAlign="right"
                       border="1px solid black"
-                      style={{
-                        backgroundColor:
-                          data.transactionStatus === "Clear"
-                            ? "#22c35e"
-                            : data.transactionStatus === "Provisional" ||
-                              data.transactionStatus === "Pending" ||
-                              data.transactionStatus === "PDC"
-                            ? "#ECC94B"
-                            : "inherit",
-                        color:
-                          data.transactionStatus === "Clear"
-                            ? "white"
-                            : data.transactionStatus === "Provisional" ||
-                              data.transactionStatus === "Pending" ||
-                              data.transactionStatus === "PDC"
-                            ? "black"
-                            : data.transactionStatus === "Bounced"
-                            ? "red" // Set text color to red when status is "Bounced"
-                            : "inherit",
-                        textDecoration:
-                          data.transactionStatus === "Bounced"
-                            ? "line-through"
-                            : "none",
-                      }}
+                      bg={"#121212"}
+                      color={"white"}
+                      fontWeight={"bold"}
                     >
-                      {data.transactionStatus}
+                      Total: {totalAmount}
                     </Td>
 
-                    <Td border="1px solid black">{data.statusDate}</Td>
-                    <Td border="1px solid black">{data.remarks}</Td>
+                    <Td colSpan={5}></Td>
                   </Tr>
-                ))}
-              </Tbody>
-            </TableContainer>
-          </Table>
+                </Tbody>
+              </TableContainer>
+            </Table>
+          </>
         )}
       </Box>
     </>

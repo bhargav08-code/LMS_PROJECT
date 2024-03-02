@@ -3912,3 +3912,1380 @@ const PaymentTransaction = () => {
 };
 
 export default PaymentTransaction;
+// const handleTransfer = async () => {
+  //   if (transferData && transactionData[transferData.index]) {
+  //     const selectedRow = transactionData[transferData.index];
+
+  //     const fromProject = selectedRow.projectName;
+  //     const fromBlock = selectedRow.blockName;
+  //     const fromPlot = selectedRow.plotNo;
+
+  //     // Update state variables with values from selected row
+  //     setTransferProjectName(selectedRow.projectName);
+  //     setTransferBlockName(selectedRow.blockName);
+  //     setTransferPlotName(selectedRow.plotNo);
+
+  //     // Update transaction data with new project, block, and plot names
+  //     selectedRow.projectName = transferProjectName;
+  //     selectedRow.blockName = transferBlockName;
+  //     selectedRow.plotNo = transferPlotName;
+
+  //     const updatedTransactionData = [...transactionData];
+  //     updatedTransactionData[transferData.index] = selectedRow;
+
+  //     setTransactionData(updatedTransactionData);
+  //     setTransferredRows([...transferredRows, transferData.index]);
+
+  //     const amount = selectedRow.amount;
+  //     const paymentType = selectedRow.paymentType;
+
+  //     // Subtract payment amount from total balance
+  //     const totalBalanceElem = document.getElementById("totalBalance");
+  //     let totalBalance = parseInt(totalBalanceElem.innerHTML) || 0;
+  //     totalBalance -= amount;
+  //     totalBalanceElem.innerHTML = totalBalance;
+  //     console.log(`Total Balance: ${totalBalance}`);
+
+  //     // Subtract payment amount from bank balance if payment type is Bank
+  //     const bankBalanceElem = document.getElementById("bankBalance");
+  //     let bankBalance = parseInt(bankBalanceElem.innerHTML) || 0;
+  //     if (paymentType === "Bank") {
+  //       bankBalance -= amount;
+  //       bankBalanceElem.innerHTML = bankBalance;
+  //       console.log(`Bank Balance: ${bankBalance}`);
+  //     }
+
+  //     // Subtract payment amount from cash balance if payment type is Cash
+  //     const cashBalanceElem = document.getElementById("cashBalance");
+  //     let cashBalance = parseInt(cashBalanceElem.innerHTML) || 0;
+  //     if (paymentType === "Cash") {
+  //       cashBalance -= amount;
+  //       cashBalanceElem.innerHTML = cashBalance;
+  //       console.log(`Cash Balance: ${cashBalance}`);
+  //     }
+
+  //     // Update total received and bank received
+  //     let totalReceivedElem = document.getElementById("totalReceived");
+  //     let bankReceivedElem = document.getElementById("bankReceived");
+  //     let cashReceivedElem = document.getElementById("cashReceived");
+  //     let totalReceived = parseInt(totalReceivedElem.innerHTML) || 0;
+  //     let bankReceived = parseInt(bankReceivedElem.innerHTML) || 0;
+  //     let cashReceived = parseInt(cashReceivedElem.innerHTML) || 0;
+
+  //     totalReceived += amount;
+  //     totalReceivedElem.innerHTML = totalReceived;
+  //     console.log(`Total Received: ${totalReceived}`);
+
+  //     if (paymentType === "Bank") {
+  //       bankReceived += amount;
+  //       bankReceivedElem.innerHTML = bankReceived;
+  //       console.log(`Bank Received: ${bankReceived}`);
+  //     } else if (paymentType === "Cash") {
+  //       cashReceived += amount;
+  //       cashReceivedElem.innerHTML = cashReceived;
+  //       console.log(`Cash Received: ${cashReceived}`);
+  //     }
+
+  //     const logMessage = `Payment transaction for row ${
+  //       transferData.index + 1
+  //     } has been transferred from ${fromProject} ${fromBlock} ${fromPlot} to ${transferProjectName} ${transferBlockName} ${transferPlotName} with payment type: ${
+  //       selectedRow.paymentType
+  //     }, amount: ${selectedRow.amount}, bank mode: ${
+  //       selectedRow.bankMode
+  //     }, CHQ/REF NO: ${selectedRow.cheqNo}, bank name: ${selectedRow.bankName}`;
+  //     const formData = new FormData();
+  //     formData.append("query", query);
+
+  //     const response = await axios.post(url, formData);
+  //     console.log(logMessage);
+  //   } else {
+  //     console.error("Error: Selected row data is undefined.");
+  //   }
+  // };
+// const handleEditSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const url = "https://lkgexcel.com/backend/editpayment.php";
+  //   const paymentType = document.getElementById("paymentType").value;
+  //   const amount = parseInt(document.getElementById("amount").value);
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("id", editFormData.id);
+  //     formData.append("date", editFormData.date);
+  //     formData.append("paymentType", editFormData.paymentType);
+  //     formData.append("amount", editFormData.amount);
+  //     formData.append("bankMode", editFormData.bankMode);
+  //     formData.append("cheqNo", editFormData.cheqNo);
+  //     formData.append("bankName", editFormData.bankName);
+  //     formData.append("transactionStatus", editFormData.transactionStatus);
+  //     formData.append("statusDate", editFormData.statusDate);
+  //     formData.append("remarks", editFormData.remarks);
+
+  //     const response = await axios.post(url, formData);
+
+  //     if (response && response.data && response.data.status === "success") {
+  //       // Close the modal after successful submission
+  //       setIsModalOpen(false);
+  //       const updatedAmount = parseFloat(editFormData.amount);
+  //       const updatedPaymentType = editFormData.paymentType;
+
+  //       // Subtract payment amount from total balance
+  //       const totalBalanceElem = document.getElementById("totalBalance");
+  //       let totalBalance = parseInt(totalBalanceElem.innerHTML) || 0;
+  //       totalBalance -= amount;
+  //       totalBalance += updatedAmount; // Add the updated amount
+  //       totalBalanceElem.innerHTML = totalBalance;
+  //       console.log(`Total Balance: ${totalBalance}`);
+
+  //       // Subtract payment amount from bank balance if payment type is Bank
+  //       const bankBalanceElem = document.getElementById("bankBalance");
+  //       let bankBalance = parseInt(bankBalanceElem.innerHTML) || 0;
+  //       if (paymentType === "Bank") {
+  //         bankBalance -= amount;
+  //       }
+  //       if (updatedPaymentType === "Bank") {
+  //         bankBalance += updatedAmount; // Add the updated amount
+  //         bankBalanceElem.innerHTML = bankBalance;
+  //         console.log(`Bank Balance: ${bankBalance}`);
+  //       }
+  //       // Subtract payment amount from cash balance if payment type is Cash
+  //       const cashBalanceElem = document.getElementById("cashBalance");
+  //       let cashBalance = parseInt(cashBalanceElem.innerHTML) || 0;
+  //       if (paymentType === "Cash") {
+  //         const totalPayableElem = document.getElementById("totalPayable");
+  //         // useEffect(() => {
+  //         // cashBalance = totalPayableElem - amount;
+  //         // }, [amount]);
+  //       }
+  //       if (updatedPaymentType === "Cash") {
+  //         cashBalance += updatedAmount; // Add the updated amount
+  //         cashBalanceElem.innerHTML = cashBalance;
+  //         console.log(`Cash Balance: ${cashBalance}`);
+  //       }
+
+  //       // Update total received and bank received
+  //       let totalReceivedElem = document.getElementById("totalReceived");
+  //       let bankReceivedElem = document.getElementById("bankReceived");
+  //       let cashReceivedElem = document.getElementById("cashReceived");
+  //       let totalReceived = parseInt(totalReceivedElem.innerHTML) || 0;
+  //       let bankReceived = parseInt(bankReceivedElem.innerHTML) || 0;
+  //       let cashReceived = parseInt(cashReceivedElem.innerHTML) || 0;
+
+  //       // Subtract previous amount based on original payment type
+  //       if (paymentType === "Bank") {
+  //         bankReceived -= amount;
+  //       } else if (paymentType === "Cash") {
+  //         cashReceived -= amount;
+  //       }
+
+  //       // Update total received with the updated amount
+  //       totalReceived += updatedAmount;
+  //       totalReceivedElem.innerHTML = totalReceived;
+  //       console.log(`Total Received: ${totalReceived}`);
+
+  //       // Update bank received if payment type is Bank
+  //       if (updatedPaymentType === "Bank") {
+  //         bankReceived += updatedAmount;
+  //         bankReceivedElem.innerHTML = bankReceived;
+  //         console.log(`Bank Received: ${bankReceived}`);
+  //       } else if (updatedPaymentType === "Cash") {
+  //         // Update cash received if payment type is Cash
+  //         cashReceived += updatedAmount;
+  //         cashReceivedElem.innerHTML = cashReceived;
+  //         console.log(`Cash Received: ${cashReceived}`);
+  //       }
+  //       // Fetch updated projects data (make sure this function is implemented correctly)
+  //       loadTransaction();
+
+  //       // Show a success toast message
+  //       toast({
+  //         title: "Project updated successfully!",
+  //         status: "success",
+  //         duration: 3000,
+  //         isClosable: true,
+  //       });
+
+  //       loadAmounts();
+  //       loadTransaction();
+  //       loadAmountsBAR();
+  //       loadAmountsCAR();
+  //       calcAmounts();
+  //       // setTimeout(function () {
+  //       //   calcAmounts();
+  //       // }, 500);
+  //     } else {
+  //       // Handle error response
+  //       console.error("Error updating project. Response:", response);
+
+  //       // Show an error toast message
+  //       toast({
+  //         title: "Error updating project",
+  //         status: "error",
+  //         duration: 3000,
+  //         isClosable: true,
+  //         position: "top",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     // Handle network or other errors
+  //     console.error("Error in handleEditSubmit:", error);
+
+  //     // Show an error toast message
+  //     toast({
+  //       title: "Error updating project",
+  //       status: "error",
+  //       duration: 3000,
+  //       isClosable: true,
+  //     });
+  //   }
+  // };
+
+
+
+
+ let totalReceivedElem = document.getElementById("totalReceived");
+      let bankReceivedElem = document.getElementById("bankReceived");
+      let cashReceivedElem = document.getElementById("cashReceived");
+      let totalReceived = parseInt(totalReceivedElem.innerHTML) || 0;
+      let bankReceived = parseInt(bankReceivedElem.innerHTML) || 0;
+      let cashReceived = parseInt(cashReceivedElem.innerHTML) || 0;
+
+      // Update total received
+      totalReceived += amount;
+      totalReceivedElem.innerHTML = totalReceived;
+
+      // Update bank received if payment type is Bank
+      if (paymentType === "Bank") {
+        bankReceived = amount;
+        bankReceivedElem.innerHTML = bankReceived;
+        cashReceived = 0; // Reset cash received to zero
+        cashReceivedElem.innerHTML = cashReceived;
+      } else if (paymentType === "Cash") {
+        cashReceived = amount;
+        cashReceivedElem.innerHTML = cashReceived;
+        bankReceived = 0; // Reset bank received to zero
+        bankReceivedElem.innerHTML = bankReceived;
+      }
+
+
+
+
+        <Box flex={"80%"} maxW={"80%"}>
+        <Box borderBottom={"1px solid black"} w={"100%"} p={2} pb={4}>
+          <HStack justifyContent={"space-between"}>
+            <Box maxW={"85%"}>
+              <HStack marginLeft={2}>
+                <FormControl>
+                  <Flex
+                    align="center"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                  >
+                    <FormLabel fontSize={"sm"}>Plot Status</FormLabel>
+                    <Input type="text" id="plotStatus" w={"60%"} />
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="center"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                  >
+                    <FormLabel fontSize={"sm"}> Gender</FormLabel>
+                    <Input type="text" id="registryGender" w={"60%"} />
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="center"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                  >
+                    <FormLabel fontSize={"sm"}>Booking </FormLabel>
+                    <Input type="date" id="bookingDate" w={"60%"} />
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="center"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                  >
+                    <FormLabel fontSize={"sm"}>Registry Date</FormLabel>
+                    <Input type="date" id="registryD" w={"60%"} />
+                  </Flex>
+                </FormControl>
+              </HStack>
+              <Divider mt={4} />
+              <HStack
+                alignContent={"flex-start"}
+                justifyContent={"space-between"}
+                mt={4}
+                mb={4}
+              >
+                <VStack>
+                  <Text>
+                    Total Amount Payable = <span id="totalPayable">0</span>
+                  </Text>
+                  <Text>
+                    Bank Amount Payable = <span id="bankPayable">0</span>
+                  </Text>
+                  <Text>
+                    Cash Amount Payable = <span id="cashPayable">0</span>
+                  </Text>
+                </VStack>
+                <VStack>
+                  <Text>
+                    Total Amount Received = <span id="totalReceived">0</span>
+                  </Text>
+                  <Text>
+                    Bank Amount Received = <span id="bankReceived">0</span>
+                  </Text>
+                  <Text>
+                    Cash Amount Received = <span id="cashReceived">0</span>
+                  </Text>
+                </VStack>
+                <VStack>
+                  <Text>
+                    Total Amount Balance = <span id="totalBalance">0</span>
+                  </Text>
+                  <Text>
+                    Bank Amount Balance = <span id="bankBalance">0</span>
+                  </Text>
+                  <Text>
+                    Cash Amount Balance = <span id="cashBalance">0</span>
+                  </Text>
+                </VStack>
+              </HStack>
+            </Box>
+            <VStack>
+              {showButtons && (
+                <>
+                  <Button
+                    colorScheme="yellow"
+                    size={"sm"}
+                    onClick={onRegistry}
+                    className="hide-on-print"
+                  >
+                    Registry
+                  </Button>
+                  <Button
+                    colorScheme="yellow"
+                    size={"sm"}
+                    onClick={cancelPlot}
+                    className="hide-on-print"
+                  >
+                    Cancel Plot
+                  </Button>
+                  <Button
+                    colorScheme="yellow"
+                    size={"sm"}
+                    onClick={deletePlot}
+                    className="hide-on-print"
+                  >
+                    Delete Plot
+                  </Button>
+                  <Button
+                    colorScheme="yellow"
+                    size={"sm"}
+                    className="hide-on-print"
+                    onClick={() => {
+                      setIsTransferAllModalOpen(true);
+                    }}
+                  >
+                    Transfer All
+                  </Button>
+                  <Button
+                    colorScheme="yellow"
+                    size={"sm"}
+                    className="hide-on-print"
+                  >
+                    History
+                  </Button>
+                </>
+              )}
+            </VStack>
+          </HStack>
+          <Divider w={"100%"} bg={"#121212"} />
+          <HStack
+            alignContent={"flex-start"}
+            justifyContent={"space-between"}
+            mt={4}
+          >
+            <Text>Payment Transaction</Text>
+            {showPayment && (
+              <>
+                <Button
+                  className="hide-on-print"
+                  colorScheme="gray"
+                  size="sm"
+                  onClick={() => {
+                    setdisplay(!displa);
+                  }}
+                >
+                  Add Payment
+                </Button>
+              </>
+            )}
+          </HStack>
+          <Divider w={"100%"} bg={"#121212"} mt={4} />
+          <Box display={displa == true ? "flex" : "none"}>
+            <VStack alignItems={"flex-start"}>
+              <HStack gap={"15px"} p={3}>
+                <FormControl>
+                  <Flex
+                    align="flex-start"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                    flexDirection={"column"}
+                  >
+                    <FormLabel fontSize={"sm"} margin={0}>
+                      Date
+                    </FormLabel>
+                    <Input
+                      id="date"
+                      required
+                      type="date"
+                      // w={"60%"}
+                    />
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="flex-start"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                    flexDirection={"column"}
+                  >
+                    <FormLabel fontSize={"sm"} margin={0}>
+                      Payment Type
+                    </FormLabel>
+                    <Select placeholder="Select" id="paymentType" required>
+                      <option value="Cash">Cash</option>
+                      <option value="Bank">Bank</option>
+                      {/* Add more projects as needed */}
+                    </Select>
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="flex-start"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                    flexDirection={"column"}
+                  >
+                    <FormLabel fontSize={"sm"} margin={0}>
+                      Amount
+                    </FormLabel>
+                    <Input
+                      id="amount"
+                      type="number"
+                      required
+                      // w={"60%"}
+                    />
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="flex-start"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                    flexDirection={"column"}
+                  >
+                    <FormLabel fontSize={"sm"} margin={0}>
+                      bank Mode
+                    </FormLabel>
+                    <Select placeholder="Select " id="bankMode">
+                      <option value="none">None</option>
+                      <option value="cheque">Cheque/DD</option>
+                      <option value="rtgs">RTGS/NEFT</option>
+                      <option value="loan">Loan</option>
+                      <option value="upi">UPI</option>
+
+                      {/* Add more projects as needed */}
+                    </Select>
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="flex-start"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                    flexDirection={"column"}
+                  >
+                    <FormLabel fontSize={"sm"} margin={0}>
+                      Chq/Ref No
+                    </FormLabel>
+                    <Input
+                      id="cheqNo"
+                      type="text"
+                      required
+                      // w={"60%"}
+                    />
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="flex-start"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                    flexDirection={"column"}
+                  >
+                    <FormLabel fontSize={"sm"} margin={0}>
+                      bank Name
+                    </FormLabel>
+                    <Input
+                      id="bankName"
+                      required
+                      type="text"
+                      // w={"60%"}
+                    />
+                  </Flex>
+                </FormControl>
+              </HStack>
+              <HStack gap={"15px"} p={3} pt={0}>
+                <FormControl>
+                  <Flex
+                    align="flex-start"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                    flexDirection={"column"}
+                  >
+                    <FormLabel fontSize={"sm"} margin={0}>
+                      Trasaction Stat
+                    </FormLabel>
+                    <Select id="transactionStatus" placeholder="Select">
+                      <option value="Pending">Pending</option>
+                      <option value="Clear">Clear</option>
+                      <option value="PDC">PDC</option>
+                      <option value="Provisional">Provisional</option>
+                      <option value="Bounced">Bounced</option>
+                      <option value="Return">Returned</option>
+
+                      {/* Add more projects as needed */}
+                    </Select>
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="flex-start"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                    flexDirection={"column"}
+                  >
+                    <FormLabel fontSize={"sm"} margin={0}>
+                      Status Date
+                    </FormLabel>
+                    <Input
+                      id="statusDate"
+                      type="Date"
+                      required
+                      // w={"60%"}
+                    />
+                  </Flex>
+                </FormControl>
+                <FormControl>
+                  <Flex
+                    align="flex-start"
+                    // justifyContent={"space-between"}
+                    // padding={"0px 4px 0px 4px"}
+                    flexDirection={"column"}
+                  >
+                    <FormLabel fontSize={"sm"} margin={0}>
+                      Remarks
+                    </FormLabel>
+                    <Input id="remarks" type="text" w={"250%"} required />
+                  </Flex>
+                </FormControl>
+              </HStack>
+
+              <Button
+                colorScheme="telegram"
+                alignSelf={"flex-end"}
+                size={"md"}
+                m={3}
+                mt={0}
+                onClick={addPayment}
+              >
+                Submit
+              </Button>
+            </VStack>
+          </Box>
+          <Divider w={"100%"} bg={"#121212"} />
+          <Box display={""}>
+            <TableContainer>
+              <Table>
+                <Thead color={"white"}>
+                  <Tr
+                    bg={"#121212"}
+                    color={"whitesmoke"}
+                    border="1px solid black"
+                  >
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      SrNo.
+                    </Th>
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      Date
+                    </Th>
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      Type
+                    </Th>
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      Amount
+                    </Th>
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      bank Mode
+                    </Th>
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      Chq/Ref No
+                    </Th>
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      bank Name
+                    </Th>
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      Trans Stat
+                    </Th>
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      Stat Date
+                    </Th>
+                    <Th color={"white"} border="1px solid black" p={"8px"}>
+                      Remarks
+                    </Th>
+                    {showAction && (
+                      <>
+                        <Th
+                          color={"white"}
+                          border="1px solid black"
+                          p={"8px"}
+                          textAlign={"center"}
+                          className="hide-on-print"
+                        >
+                          Action
+                        </Th>
+                      </>
+                    )}
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {transactionData.map((res, index) => (
+                    <tr key={res.date}>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {index + 1}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {" "}
+                        {res.date}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {res.paymentType}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {res.amount}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {res.bankMode}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {res.cheqNo}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {res.bankName}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred"
+                        //       ? "white"
+                        //       : res.transactionStatus === "Clear"
+                        //       ? "#22c35e"
+                        //       : res.transactionStatus === "Provisional"
+                        //       ? "#ECC94B"
+                        //       : res.transactionStatus === "Pending" ||
+                        //         res.transactionStatus === "PDC"
+                        //       ? "#ECC94B"
+                        //       : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : res.transactionStatus === "Clear"
+                        //       ? "white"
+                        //       : res.transactionStatus === "Provisional"
+                        //       ? "black"
+                        //       : res.transactionStatus === "Bounced"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.transactionStatus === "Bounced" ||
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {res.transactionStatus}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {res.statusDate}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"8px"}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
+                      >
+                        {res.remarks}
+                      </Td>
+                      {showAction && (
+                        <>
+                          <Td
+                            display={"flex"}
+                            gap={"10px"}
+                            border="1px solid black"
+                            p={"8px"}
+                            className="hide-on-print"
+                          >
+                            <Button
+                              onClick={() =>
+                                handleTransferButtonClick(res, index)
+                              }
+                              size={"sm"}
+                              // isDisabled={res.Status === "Transferred"}
+                            >
+                              Transfer
+                            </Button>
+                            <Button
+                              colorScheme="green"
+                              onClick={() => handleEditClick(res)}
+                              // isDisabled={res.Status === "Transferred"}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              colorScheme="red"
+                              onClick={() => handleDeletePayment(res.id)}
+                              size={"sm"}
+                              // isDisabled={res.Status === "Transferred"}
+                            >
+                              Delete
+                            </Button>
+                            <DeleteConfirmationDialog
+                              isOpen={isDeleteDialogOpen}
+                              onClose={() => setIsDeleteDialogOpen(false)}
+                              onConfirm={deletePayment}
+                            />
+                          </Td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
+
+                  {/* edit modal */}
+                  <Modal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    size={"xl"}
+                  >
+                    <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>Edit Payment</ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody>
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <div
+                            style={{ display: "flex", marginBottom: "16px" }}
+                          >
+                            <FormControl style={{ marginRight: "16px" }}>
+                              <FormLabel>Date</FormLabel>
+                              <Input
+                                id="date"
+                                name="date"
+                                value={editFormData.date}
+                                onChange={handleEditChange}
+                                type="date"
+                              />
+                            </FormControl>
+                            <FormControl style={{ marginRight: "16px" }}>
+                              <FormLabel>Payment Type</FormLabel>
+                              <Select
+                                id="paymentType"
+                                name="paymentType"
+                                value={editFormData.paymentType}
+                                onChange={handleEditChange}
+                                required
+                              >
+                                <option value="Cash">Cash</option>
+                                <option value="Bank">Bank</option>
+                              </Select>
+                            </FormControl>
+                            <FormControl>
+                              <FormLabel>Amount</FormLabel>
+                              <Input
+                                id="amount"
+                                name="amount"
+                                value={editFormData.amount}
+                                onChange={handleEditChange}
+                                type="text"
+                                required
+                              />
+                            </FormControl>
+                          </div>
+                          <div
+                            style={{ display: "flex", marginBottom: "16px" }}
+                          >
+                            <FormControl style={{ marginRight: "16px" }}>
+                              <FormLabel>Bank Mode</FormLabel>
+                              <Select
+                                id="bankMode"
+                                name="bankMode"
+                                value={editFormData.bankMode}
+                                onChange={handleEditChange}
+                              >
+                                <option value="none">None</option>
+                                <option value="cheque">Cheque/DD</option>
+                                <option value="rtgs">RTGS/NEFT</option>
+                                <option value="loan">Loan</option>
+                                <option value="upi">UPI</option>
+                              </Select>
+                            </FormControl>
+                            <FormControl style={{ marginRight: "16px" }}>
+                              <FormLabel>Chq/Ref No</FormLabel>
+                              <Input
+                                id="cheqNo"
+                                name="cheqNo"
+                                value={editFormData.cheqNo}
+                                onChange={handleEditChange}
+                                type="text"
+                                required
+                              />
+                            </FormControl>
+                            <FormControl>
+                              <FormLabel>Bank Name</FormLabel>
+                              <Input
+                                id="bankName"
+                                name="bankName"
+                                value={editFormData.bankName}
+                                onChange={handleEditChange}
+                                required
+                                type="text"
+                              />
+                            </FormControl>
+                          </div>
+                          <div
+                            style={{ display: "flex", marginBottom: "16px" }}
+                          >
+                            <FormControl style={{ marginRight: "16px" }}>
+                              <FormLabel>Transaction Status</FormLabel>
+                              <Select
+                                id="transactionStatus"
+                                name="transactionStatus"
+                                value={editFormData.transactionStatus}
+                                onChange={handleEditChange}
+                                required
+                              >
+                                <option value="Pending">Pending</option>
+                                <option value="Clear">Clear</option>
+                                <option value="PDC">PDC</option>
+                                <option value="Provisional">Provisional</option>
+                                <option value="Bounced">Bounced</option>
+                                <option value="Return">Returned</option>
+                              </Select>
+                            </FormControl>
+                            <FormControl style={{ marginRight: "16px" }}>
+                              <FormLabel>Status Date</FormLabel>
+                              <Input
+                                id="statusDate"
+                                name="statusDate"
+                                value={editFormData.statusDate}
+                                onChange={handleEditChange}
+                                type="Date"
+                                required
+                              />
+                            </FormControl>
+                            <FormControl>
+                              <FormLabel>Remarks</FormLabel>
+                              <Input
+                                id="remarks"
+                                name="remarks"
+                                value={editFormData.remarks}
+                                onChange={handleEditChange}
+                                type="text"
+                                required
+                              />
+                            </FormControl>
+                          </div>
+                        </div>
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button colorScheme="blue" onClick={handleEditSubmit}>
+                          Save Changes
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => setIsModalOpen(false)}
+                        >
+                          Cancel
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
+
+                  {/* tranfer modal */}
+                  <Modal
+                    isOpen={isTransferModalOpen}
+                    onClose={() => setIsTransferModalOpen(false)}
+                    size="xl"
+                  >
+                    <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>
+                        Transfer Transactions: {transferData.index + 1}
+                      </ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody display={"flex"}>
+                        {/* Input for 'From' */}
+                        <FormControl>
+                          <Text>From</Text>
+                          <Flex flexDirection={"column"} gap={"7px"}>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Project Name :-
+                              </FormLabel>
+                              <Text>{projectName}</Text>
+                            </Box>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Block Name :-
+                              </FormLabel>
+                              <Text>{blockName}</Text>
+                            </Box>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Plot No:-
+                              </FormLabel>
+                              <Text>{plotName}</Text>
+                            </Box>
+                          </Flex>
+                        </FormControl>
+
+                        <FormControl>
+                          <Text>To</Text>
+                          <Flex flexDirection={"column"} gap={"7px"}>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Project Name
+                              </FormLabel>
+                              <Select
+                                id="projectName"
+                                placeholder="Select Project"
+                                onChange={(e) => {
+                                  setTransferProjectName(e.target.value);
+                                  loadTransferBlock(e.target.value);
+                                }}
+                                w={"60%"}
+                              >
+                                {transferProject.map((project) => {
+                                  return (
+                                    <option
+                                      key={project.projectName}
+                                      value={project.projectName}
+                                    >
+                                      {project.projectName}
+                                    </option>
+                                  );
+                                })}
+                              </Select>
+                            </Box>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Block Name
+                              </FormLabel>
+                              <Select
+                                id="blockName"
+                                placeholder="Select Block"
+                                onChange={(e) => {
+                                  setTransferBlockName(e.target.value);
+                                  loadTransferPlot(e.target.value);
+                                }}
+                                w={"60%"}
+                              >
+                                {transferBlock.map((block) => {
+                                  return (
+                                    <option
+                                      key={block.blockName}
+                                      value={block.blockName}
+                                    >
+                                      {block.blockName}
+                                    </option>
+                                  );
+                                })}
+                              </Select>
+                            </Box>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Plot No
+                              </FormLabel>
+                              <Select
+                                id="plotNo"
+                                placeholder="Select Plot No"
+                                onChange={(e) => {
+                                  setTransferPlotName(e.target.value);
+                                  dataTransfer(e.target.value);
+                                }}
+                                w={"60%"}
+                              >
+                                {transferPlot.map((plot) => {
+                                  return (
+                                    <option
+                                      key={plot.plotNo}
+                                      value={plot.plotNo}
+                                    >
+                                      {plot.plotNo}
+                                    </option>
+                                  );
+                                })}
+                              </Select>
+                            </Box>
+                          </Flex>
+                        </FormControl>
+                      </ModalBody>
+
+                      <ModalFooter>
+                        <Button
+                          colorScheme="blue"
+                          mr={3}
+                          onClick={handleTransfer}
+                        >
+                          Transfer Transaction
+                        </Button>
+                        <Button onClick={() => setIsTransferModalOpen(false)}>
+                          Cancel
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
+
+                  {/* tranfer all modal */}
+                  <Modal
+                    isOpen={isTransferAllModalOpen}
+                    onClose={() => setIsTransferAllModalOpen(false)}
+                    size="xl"
+                  >
+                    <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>Transfer All Transactions</ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody display={"flex"}>
+                        {/* Input for 'From' */}
+                        <FormControl>
+                          <Text>From</Text>
+                          <Flex flexDirection={"column"} gap={"7px"}>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Project Name :-
+                              </FormLabel>
+                              <Text>{projectName}</Text>
+                            </Box>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Block Name :-
+                              </FormLabel>
+                              <Text>{blockName}</Text>
+                            </Box>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Plot No:-
+                              </FormLabel>
+                              <Text>{plotName}</Text>
+                            </Box>
+                          </Flex>
+                        </FormControl>
+
+                        <FormControl>
+                          <Text>To</Text>
+                          <Flex flexDirection={"column"} gap={"7px"}>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Project Name
+                              </FormLabel>
+                              <Select
+                                id="projectName"
+                                placeholder="Select Project"
+                                onChange={(e) => {
+                                  setTransferAllProjectName(e.target.value);
+                                  loadTransferAllBlock(e.target.value);
+                                }}
+                                w={"60%"}
+                              >
+                                {transferAllProject.map((project) => {
+                                  return (
+                                    <option
+                                      key={project.projectName}
+                                      value={project.projectName}
+                                    >
+                                      {project.projectName}
+                                    </option>
+                                  );
+                                })}
+                              </Select>
+                            </Box>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Block Name
+                              </FormLabel>
+                              <Select
+                                id="blockName"
+                                placeholder="Select Block"
+                                onChange={(e) => {
+                                  setTransferAllBlockName(e.target.value);
+                                  loadTransferAllPlot(e.target.value);
+                                }}
+                                w={"60%"}
+                              >
+                                {transferAllBlock.map((block) => {
+                                  return (
+                                    <option
+                                      key={block.blockName}
+                                      value={block.blockName}
+                                    >
+                                      {block.blockName}
+                                    </option>
+                                  );
+                                })}
+                              </Select>
+                            </Box>
+                            <Box display={"flex"} flexDirection={"row"}>
+                              <FormLabel
+                                htmlFor="projectName"
+                                fontSize={"small"}
+                                alignSelf={"center"}
+                              >
+                                Plot No
+                              </FormLabel>
+                              <Select
+                                id="plotNo"
+                                placeholder="Select Plot No"
+                                onChange={(e) => {
+                                  setTransferAllPlotName(e.target.value);
+                                  dataTransferAll(e.target.value);
+                                }}
+                                w={"60%"}
+                              >
+                                {transferAllPlot.map((plot) => {
+                                  return (
+                                    <option
+                                      key={plot.plotNo}
+                                      value={plot.plotNo}
+                                    >
+                                      {plot.plotNo}
+                                    </option>
+                                  );
+                                })}
+                              </Select>
+                            </Box>
+                          </Flex>
+                        </FormControl>
+                      </ModalBody>
+
+                      <ModalFooter>
+                        <Button
+                          colorScheme="blue"
+                          mr={3}
+                          onClick={confirmTransferAll}
+                        >
+                          Transfer Transaction
+                        </Button>
+                        <Button onClick={() => setIsTransferModalOpen(false)}>
+                          Cancel
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
+                </Tbody>
+              </Table>
+            </TableContainer>
+            {showAction && (
+              <>
+                <Button onClick={handlePrint} className="hide-on-print">
+                  Print
+                </Button>
+              </>
+            )}
+          </Box>
+        </Box>
+      </Box>

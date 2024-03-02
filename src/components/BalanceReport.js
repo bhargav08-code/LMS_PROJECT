@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Table,
   Thead,
@@ -12,6 +12,7 @@ import {
   Heading,
   Flex,
   Spinner,
+  Text,
   Checkbox,
   Menu,
   MenuButton,
@@ -24,6 +25,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { useReactToPrint } from "react-to-print";
 const BalanceReport = () => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [transaction, setTransaction] = useState([]);
@@ -189,9 +191,31 @@ const BalanceReport = () => {
     );
     setFilteredPlots([...plots]);
   }, [selectedProject, transaction]);
-  console.log(plotSatus);
-  console.log(booking);
-  console.log(date);
+  // console.log(plotSatus);
+  // console.log(booking);
+  // console.log(date);
+  const calculateTotalReceived = (bookings) => {
+    return bookings.reduce(
+      (total, booking) => total + parseFloat(booking.totalReceived),
+      0
+    );
+  };
+  const calculateCashReceived = (bookings) => {
+    return bookings.reduce(
+      (total, booking) => total + parseFloat(booking.cashReceived),
+      0
+    );
+  };
+  const calculateBankReceived = (bookings) => {
+    return bookings.reduce(
+      (total, booking) => total + parseFloat(booking.bankReceived),
+      0
+    );
+  };
+  const tableRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => tableRef.current,
+  });
   return (
     <>
       <Center>
@@ -351,7 +375,7 @@ const BalanceReport = () => {
               minWidth={"fit-content"}
               mt={"5px"}
             >
-              Select Status Date:
+              Status Date:
             </FormLabel>
             <Input
               type="date"
@@ -360,8 +384,12 @@ const BalanceReport = () => {
               onChange={(e) => setSelectedStatusDate(e.target.value)}
             />
           </Box>
+
           <Button ml={2} onClick={clearFilters} colorScheme="red">
             Clear Filters
+          </Button>
+          <Button ml={2} onClick={handlePrint} colorScheme="teal">
+            Download Report
           </Button>
         </Flex>
         {loading ? (
@@ -375,77 +403,178 @@ const BalanceReport = () => {
             />
           </Flex>
         ) : (
-          <Table variant="simple">
-            <TableContainer>
-              <Thead>
-                <Tr border="1px solid black" bg={"#121212"}>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    {" "}
-                    SrNo
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Project Name
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Block Name
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Plot No
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Cust Name
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Cust Contact
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Const App
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Total Bal
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Bank Bal
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Cash Bal
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Total Received
-                  </Th>{" "}
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Bank Received
-                  </Th>{" "}
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Cash Received
-                  </Th>{" "}
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Status Date
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Plot Status
-                  </Th>
-                  <Th border="1px solid black" color={"white"} p={"7px"}>
-                    Registry Date
-                  </Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filteredBookings.map((data, index) => (
-                  <Tr key={data.srNo}>
-                    <Td border="1px solid black" p={"7px"}>
-                      {index + 1}
-                    </Td>
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.projectName}
-                    </Td>
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.blockName}
-                    </Td>
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.plotno}
-                    </Td>
-                    {/* {plotSatus
+          <>
+            <Text p={5} fontWeight={"bold"}>
+              Count :- {filteredBookings.length}
+            </Text>
+            <Table variant="simple" ref={tableRef}>
+              <TableContainer>
+                <Thead>
+                  <Tr border="1px solid black" bg={"#121212"}>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                      lineHeight={"10px"}
+                    >
+                      {" "}
+                      SrNo
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Project
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"5px "}
+                      textAlign={"center"}
+                    >
+                      Block
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Plot
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Cust
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Cust Contact
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Const App
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Total Bal
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Bank Bal
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Cash Bal
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Total Rec
+                    </Th>{" "}
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Bank Rec
+                    </Th>{" "}
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Cash Rec
+                    </Th>{" "}
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Status Date
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Status
+                    </Th>
+                    <Th
+                      border="1px solid black"
+                      color={"white"}
+                      p={"12px"}
+                      textAlign={"center"}
+                    >
+                      Registry
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {filteredBookings.map((data, index) => (
+                    <Tr key={data.srNo}>
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {index + 1}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.projectName}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.blockName}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.plotno}
+                      </Td>
+                      {/* {plotSatus
                       .filter(
                         (stat) =>
                           stat.projectName === data.projectName &&
@@ -458,49 +587,89 @@ const BalanceReport = () => {
                           
                         </React.Fragment>
                       ))} */}
-                    {booking
-                      .filter(
-                        (stat) =>
-                          stat.projectName === data.projectName &&
-                          stat.blockName === data.blockName &&
-                          stat.plotNo === data.plotno
-                      )
-                      .map((stat) => (
-                        <React.Fragment key={stat.id}>
-                          <Td border="1px solid black" p={"7px"}>
-                            {stat.customerName}
-                          </Td>
-                          <Td border="1px solid black" p={"7px"}>
-                            {stat.customerContact}
-                          </Td>
-                          <Td border="1px solid black" p={"7px"}>
-                            {stat.constructionApplicable}
-                          </Td>
-                        </React.Fragment>
-                      ))}
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.totalBalance}
-                    </Td>
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.bankBalance}
-                    </Td>
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.cashBalance}
-                    </Td>
+                      {booking
+                        .filter(
+                          (stat) =>
+                            stat.projectName === data.projectName &&
+                            stat.blockName === data.blockName &&
+                            stat.plotNo === data.plotno
+                        )
+                        .map((stat) => (
+                          <React.Fragment key={stat.id}>
+                            <Td
+                              border="1px solid black"
+                              p={"12px"}
+                              textAlign={"center"}
+                            >
+                              {stat.customerName}
+                            </Td>
+                            <Td
+                              border="1px solid black"
+                              p={"12px"}
+                              textAlign={"center"}
+                            >
+                              {stat.customerContact}
+                            </Td>
+                            <Td
+                              border="1px solid black"
+                              p={"12px"}
+                              textAlign={"center"}
+                            >
+                              {stat.constructionApplicable}
+                            </Td>
+                          </React.Fragment>
+                        ))}
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.totalBalance}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.bankBalance}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.cashBalance}
+                      </Td>
 
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.totalReceived}
-                    </Td>
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.bankReceived}
-                    </Td>
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.cashReceived}
-                    </Td>
-                    <Td border="1px solid black" p={"7px"}>
-                      {data.statusDate}
-                    </Td>
-                    {/* {date.map((d) => (
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.totalReceived}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.bankReceived}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.cashReceived}
+                      </Td>
+                      <Td
+                        border="1px solid black"
+                        p={"12px"}
+                        textAlign={"center"}
+                      >
+                        {data.statusDate}
+                      </Td>
+                      {/* {date.map((d) => (
                       <React.Fragment key={d.id}>
                         {plotSatus.some(
                           (plot) => plot.plotStatus === "Registered"
@@ -508,58 +677,94 @@ const BalanceReport = () => {
                       </React.Fragment>
                     ))} */}
 
-                    {/* {plotSatus.filter((stat)=>(
+                      {/* {plotSatus.filter((stat)=>(
                       stat.plotStatus==="Registered" && {date.map((stat)=>(
                         <>
                         <Td>{stat.registryDate}</Td>
                         </>
                       ))}
                     ))} */}
-                    {plotSatus
-                      .filter(
-                        (stat) =>
-                          stat.projectName === data.projectName &&
-                          stat.blockName === data.blockName &&
-                          stat.plotNo === data.plotno
-                      )
-                      .map((stat) => (
-                        <React.Fragment key={stat.id}>
-                          <Td border="1px solid black">
-                            <Badge
-                              colorScheme={
-                                stat.plotStatus === "Available"
-                                  ? "yellow"
-                                  : stat.plotStatus === "Booked"
-                                  ? "red"
-                                  : stat.plotStatus === "Registered"
-                                  ? "green"
-                                  : "gray"
-                              }
-                            >
-                              {stat.plotStatus}
-                            </Badge>
-                          </Td>
-                          {stat.plotStatus === "Registered" &&
-                          date.length > 0 ? (
-                            date.map((rd, index) => (
-                              <Td
-                                key={index}
-                                border="1px solid black"
-                                p={"7px"}
+                      {plotSatus
+                        .filter(
+                          (stat) =>
+                            stat.projectName === data.projectName &&
+                            stat.blockName === data.blockName &&
+                            stat.plotNo === data.plotno
+                        )
+                        .map((stat) => (
+                          <React.Fragment key={stat.id} textAlign={"center"}>
+                            <Td border="1px solid black">
+                              <Badge
+                                colorScheme={
+                                  stat.plotStatus === "Available"
+                                    ? "yellow"
+                                    : stat.plotStatus === "Booked"
+                                    ? "red"
+                                    : stat.plotStatus === "Registered"
+                                    ? "green"
+                                    : "gray"
+                                }
                               >
-                                {rd.registryDate}
+                                {stat.plotStatus}
+                              </Badge>
+                            </Td>
+                            {stat.plotStatus === "Registered" &&
+                            date.length > 0 ? (
+                              date.map((rd, index) => (
+                                <Td
+                                  key={index}
+                                  border="1px solid black"
+                                  p={"12px"}
+                                  textAlign={"center"}
+                                >
+                                  {rd.registryDate}
+                                </Td>
+                              ))
+                            ) : (
+                              <Td border="1px solid black" textAlign={"center"}>
+                                ----
                               </Td>
-                            ))
-                          ) : (
-                            <Td border="1px solid black">----</Td>
-                          )}
-                        </React.Fragment>
-                      ))}
+                            )}
+                          </React.Fragment>
+                        ))}
+                    </Tr>
+                  ))}
+                  <Tr>
+                    <Td colSpan={10}></Td>
+                    <Td
+                      textAlign="center"
+                      border="1px solid black"
+                      bg={"#121212"}
+                      color={"white"}
+                      fontWeight={"bold"}
+                    >
+                      Total : {calculateTotalReceived(filteredBookings)}
+                    </Td>
+
+                    <Td
+                      textAlign="center"
+                      border="1px solid black"
+                      bg={"#121212"}
+                      color={"white"}
+                      fontWeight={"bold"}
+                    >
+                      Total : {calculateBankReceived(filteredBookings)}
+                    </Td>
+
+                    <Td
+                      textAlign="center"
+                      border="1px solid black"
+                      bg={"#121212"}
+                      color={"white"}
+                      fontWeight={"bold"}
+                    >
+                      Total : {calculateCashReceived(filteredBookings)}
+                    </Td>
                   </Tr>
-                ))}
-              </Tbody>
-            </TableContainer>
-          </Table>
+                </Tbody>
+              </TableContainer>
+            </Table>
+          </>
         )}
       </Box>
     </>

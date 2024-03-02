@@ -771,8 +771,8 @@ const PaymentTransaction = () => {
             response.data.phpresult[0]["bankAmountPayable"];
           document.getElementById("cashAmountPayable").value =
             response.data.phpresult[0]["cashAmountPayable"];
-          document.getElementById("bookingDate").value =
-            response.data.phpresult[0]["bookingDate"];
+          // document.getElementById("bookingDate").value =
+          //   response.data.phpresult[0]["bookingDate"];
           document.getElementById("constructionAmount").value =
             response.data.phpresult[0]["constructionAmount"];
 
@@ -800,126 +800,6 @@ const PaymentTransaction = () => {
     }
   };
 
-  // const addPayment = async () => {
-  //   const url = "https://lkgexcel.com/backend/setQuery.php";
-  //   const date = document.getElementById("date").value;
-  //   const paymentType = document.getElementById("paymentType").value;
-  //   const amount = parseInt(document.getElementById("amount").value);
-  //   const bankMode = document.getElementById("bankMode").value;
-  //   const cheqNo = document.getElementById("cheqNo").value;
-  //   const bankName = document.getElementById("bankName").value;
-  //   const transactionStatus =
-  //     document.getElementById("transactionStatus").value;
-  //   const statusDate = document.getElementById("statusDate").value;
-  //   const remarks = document.getElementById("remarks").value;
-
-  //   if (
-  //     !date ||
-  //     !paymentType ||
-  //     isNaN(amount) ||
-  //     !bankMode ||
-  //     !cheqNo ||
-  //     !bankName ||
-  //     !transactionStatus ||
-  //     !statusDate ||
-  //     !remarks
-  //   ) {
-  //     alert("Please fill in all required fields.");
-  //     return; // Don't submit if any field is empty
-  //   }
-
-  //   try {
-  //     // Subtract payment amount from total balance
-  //     const totalBalanceElem = document.getElementById("totalBalance");
-  //     let totalBalance = parseInt(totalBalanceElem.innerHTML) || 0;
-  //     totalBalance -= amount;
-  //     totalBalanceElem.innerHTML = totalBalance;
-  //     console.log(`Total Balance: ${totalBalance}`);
-
-  //     // Subtract payment amount from bank balance if payment type is Bank
-  //     const bankBalanceElem = document.getElementById("bankBalance");
-  //     let bankBalance = parseInt(bankBalanceElem.innerHTML) || 0;
-  //     if (paymentType === "Bank") {
-  //       bankBalance -= amount;
-  //       bankBalanceElem.innerHTML = bankBalance;
-  //       console.log(`Bank Balance: ${bankBalance}`);
-  //     }
-
-  //     // Subtract payment amount from cash balance if payment type is Cash
-  //     const cashBalanceElem = document.getElementById("cashBalance");
-  //     let cashBalance = parseInt(cashBalanceElem.innerHTML) || 0;
-  //     if (paymentType === "Cash") {
-  //       cashBalance -= amount;
-  //       cashBalanceElem.innerHTML = cashBalance;
-  //       console.log(`Cash Balance: ${cashBalance}`);
-  //     }
-
-  //     // Update total received and bank received
-  //     let totalReceivedElem = document.getElementById("totalReceived");
-  //     let bankReceivedElem = document.getElementById("bankReceived");
-  //     let cashReceivedElem = document.getElementById("cashReceived");
-  //     let totalReceived = parseInt(totalReceivedElem.innerHTML) || 0;
-  //     let bankReceived = parseInt(bankReceivedElem.innerHTML) || 0;
-  //     let cashReceived = parseInt(cashReceivedElem.innerHTML) || 0;
-
-  //     totalReceived += amount;
-  //     totalReceivedElem.innerHTML = totalReceived;
-  //     console.log(`Total Received: ${totalReceived}`);
-
-  //     if (paymentType === "Cash") {
-  //       cashReceived = amount; // Accumulate cashReceived for all cash payments
-  //       cashReceivedElem.innerHTML = cashReceived;
-  //       console.log(`Cash Received: ${cashReceived}`);
-  //     } else {
-  //       cashReceived = 0;
-  //     }
-
-  //     if (paymentType === "Bank") {
-  //       bankReceived = amount; // Accumulate bankReceived for all bank payments
-  //       bankReceivedElem.innerHTML = bankReceived;
-  //       console.log(`Bank Received: ${bankReceived}`);
-  //     } else {
-  //       bankReceived = 0;
-  //     }
-
-  //     const query = `INSERT INTO transaction (id, projectName, blockName, plotno, date, paymentType, amount, bankMode, cheqNo, bankName, transactionStatus, statusDate, remarks, totalBalance, bankBalance, cashBalance, totalReceived, bankReceived, cashReceived) VALUES (NULL, '${plotData[0]["projectName"]}', '${plotData[0]["blockName"]}', '${plotData[0]["plotNo"]}', '${date}', '${paymentType}', '${amount}', '${bankMode}', '${cheqNo}', '${bankName}', '${transactionStatus}', '${statusDate}', '${remarks}', '${totalBalance}', '${bankBalance}', '${cashBalance}', '${totalReceived}', '${bankReceived}', '${cashReceived}');`;
-
-  //     const formData = new FormData();
-  //     formData.append("query", query);
-
-  //     const response = await axios.post(url, formData);
-
-  //     toast({
-  //       title: "Payment added successfully!",
-  //       status: "success",
-  //       duration: 3000,
-  //       position: "top",
-  //       isClosable: true,
-  //     });
-
-  //     loadAmounts();
-  //     loadTransaction();
-  //     loadAmountsBAR();
-  //     loadAmountsCAR();
-
-  //     setTimeout(function () {
-  //       calcAmounts();
-  //     }, 500);
-
-  //     // Reset form fields
-  //     document.getElementById("date").value = "";
-  //     document.getElementById("paymentType").value = "";
-  //     document.getElementById("amount").value = "";
-  //     document.getElementById("bankMode").value = "";
-  //     document.getElementById("cheqNo").value = "";
-  //     document.getElementById("bankName").value = "";
-  //     document.getElementById("transactionStatus").value = "";
-  //     document.getElementById("statusDate").value = "";
-  //     document.getElementById("remarks").value = "";
-  //   } catch (error) {
-  //     console.log(error.toJSON());
-  //   }
-  // };
   const addPayment = async () => {
     const url = "https://lkgexcel.com/backend/setQuery.php";
     const date = document.getElementById("date").value;
@@ -986,30 +866,21 @@ const PaymentTransaction = () => {
       totalReceivedElem.innerHTML = totalReceived;
       console.log(`Total Received: ${totalReceived}`);
 
-      if (paymentType === "Bank") {
-        bankReceived += amount;
-        bankReceivedElem.innerHTML = bankReceived;
-        // cashReceived = 0;
-        console.log(`Bank Received: ${bankReceived}`);
-      } else if (paymentType === "Cash") {
-        cashReceived += amount;
+      if (paymentType === "Cash") {
+        cashReceived += amount; // Accumulate cashReceived for all cash payments
         cashReceivedElem.innerHTML = cashReceived;
-        // bankReceived = 0;
+        console.log(`Cash Received: ${cashReceived}`);
+      } else {
+        cashReceived = 0; // Set cashReceived to 0 if payment type is not Cash
+        cashReceivedElem.innerHTML = cashReceived;
         console.log(`Cash Received: ${cashReceived}`);
       }
-      // if (paymentType === "Bank") {
-      //   bankReceived += amount;
-      //   bankReceivedElem.innerHTML = bankReceived;
-      //   cashReceived = 0; // Set cashReceived to 0 if paymentType is Bank
-      //   cashReceivedElem.innerHTML = cashReceived; // Update cashReceived display
-      //   console.log(`Bank Received: ${bankReceived}`);
-      // } else if (paymentType === "Cash") {
-      //   cashReceived += amount;
-      //   cashReceivedElem.innerHTML = cashReceived;
-      //   bankReceived = 0; // Set bankReceived to 0 if paymentType is Cash
-      //   bankReceivedElem.innerHTML = bankReceived; // Update bankReceived display
-      //   console.log(`Cash Received: ${cashReceived}`);
-      // }
+
+      if (paymentType === "Bank") {
+        bankReceived += amount; // Accumulate bankReceived for all bank payments
+        bankReceivedElem.innerHTML = bankReceived;
+        console.log(`Bank Received: ${bankReceived}`);
+      }
 
       const query = `INSERT INTO transaction (id, projectName, blockName, plotno, date, paymentType, amount, bankMode, cheqNo, bankName, transactionStatus, statusDate, remarks, totalBalance, bankBalance, cashBalance, totalReceived, bankReceived, cashReceived) VALUES (NULL, '${plotData[0]["projectName"]}', '${plotData[0]["blockName"]}', '${plotData[0]["plotNo"]}', '${date}', '${paymentType}', '${amount}', '${bankMode}', '${cheqNo}', '${bankName}', '${transactionStatus}', '${statusDate}', '${remarks}', '${totalBalance}', '${bankBalance}', '${cashBalance}', '${totalReceived}', '${bankReceived}', '${cashReceived}');`;
 
@@ -1168,138 +1039,6 @@ const PaymentTransaction = () => {
         toast({
           title: "Failed to cancel plot. Please try again.",
           status: "error",
-          duration: 3000,
-          position: "top",
-          isClosable: true,
-        });
-      }
-    }
-  };
-  const editPlot = async () => {
-    // Display a confirmation dialog
-    const userConfirmed = window.confirm(
-      "Do you really want to edit the plot?"
-    );
-
-    // Check if the user confirmed
-    if (userConfirmed) {
-      const url = "https://lkgexcel.com/backend/setQuery.php";
-      var updateQuery = "UPDATE booking SET ";
-      updateQuery +=
-        "projectName = '" +
-        document.getElementById("projectName").value +
-        "', ";
-      updateQuery +=
-        "blockName = '" + document.getElementById("blockName").value + "', ";
-      updateQuery +=
-        "plotNo = '" + document.getElementById("plotNo").value + "', ";
-      updateQuery +=
-        "plotType = '" + document.getElementById("plotType").value + "', ";
-      updateQuery +=
-        "customerName = '" + document.getElementById("custName").value + "', ";
-      updateQuery +=
-        "customerAddress = '" +
-        document.getElementById("custAddress").value +
-        "', ";
-      updateQuery +=
-        "areaSqft = '" + document.getElementById("areaSqmt").value + "', ";
-      updateQuery +=
-        "rateAreaSqft = '" +
-        document.getElementById("ratePerSqmt").value +
-        "', ";
-      updateQuery +=
-        "totalAmount = '" +
-        document.getElementById("totalAmount").value +
-        "', ";
-      updateQuery +=
-        "discountApplicable = '" +
-        document.getElementById("discountApplicable").value +
-        "', ";
-      updateQuery +=
-        "discountPercent = '" +
-        document.getElementById("discountPercent").value +
-        "', ";
-      updateQuery +=
-        "netAmount = '" + document.getElementById("netAmount").value + "', ";
-      updateQuery +=
-        "registryAmount = '" +
-        document.getElementById("registryAmount").value +
-        "', ";
-      updateQuery +=
-        "serviceAmount = '" +
-        document.getElementById("serviceAmount").value +
-        "', ";
-      updateQuery +=
-        "maintenanceAmount = '" +
-        document.getElementById("maintenanceAmount").value +
-        "', ";
-      updateQuery +=
-        "miscAmount = '" + document.getElementById("miscAmount").value + "', ";
-      updateQuery +=
-        "grandTotal = '" + document.getElementById("grandTotal").value + "', ";
-      updateQuery +=
-        "constructionApplicable = '" +
-        document.getElementById("constructionApplicable").value +
-        "', ";
-      updateQuery +=
-        "constructionContractor = '" +
-        document.getElementById("constructionContractor").value +
-        "', ";
-      updateQuery +=
-        "constructionAmount = '" +
-        document.getElementById("constructionAmount").value +
-        "', ";
-      updateQuery +=
-        "totalAmountPayable = '" +
-        document.getElementById("totalAmountPayable").value +
-        "', ";
-      updateQuery +=
-        "guidelineAmount = '" +
-        document.getElementById("guidelineAmount").value +
-        "', ";
-      updateQuery +=
-        "registryPercent = '" +
-        document.getElementById("registryPercent").value +
-        "', ";
-      updateQuery +=
-        "bankAmountPayable = '" +
-        document.getElementById("bankAmountPayable").value +
-        "', ";
-      updateQuery +=
-        "bookingDate = '" +
-        document.getElementById("bookingDate").value +
-        "', ";
-      updateQuery +=
-        "cashAmountPayable = '" +
-        document.getElementById("cashAmountPayable").value +
-        "', ";
-      updateQuery +=
-        "remarks = '" + document.getElementById("remarks").value + "' ";
-      updateQuery += "WHERE id = '" + currentPlot[0]["id"] + "';";
-
-      let fData = new FormData();
-      fData.append("query", updateQuery);
-
-      try {
-        const response = await axios.post(url, fData);
-
-        // Show success toast
-        toast({
-          title: "Plot Edited Successfully!",
-          status: "success",
-          duration: 3000,
-          position: "top",
-          isClosable: true,
-        });
-        window.location.reload();
-      } catch (error) {
-        console.log(error.toJSON());
-
-        // Show error toast
-        toast({
-          title: "Failed to cancel plot. Please try again.",
-          status: "error",
-
           duration: 3000,
           position: "top",
           isClosable: true,
@@ -1504,91 +1243,30 @@ const PaymentTransaction = () => {
     setTransferData(finalTransferData);
     setIsTransferModalOpen(true);
   };
-  const trasnferTransactionStatus = async (id) => {
-    const url = "https://lkgexcel.com/backend/setQuery.php";
-    const query =
-      "UPDATE transaction SET Status = 'Transferred' WHERE id = '" + id + "';";
 
-    const fData = new FormData();
-    fData.append("query", query);
-
-    try {
-      const response = await axios.post(url, fData);
-      return true; // Indicate success
-    } catch (error) {
-      console.log(error.toJSON());
-      return false; // Indicate failure
-    }
-  };
-  const insertTransaction = async (
-    projectName,
-    blockName,
-    plotNo,
-    date,
-    paymentType,
-    amount,
-    bankMode,
-    cheqNo,
-    bankName,
-    transactionStatus,
-    statusDate,
-    remarks
-  ) => {
-    const url = "https://lkgexcel.com/backend/setQuery.php";
-    const query = `INSERT INTO transaction (projectName, blockName, plotno, date, paymentType, amount, bankMode, cheqNo, bankName, transactionStatus, statusDate, remarks) 
-                   VALUES ('${projectName}', '${blockName}', '${plotNo}', '${date}', '${paymentType}', ${amount}, '${bankMode}', '${cheqNo}', '${bankName}', '${transactionStatus}', '${statusDate}', '${remarks}')`;
-
-    const formData = new FormData();
-    formData.append("query", query);
-
-    try {
-      const response = await axios.post(url, formData);
-      return response.data; // Return the inserted data or success status
-    } catch (error) {
-      console.error("Error inserting transaction:", error);
-      throw error; // Throw the error for handling in the calling code
-    }
-  };
   // Function to handle transfer
   const handleTransfer = async () => {
     if (transferData && transactionData[transferData.index]) {
       const selectedRow = transactionData[transferData.index];
+
       const fromProject = selectedRow.projectName;
       const fromBlock = selectedRow.blockName;
       const fromPlot = selectedRow.plotno;
 
-      // Set the transfer project, block, and plot names
       setTransferProjectName(selectedRow.projectName);
       setTransferBlockName(selectedRow.blockName);
-      setTransferPlotName(selectedRow.plotno);
+      setTransferPlotName(selectedRow.plotNo);
 
-      // Update the selected row with transfer project, block, and plot names
       selectedRow.projectName = transferProjectName;
       selectedRow.blockName = transferBlockName;
-      selectedRow.plotno = transferPlotName;
+      selectedRow.plotNo = transferPlotName;
 
-      // Insert the transferred transaction into the new project, block, and plot
-      try {
-        await insertTransaction(
-          transferProjectName,
-          transferBlockName,
-          transferPlotName,
-          selectedRow.date,
-          selectedRow.paymentType,
-          selectedRow.amount,
-          selectedRow.bankMode,
-          selectedRow.cheqNo,
-          selectedRow.bankName,
-          selectedRow.transactionStatus,
-          selectedRow.statusDate,
-          selectedRow.remarks
-        );
-      } catch (error) {
-        console.error("Error inserting transferred transaction:", error);
-        return; // Abort further processing if insertion fails
-      }
+      const updatedTransactionData = [...transactionData];
+      updatedTransactionData[transferData.index] = selectedRow;
 
-      // Log the transfer details
+      setTransactionData(updatedTransactionData);
+      setTransferredRows([...transferredRows, transferData.index]);
+
       const logMessage = `Payment transaction for row ${
         transferData.index + 1
       } has been transferred from ${fromProject} ${fromBlock} ${fromPlot} to ${transferProjectName} ${transferBlockName} ${transferPlotName} with payment type: ${
@@ -1596,43 +1274,16 @@ const PaymentTransaction = () => {
       }, amount: ${selectedRow.amount}, bank mode: ${
         selectedRow.bankMode
       }, CHQ/REF NO: ${selectedRow.cheqNo}, bank name: ${selectedRow.bankName}`;
+
       console.log(logMessage);
-
-      // Perform the transfer of transaction status
-      try {
-        const statusUpdateSuccess = await trasnferTransactionStatus(
-          selectedRow.id
-        );
-        if (!statusUpdateSuccess) {
-          console.error("Failed to update transaction status.");
-          return; // Abort further processing if status update fails
-        }
-      } catch (error) {
-        console.error("Error updating transaction status:", error);
-        return; // Abort further processing if status update throws an error
-      }
-
-      // Update the transaction data with the updated row
-      const updatedTransactionData = [...transactionData];
-      updatedTransactionData[transferData.index] = selectedRow;
-
-      // Set the updated transaction data
-      setTransactionData(updatedTransactionData);
-
-      // Set the transferred rows
-      setTransferredRows([...transferredRows, transferData.index]);
-
-      // Display a success message
       toast({
         title: "Transfer Successful",
-        description: `Payment transaction has been transferred from ${fromProject} ${fromBlock} ${fromPlot} to ${transferProjectName} ${transferBlockName} ${transferPlotName}.`,
+        description: `Payment transaction has been transferred from ${fromProject} ${fromBlock} ${fromPlot} to ${transferPlotName}.`,
         status: "success",
         duration: 5000,
         isClosable: true,
         position: "top-right",
       });
-
-      // Close the transfer modal
       setIsTransferModalOpen(false);
     } else {
       console.error("Error: Selected row data is undefined.");
@@ -1733,7 +1384,7 @@ const PaymentTransaction = () => {
             </Flex>
           </FormControl>
 
-          {/* <FormControl>
+          <FormControl>
             <Flex
               align="center"
               justifyContent={"space-between"}
@@ -1748,28 +1399,6 @@ const PaymentTransaction = () => {
                 placeholder="Enter Plot Type"
                 w={"60%"}
               />
-            </Flex>
-          </FormControl> */}
-
-          <FormControl>
-            <Flex
-              align="center"
-              justifyContent={"space-between"}
-              padding={"0px 4px 0px 4px"}
-            >
-              <FormLabel htmlFor="plotType" fontSize={"12px"}>
-                Plot Type
-              </FormLabel>
-              <Select id="plotType" w={"60%"} placeholder="Select ">
-                <option value="Normal">Normal</option>
-                <option value="EWS">EWS</option>
-                <option value="1BHK">1BHK</option>
-                <option value="2BHK">2BHK</option>
-                <option value="3BHK">3BHK</option>
-                <option value="4BHK">4BHK</option>
-                <option value="5BHK">5BHK</option>
-                {/* Add more options as needed */}
-              </Select>
             </Flex>
           </FormControl>
 
@@ -2175,10 +1804,7 @@ const PaymentTransaction = () => {
           <Flex padding={"0px 4px 0px 4px"} alignSelf={"end"}>
             {showAction && (
               <>
-                <Button colorScheme="blue" onClick={editPlot}>
-                  {" "}
-                  Edit
-                </Button>
+                <Button className="hide-on-print">Edit</Button>
               </>
             )}
           </Flex>
@@ -2191,7 +1817,7 @@ const PaymentTransaction = () => {
       <Box flex={"80%"} maxW={"80%"}>
         <Box borderBottom={"1px solid black"} w={"100%"} p={2} pb={4}>
           <HStack justifyContent={"space-between"}>
-            <Box maxW={"85%"}>
+            <Box maxW={"80%"}>
               <HStack marginLeft={2}>
                 <FormControl>
                   <Flex
@@ -2209,18 +1835,8 @@ const PaymentTransaction = () => {
                     // justifyContent={"space-between"}
                     // padding={"0px 4px 0px 4px"}
                   >
-                    <FormLabel fontSize={"sm"}> Gender</FormLabel>
+                    <FormLabel fontSize={"sm"}>Registry Gender</FormLabel>
                     <Input type="text" id="registryGender" w={"60%"} />
-                  </Flex>
-                </FormControl>
-                <FormControl>
-                  <Flex
-                    align="center"
-                    // justifyContent={"space-between"}
-                    // padding={"0px 4px 0px 4px"}
-                  >
-                    <FormLabel fontSize={"sm"}>Booking </FormLabel>
-                    <Input type="date" id="bookingDate" w={"60%"} />
                   </Flex>
                 </FormControl>
                 <FormControl>
@@ -2590,36 +2206,36 @@ const PaymentTransaction = () => {
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred" ? "white" : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {index + 1}
                       </Td>
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred" ? "white" : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {" "}
                         {res.date}
@@ -2627,160 +2243,160 @@ const PaymentTransaction = () => {
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred" ? "white" : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {res.paymentType}
                       </Td>
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred" ? "white" : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {res.amount}
                       </Td>
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred" ? "white" : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {res.bankMode}
                       </Td>
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred" ? "white" : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {res.cheqNo}
                       </Td>
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred" ? "white" : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {res.bankName}
                       </Td>
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred"
-                              ? "white"
-                              : res.transactionStatus === "Clear"
-                              ? "#22c35e"
-                              : res.transactionStatus === "Provisional"
-                              ? "#ECC94B"
-                              : res.transactionStatus === "Pending" ||
-                                res.transactionStatus === "PDC"
-                              ? "#ECC94B"
-                              : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : res.transactionStatus === "Clear"
-                              ? "white"
-                              : res.transactionStatus === "Provisional"
-                              ? "black"
-                              : res.transactionStatus === "Bounced"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.transactionStatus === "Bounced" ||
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred"
+                        //       ? "white"
+                        //       : res.transactionStatus === "Clear"
+                        //       ? "#22c35e"
+                        //       : res.transactionStatus === "Provisional"
+                        //       ? "#ECC94B"
+                        //       : res.transactionStatus === "Pending" ||
+                        //         res.transactionStatus === "PDC"
+                        //       ? "#ECC94B"
+                        //       : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : res.transactionStatus === "Clear"
+                        //       ? "white"
+                        //       : res.transactionStatus === "Provisional"
+                        //       ? "black"
+                        //       : res.transactionStatus === "Bounced"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.transactionStatus === "Bounced" ||
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {res.transactionStatus}
                       </Td>
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred" ? "white" : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {res.statusDate}
                       </Td>
                       <Td
                         border="1px solid black"
                         p={"8px"}
-                        style={{
-                          backgroundColor:
-                            res.Status === "Transferred" ? "white" : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : "inherit",
-                          textDecoration:
-                            res.Status === "Transferred"
-                              ? "line-through"
-                              : "none",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     res.Status === "Transferred" ? "white" : "inherit",
+                        //   color:
+                        //     res.Status === "Transferred"
+                        //       ? "#E53E3E"
+                        //       : "inherit",
+                        //   textDecoration:
+                        //     res.Status === "Transferred"
+                        //       ? "line-through"
+                        //       : "none",
+                        // }}
                       >
                         {res.remarks}
                       </Td>
@@ -2798,14 +2414,14 @@ const PaymentTransaction = () => {
                                 handleTransferButtonClick(res, index)
                               }
                               size={"sm"}
-                              isDisabled={res.Status === "Transferred"}
+                              // isDisabled={res.Status === "Transferred"}
                             >
                               Transfer
                             </Button>
                             <Button
                               colorScheme="green"
                               onClick={() => handleEditClick(res)}
-                              isDisabled={res.Status === "Transferred"}
+                              // isDisabled={res.Status === "Transferred"}
                             >
                               Edit
                             </Button>
@@ -2813,7 +2429,7 @@ const PaymentTransaction = () => {
                               colorScheme="red"
                               onClick={() => handleDeletePayment(res.id)}
                               size={"sm"}
-                              isDisabled={res.Status === "Transferred"}
+                              // isDisabled={res.Status === "Transferred"}
                             >
                               Delete
                             </Button>
@@ -3313,3 +2929,14 @@ const PaymentTransaction = () => {
 };
 
 export default PaymentTransaction;
+ if (paymentType === "Bank") {
+        bankReceived = amount;
+        bankReceivedElem.innerHTML = bankReceived;
+        cashReceived = 0; // Reset cash received to zero
+        cashReceivedElem.innerHTML = cashReceived;
+      } else if (paymentType === "Cash") {
+        cashReceived = amount;
+        cashReceivedElem.innerHTML = cashReceived;
+        bankReceived = 0; // Reset bank received to zero
+        bankReceivedElem.innerHTML = bankReceived;
+      }
