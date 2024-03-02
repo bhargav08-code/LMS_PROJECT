@@ -1504,22 +1504,164 @@ const PaymentTransaction = () => {
     setTransferData(finalTransferData);
     setIsTransferModalOpen(true);
   };
-  const trasnferTransactionStatus = async (id) => {
-    const url = "https://lkgexcel.com/backend/setQuery.php";
-    const query =
-      "UPDATE transaction SET Status = 'Transferred' WHERE id = '" + id + "';";
+  // const trasnferTransactionStatus = async (id) => {
+  //   const url = "https://lkgexcel.com/backend/setQuery.php";
+  //   const query =
+  //     "UPDATE transaction SET Status = 'Transferred' WHERE id = '" + id + "';";
 
-    const fData = new FormData();
-    fData.append("query", query);
+  //   const fData = new FormData();
+  //   fData.append("query", query);
 
-    try {
-      const response = await axios.post(url, fData);
-      return true; // Indicate success
-    } catch (error) {
-      console.log(error.toJSON());
-      return false; // Indicate failure
+  //   try {
+  //     const response = await axios.post(url, fData);
+  //     return true; // Indicate success
+  //   } catch (error) {
+  //     console.log(error.toJSON());
+  //     return false; // Indicate failure
+  //   }
+  // };
+
+  // const trasnferTransactionStatus = async (id, selectedRow) => {
+  //   const url = "https://lkgexcel.com/backend/setQuery.php";
+
+  //   // Initialize the properties in selectedRow if they are undefined
+  //   selectedRow.cashReceived = selectedRow.cashReceived || 0;
+  //   selectedRow.cashBalance = selectedRow.cashBalance || 0;
+  //   selectedRow.totalBalance = selectedRow.totalBalance || 0;
+  //   selectedRow.totalReceived = selectedRow.totalReceived || 0;
+
+  //   // Calculate new values
+  //   let { cashReceived, cashBalance, totalBalance, totalReceived } =
+  //     selectedRow;
+
+  //   // Adjust calculations based on payment type
+  //   if (selectedRow.paymentType === "Cash") {
+  //     cashReceived -= selectedRow.amount;
+  //     cashBalance -= selectedRow.amount;
+  //     totalBalance += selectedRow.amount;
+  //     totalReceived -= selectedRow.amount;
+  //   }
+
+  //   // Construct the query to update data only
+  //   const query = `
+  //       UPDATE transaction
+  //       SET
+  //           cashReceived = '${cashReceived}',
+  //           cashBalance = '${cashBalance}',
+  //           totalBalance = '${totalBalance}',
+  //           totalReceived = '${totalReceived}'
+  //       WHERE
+  //           id = '${id}';
+  //   `;
+
+  //   const formData = new FormData();
+  //   formData.append("query", query);
+
+  //   try {
+  //     await axios.post(url, formData);
+
+  //     // Update the UI with the new values if payment type is 'Cash'
+  //     if (selectedRow.paymentType === "Cash") {
+  //       document.getElementById("cashReceived").innerHTML = cashReceived;
+  //       document.getElementById("cashBalance").innerHTML = cashBalance;
+  //       document.getElementById("totalBalance").innerHTML = totalBalance;
+  //       document.getElementById("totalReceived").innerHTML = totalReceived;
+  //     }
+
+  //     console.log("Transaction data updated successfully:", query);
+  //     return true; // Indicate success
+  //   } catch (error) {
+  //     console.error("Error updating transaction data:", error);
+  //     return false; // Indicate failure
+  //   }
+  // };
+  const trasnferTransactionStatus = async (id, selectedRow) => {
+    // Initialize the properties in selectedRow if they are undefined
+    selectedRow.cashReceived = selectedRow.cashReceived || 0;
+    selectedRow.cashBalance = selectedRow.cashBalance || 0;
+    selectedRow.bankReceived = selectedRow.bankReceived || 0;
+    selectedRow.bankBalance = selectedRow.bankBalance || 0;
+    selectedRow.totalBalance = selectedRow.totalBalance || 0;
+    selectedRow.totalReceived = selectedRow.totalReceived || 0;
+
+    // Convert values to numbers
+    let cashReceived = Number(selectedRow.cashReceived);
+    let cashBalance = Number(selectedRow.cashBalance);
+    let bankReceived = Number(selectedRow.bankReceived);
+    let bankBalance = Number(selectedRow.bankBalance);
+    let totalBalance = Number(selectedRow.totalBalance);
+    let totalReceived = Number(selectedRow.totalReceived);
+
+    // Calculate new values based on payment type
+    const amount = Number(selectedRow.amount);
+
+    if (selectedRow.paymentType === "Cash") {
+      cashReceived -= amount;
+      cashBalance += amount;
+    } else if (selectedRow.paymentType === "Bank") {
+      bankReceived -= amount;
+      bankBalance += amount;
+    }
+
+    // Update total balance and total received
+    totalBalance += amount;
+    totalReceived -= amount;
+
+    // Update UI with the new values
+    updateUI({
+      cashReceived,
+      cashBalance,
+      bankReceived,
+      bankBalance,
+      totalBalance,
+      totalReceived,
+    });
+    console.log("Updated Cash Received:", cashReceived);
+    console.log("Updated Cash Balance:", cashBalance);
+    console.log("Updated Bank Received:", bankReceived);
+    console.log("Updated Bank Balance:", bankBalance);
+    console.log("Updated Total Balance:", totalBalance);
+    console.log("Updated Total Received:", totalReceived);
+    // Return the updated values
+    return {
+      cashReceived,
+      cashBalance,
+      bankReceived,
+      bankBalance,
+      totalBalance,
+      totalReceived,
+    };
+  };
+
+  // Function to update the UI
+  const updateUI = (updatedValues) => {
+    // Update the UI elements with the new values
+    if (updatedValues.cashReceived !== undefined) {
+      document.getElementById("cashReceived").innerHTML =
+        updatedValues.cashReceived;
+    }
+    if (updatedValues.cashBalance !== undefined) {
+      document.getElementById("cashBalance").innerHTML =
+        updatedValues.cashBalance;
+    }
+    if (updatedValues.bankReceived !== undefined) {
+      document.getElementById("bankReceived").innerHTML =
+        updatedValues.bankReceived;
+    }
+    if (updatedValues.bankBalance !== undefined) {
+      document.getElementById("bankBalance").innerHTML =
+        updatedValues.bankBalance;
+    }
+    if (updatedValues.totalBalance !== undefined) {
+      document.getElementById("totalBalance").innerHTML =
+        updatedValues.totalBalance;
+    }
+    if (updatedValues.totalReceived !== undefined) {
+      document.getElementById("totalReceived").innerHTML =
+        updatedValues.totalReceived;
     }
   };
+
   const insertTransaction = async (
     projectName,
     blockName,
@@ -1601,7 +1743,8 @@ const PaymentTransaction = () => {
       // Perform the transfer of transaction status
       try {
         const statusUpdateSuccess = await trasnferTransactionStatus(
-          selectedRow.id
+          selectedRow.id,
+          selectedRow
         );
         if (!statusUpdateSuccess) {
           console.error("Failed to update transaction status.");
