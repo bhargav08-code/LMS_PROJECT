@@ -1065,8 +1065,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $customerAddress = isset($_POST['customerAddress']) ? $_POST['customerAddress'] : '';
     $customerContact = isset($_POST['customerContact']) ? $_POST['customerContact'] : '';
     $registryGender = isset($_POST['registryGender']) ? $_POST['registryGender'] : '';
-    $areaSqmt = isset($_POST['areaSqft']) ? $_POST['areaSqft'] : '';  // Corrected column name
-    $ratePerSqmt = isset($_POST['rateAreaSqft']) ? $_POST['rateAreaSqft'] : '';  // Corrected column name
+    $areaSqft = isset($_POST['areaSqft']) ? $_POST['areaSqft'] : '';  // Corrected column name
+    $rateAreaSqft = isset($_POST['rateAreaSqft']) ? $_POST['rateAreaSqft'] : '';  // Corrected column name
     $totalAmount = isset($_POST['totalAmount']) ? $_POST['totalAmount'] : '';
     $discountApplicable = isset($_POST['discountApplicable']) ? $_POST['discountApplicable'] : '';
     $discountPercent = isset($_POST['discountPercent']) ? $_POST['discountPercent'] : '';
@@ -1088,7 +1088,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $remarks = isset($_POST['remarks']) ? $_POST['remarks'] : '';
 
     // Prepare the SQL statement
-    $sql = "INSERT INTO booking (`id`, `projectName`, `blockName`, `plotNo`, `plotType`, `customerName`, `customerAddress`, `customerContact`, `registeryGender`, `areaSqmt`, `ratePerSqmt`, `totalAmount`, `discountApplicable`, `discountPercent`, `netAmount`, `registeryAmount`, `serviceAmount`, `maintenanceAmount`, `miscAmount`, `grandTotal`, `constructionApplicable`, `constructionContractor`, `constructionAmount`, `totalAmountPayable`, `guidelineAmount`, `registeryPercent`, `bankAmountPayable`, `cashAmountPayable`, `bookingDate`, `remarks`) VALUES (NULL, '$projectName', '$blockName', '$plotNo', '$plotType', '$customerName', '$customerAddress', '$customerContact', '$registryGender', '$areaSqmt', '$ratePerSqmt', '$totalAmount', '$discountApplicable', '$discountPercent', '$netAmount', '$registryAmount', '$serviceAmount', '$maintenanceAmount', '$miscAmount', '$grandTotal', '$constructionApplicable', '$constructionContractor', '$totalAmountPayable', '$guidelineAmount', '$registryPercent', '$bankAmountPayable', '$cashAmountPayable', '$bookingDate', '$constructionAmount', '$remarks')";
+    $sql = "INSERT INTO booking (`id`, `projectName`, `blockName`, `plotNo`, `plotType`, `customerName`, `customerAddress`, `customerContact`, `registeryGender`, `areaSqft`, `ratePerSqft`, `totalAmount`, `discountApplicable`, `discountPercent`, `netAmount`, `registeryAmount`, `serviceAmount`, `maintenanceAmount`, `miscAmount`, `grandTotal`, `constructionApplicable`, `constructionContractor`, `constructionAmount`, `totalAmountPayable`, `guidelineAmount`, `registeryPercent`, `bankAmountPayable`, `cashAmountPayable`, `bookingDate`, `remarks`) VALUES (NULL, '$projectName', '$blockName', '$plotNo', '$plotType', '$customerName', '$customerAddress', '$customerContact', '$registryGender', '$areaSqmt', '$ratePerSqmt', '$totalAmount', '$discountApplicable', '$discountPercent', '$netAmount', '$registryAmount', '$serviceAmount', '$maintenanceAmount', '$miscAmount', '$grandTotal', '$constructionApplicable', '$constructionContractor', '$totalAmountPayable', '$guidelineAmount', '$registryPercent', '$bankAmountPayable', '$cashAmountPayable', '$bookingDate', '$constructionAmount', '$remarks')";
 
     // Execute the statement
     if ($conn->query($sql) === TRUE) {

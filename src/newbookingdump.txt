@@ -40,8 +40,8 @@ const NewBooking = () => {
     customerAddress: "",
     customerContact: "",
     registryGender: "",
-    areaSqft: "",
-    rateAreaSqft: "",
+    areaSqmt: "",
+    ratePerSqmt: "",
     totalAmount: "",
     discountApplicable: "No",
     discountPercent: "",
@@ -69,9 +69,9 @@ const NewBooking = () => {
   };
 
   const onAddBook = async () => {
-    const url = "https://lkgexcel.com/backend/setQuery.php";
+    const url = "https://lkgexcel.com/backend/newbooking.php";
     let query =
-      "INSERT INTO booking (id, projectName, blockName, plotNo, plotType, customerName, customerAddress, customerContact, registryGender, areaSqft, rateAreaSqft, totalAmount, discountApplicable, discountPercent, netAmount, registryAmount, serviceAmount, maintenanceAmount, miscAmount, grandTotal, constructionApplicable, constructionContractor, constructionAmount, totalAmountPayable, guidelineAmount, registryPercent, bankAmountPayable, bookingDate, cashAmountPayable, remarks) VALUES (NULL, '" +
+      "INSERT INTO booking (id, projectName, blockName, plotNo, plotType, customerName, customerAddress, customerContact, registryGender, areaSqft, rateAreaSqft, totalAmount, discountApplicable, discountPercent, netAmount, registryAmount, serviceAmount, maintenanceAmount, miscAmount, grandTotal, constructionApplicable, constructionContractor, constructionAmount, totalAmountPayable, guidelineAmount, registryPercent, bankAmountPayable, bookingDate, cashAmountPayable, remarks, registryDate) VALUES (NULL, '" +
       document.getElementById("projectName").value +
       "', '" +
       document.getElementById("blockName").value +
@@ -88,9 +88,9 @@ const NewBooking = () => {
       "', '" +
       document.getElementById("registryGender").value +
       "', '" +
-      document.getElementById("areaSqft").value +
+      document.getElementById("areaSqmt").value +
       "', '" +
-      document.getElementById("rateAreaSqft").value +
+      document.getElementById("ratePerSqmt").value +
       "', '" +
       document.getElementById("totalAmount").value +
       "', '" +
@@ -129,15 +129,13 @@ const NewBooking = () => {
       document.getElementById("cashAmountPayable").value +
       "', '" +
       document.getElementById("remarks").value +
-      "')";
-
+      "', '');";
     console.log(query);
     let fData = new FormData();
     fData.append("query", query);
 
     try {
       const response = await axios.post(url, fData);
-      console.log(response);
       updatePlotStatus();
       toast({
         title: "Booking added successfully!",
@@ -146,35 +144,6 @@ const NewBooking = () => {
         position: "top",
         isClosable: true,
       });
-      document.getElementById("projectName").value = "";
-      document.getElementById("blockName").value = "";
-      document.getElementById("plotNo").value = "";
-      document.getElementById("plotType").value = "";
-      document.getElementById("customerName").value = "";
-      document.getElementById("customerAddress").value = "";
-      document.getElementById("customerContact").value = "";
-      document.getElementById("registryGender").value = "";
-      document.getElementById("areaSqft").value = "";
-      document.getElementById("rateAreaSqft").value = "";
-      document.getElementById("totalAmount").value = "";
-      document.getElementById("discountApplicable").value = "";
-      document.getElementById("discountPercent").value = "";
-      document.getElementById("netAmount").value = "";
-      document.getElementById("registryAmount").value = "";
-      document.getElementById("serviceAmount").value = "";
-      document.getElementById("maintenanceAmount").value = "";
-      document.getElementById("miscAmount").value = "";
-      document.getElementById("grandTotal").value = "";
-      document.getElementById("constructionApplicable").value = "";
-      document.getElementById("constructionContractor").value = "";
-      document.getElementById("constructionAmount").value = "";
-      document.getElementById("totalAmountPayable").value = "";
-      document.getElementById("guidelineAmount").value = "";
-      document.getElementById("registryPercent").value = "";
-      document.getElementById("bankAmountPayable").value = "";
-      document.getElementById("bookingDate").value = "";
-      document.getElementById("cashAmountPayable").value = "";
-      document.getElementById("remarks").value = "";
     } catch (error) {
       console.log(error.toJSON());
     }
@@ -340,23 +309,22 @@ const NewBooking = () => {
 
               document.getElementById("registryGender").value = "Male";
 
-              // document.getElementById('plotType').style.backgroundColor = 'gray';
+              //document.getElementById('plotType').style.backgroundColor = 'gray';
               // document.getElementById('plotType').disabled = true;
-              // document.getElementById("plotType").value =
-              //   response.data.phpresult[0]["plotType"];
-              document.getElementById("areaSqft").value =
+
+              document.getElementById("areaSqmt").value =
                 response.data.phpresult[0]["areaSqft"];
-              document.getElementById("rateAreaSqft").value =
+              document.getElementById("ratePerSqmt").value =
                 response.data.phpresult[0]["ratePerSqft"];
               document.getElementById("totalAmount").value =
-                document.getElementById("areaSqft").value *
-                document.getElementById("rateAreaSqft").value;
+                document.getElementById("areaSqmt").value *
+                document.getElementById("ratePerSqmt").value;
               document.getElementById("discountApplicable").value = "No";
               document.getElementById("discountPercent").value = "0";
               document.getElementById("netAmount").value =
                 document.getElementById("totalAmount").value;
               document.getElementById("guidelineAmount").value =
-                response.data.phpresult[0]["areaSqft"] *
+                response.data.phpresult[0]["areaSqmt"] *
                 response1.data.phpresult[0]["guideline"];
 
               if (document.getElementById("registryGender").value == "Male") {
@@ -456,8 +424,8 @@ const NewBooking = () => {
 
   const updateOnChange = () => {
     document.getElementById("totalAmount").value =
-      document.getElementById("areaSqft").value *
-      document.getElementById("rateAreaSqft").value;
+      document.getElementById("areaSqmt").value *
+      document.getElementById("ratePerSqmt").value;
     document.getElementById("netAmount").value =
       document.getElementById("totalAmount").value;
 
@@ -473,7 +441,7 @@ const NewBooking = () => {
     }
 
     document.getElementById("guidelineAmount").value =
-      plotData[0]["areaSqft"] * master[0]["guideline"];
+      plotData[0]["areaSqmt"] * master[0]["guideline"];
 
     if (document.getElementById("registryGender").value == "Male") {
       document.getElementById("registryPercent").value =
@@ -736,9 +704,9 @@ const NewBooking = () => {
               <FormLabel>Area Sqft</FormLabel>
               <Input
                 onChange={updateOnChange}
-                id="areaSqft"
+                id="areaSqmt"
                 type="text"
-                name="areaSqft"
+                name="areaSqmt"
                 //onChange={handleChange}
                 required
               />
@@ -748,9 +716,9 @@ const NewBooking = () => {
               <FormLabel>Rate Per Sqft</FormLabel>
               <Input
                 onChange={updateOnChange}
-                id="rateAreaSqft"
+                id="ratePerSqmt"
                 type="text"
-                name="rateAreaSqft"
+                name="ratePerSqmt"
                 //onChange={handleChange}
                 required
               />

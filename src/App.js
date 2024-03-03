@@ -26,6 +26,7 @@ import TransactionReport from "./components/TransactionReport";
 import Footer from "./Footer";
 import BalanceReport from "./components/BalanceReport";
 import HistoricalReport from "./components/HistoricalReport";
+import ContractorLedger from "./components/ContractorLedger";
 
 const App = () => {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -297,6 +298,19 @@ const App = () => {
                     handleLogout={handleLogout}
                   />{" "}
                   <HistoricalReport />{" "}
+                </>
+              }
+            />
+            <Route
+              path="/contractorledger"
+              element={
+                <>
+                  {" "}
+                  <Nav
+                    isLoggedIn={isLoggedIn}
+                    handleLogout={handleLogout}
+                  />{" "}
+                  <ContractorLedger />{" "}
                 </>
               }
             />

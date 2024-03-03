@@ -168,7 +168,10 @@ const Nav = ({ isLoggedIn, handleLogout }) => {
                 <MenuItem as={Link} to="/contractorlist">
                   Contractor List
                 </MenuItem>
-                <MenuItem>Contractor Ledger</MenuItem>
+                <MenuItem as={Link} to="/contractorledger">
+                  {" "}
+                  Contractor Ledger
+                </MenuItem>
               </MenuList>
             </Menu>
             <Menu>

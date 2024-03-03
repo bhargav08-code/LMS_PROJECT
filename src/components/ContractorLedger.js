@@ -13,7 +13,6 @@ import {
   Flex,
   Spinner,
   Checkbox,
-  Tfoot,
   Menu,
   MenuButton,
   MenuList,
@@ -25,17 +24,18 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-const TransactionReport = () => {
+
+const ContractorLedger = () => {
+  const [booking, setBooking] = useState([]);
   const [transaction, setTransaction] = useState([]);
   const [selectedProject, setSelectedProject] = useState([]);
+  const [selectedContractor, setSelectedContractor] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBlock, setSelectedBlock] = useState([]);
   const [selectedPlot, setSelectedPlot] = useState([]);
   const [filteredBlocks, setFilteredBlocks] = useState([]);
   const [filteredPlots, setFilteredPlots] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedStatusDate, setSelectedStatusDate] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState("All");
+
   const handleCheckboxChange = (value, state, setter) => {
     if (state.includes(value)) {
       setter(state.filter((item) => item !== value));
@@ -43,8 +43,26 @@ const TransactionReport = () => {
       setter([...state, value]);
     }
   };
-  const handleStatusChange = (status) => {
-    setSelectedStatus(status);
+
+  const loadBooking = async () => {
+    let query = "SELECT * FROM booking;";
+
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    let fData = new FormData();
+
+    fData.append("query", query);
+
+    try {
+      const response = await axios.post(url, fData);
+      if (response && response.data) {
+        if (response.data.phpresult) {
+          setBooking(response.data.phpresult);
+        }
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching booking data:", error);
+    }
   };
 
   const loadTransaction = async () => {
@@ -57,7 +75,6 @@ const TransactionReport = () => {
 
     try {
       const response = await axios.post(url, fData);
-
       if (response && response.data) {
         if (response.data.phpresult) {
           setTransaction(response.data.phpresult);
@@ -68,42 +85,44 @@ const TransactionReport = () => {
       console.error("Error fetching booking data:", error);
     }
   };
+
   useEffect(() => {
+    loadBooking();
     loadTransaction();
   }, []);
+
   const getUniqueValues = (key) => {
     return [...new Set(transaction.map((item) => item[key]))];
   };
-
+  const getUniqueContractor = (key) => {
+    return [...new Set(booking.map((item) => item[key]))];
+  };
   const projectOptions = getUniqueValues("projectName");
+  const contractorOptions = getUniqueContractor("constructionContractor");
 
-  const filteredBookings = transaction.filter(
+  const filteredBookings = booking.filter(
     (item) =>
       (!selectedProject.length ||
         selectedProject.includes("Select All") ||
         selectedProject.includes(item.projectName)) &&
+      (!selectedContractor.length ||
+        selectedContractor.includes("Select All") ||
+        selectedContractor.includes(item.constructionContractor)) &&
       (!selectedBlock.length ||
         selectedBlock.includes("Select All") ||
         selectedBlock.includes(item.blockName)) &&
       (!selectedPlot.length ||
         selectedPlot.includes("Select All") ||
-        selectedPlot.includes(item.plotno)) &&
-      (!selectedDate ||
-        new Date(item.date).toISOString().split("T")[0] === selectedDate) &&
-      (!selectedStatusDate ||
-        new Date(item.statusDate).toISOString().split("T")[0] ===
-          selectedStatusDate) &&
-      (selectedStatus === "All" || item.transactionStatus === selectedStatus)
+        selectedPlot.includes(item.plotNo))
   );
 
   const clearFilters = () => {
     setSelectedProject([]);
+    setSelectedContractor([]);
     setSelectedBlock([]);
     setSelectedPlot([]);
-    setSelectedDate(null);
-    setSelectedStatusDate(null);
-    setSelectedStatus("All");
   };
+
   useEffect(() => {
     const blocks = getUniqueValues("blockName").filter(
       (block) =>
@@ -116,29 +135,25 @@ const TransactionReport = () => {
     );
     setFilteredBlocks([...blocks]);
 
-    const plots = getUniqueValues("plotno").filter(
+    const plots = getUniqueValues("plotNo").filter(
       (plot) =>
         !selectedProject.length ||
         plot === "Select All" ||
         transaction.some(
           (item) =>
-            item.projectName === selectedProject[0] && item.plotno === plot
+            item.projectName === selectedProject[0] && item.plotNo === plot
         )
     );
     setFilteredPlots([...plots]);
   }, [selectedProject, transaction]);
-  const totalAmount = filteredBookings.reduce(
-    (total, booking) => total + parseFloat(booking.amount),
-    0
-  );
 
   return (
     <>
       <Center>
-        <Heading size={"md"}>Transaction Report</Heading>
+        <Heading size={"md"}>Contractor Ledger</Heading>
       </Center>
       <Box maxW={"100%"} overflowX={"scroll"} marginTop={"2rem"}>
-        <Flex justifyContent={"space-evenly"} p={"30px"}>
+        <Flex justifyContent={"space-evenly"} p={"31px"}>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               Select Projects
@@ -171,6 +186,43 @@ const TransactionReport = () => {
                     }
                   >
                     {project}
+                  </Checkbox>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              Select Contractors
+            </MenuButton>
+            <MenuList>
+              <MenuItem>
+                <Checkbox
+                  isChecked={selectedContractor.includes("Select All")}
+                  onChange={() =>
+                    handleCheckboxChange(
+                      "Select All",
+                      selectedContractor,
+                      setSelectedContractor
+                    )
+                  }
+                >
+                  Select All
+                </Checkbox>
+              </MenuItem>
+              {contractorOptions.map((contractor) => (
+                <MenuItem key={contractor}>
+                  <Checkbox
+                    isChecked={selectedContractor.includes(contractor)}
+                    onChange={() =>
+                      handleCheckboxChange(
+                        contractor,
+                        selectedContractor,
+                        setSelectedContractor
+                      )
+                    }
+                  >
+                    {contractor}
                   </Checkbox>
                 </MenuItem>
               ))}
@@ -246,93 +298,6 @@ const TransactionReport = () => {
               ))}
             </MenuList>
           </Menu>
-          <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              Select Status
-            </MenuButton>
-            <MenuList>
-              <MenuItem>
-                <Checkbox
-                  isChecked={selectedStatus === "All"}
-                  onChange={() => handleStatusChange("All")}
-                >
-                  All
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  isChecked={selectedStatus === "Pending"}
-                  onChange={() => handleStatusChange("Pending")}
-                >
-                  Pending
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  isChecked={selectedStatus === "Clear"}
-                  onChange={() => handleStatusChange("Clear")}
-                >
-                  Clear
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  isChecked={selectedStatus === "PDC"}
-                  onChange={() => handleStatusChange("PDC")}
-                >
-                  PDC
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  isChecked={selectedStatus === "Provisional"}
-                  onChange={() => handleStatusChange("Provisional")}
-                >
-                  Provisional
-                </Checkbox>
-              </MenuItem>
-              <MenuItem>
-                <Checkbox
-                  isChecked={selectedStatus === "Bounced"}
-                  onChange={() => handleStatusChange("Bounced")}
-                >
-                  Bounced
-                </Checkbox>
-              </MenuItem>
-            </MenuList>
-          </Menu>
-          <Box display={"flex"}>
-            <FormLabel
-              textAlign={"center"}
-              fontSize={"17px"}
-              minWidth={"fit-content"}
-              mt={"5px"}
-            >
-              Select Date:
-            </FormLabel>
-            <Input
-              type="date"
-              id="date"
-              value={selectedDate || ""}
-              onChange={(e) => setSelectedDate(e.target.value)}
-            />
-          </Box>
-          <Box display={"flex"}>
-            <FormLabel
-              textAlign={"center"}
-              fontSize={"17px"}
-              minWidth={"fit-content"}
-              mt={"5px"}
-            >
-              Select Status Date:
-            </FormLabel>
-            <Input
-              type="date"
-              id="statusDate"
-              value={selectedStatusDate || ""}
-              onChange={(e) => setSelectedStatusDate(e.target.value)}
-            />
-          </Box>
           <Button ml={2} onClick={clearFilters} colorScheme="red">
             Clear Filters
           </Button>
@@ -360,42 +325,32 @@ const TransactionReport = () => {
                       {" "}
                       SrNo
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
+                    <Th border="1px solid black" color={"white"} p={"31px"}>
+                      Contractor Name
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"31px"}>
                       Project Name
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
+                    <Th border="1px solid black" color={"white"} p={"31px"}>
                       Block Name
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
+                    <Th border="1px solid black" color={"white"} p={"31px"}>
                       Plot No
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
-                      Date
+                    <Th border="1px solid black" color={"white"} p={"31px"}>
+                      Constructor Amt
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
-                      Payment Type
+                    <Th border="1px solid black" color={"white"} p={"31px"}>
+                      Less (%)
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
-                      Amount
+                    <Th border="1px solid black" color={"white"} p={"31px"}>
+                      Total Amt Payable
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
-                      Bank Mode
+                    <Th border="1px solid black" color={"white"} p={"31px"}>
+                      Total Amt Paid
                     </Th>
-
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
-                      Cheq No
-                    </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
-                      Bank Name
-                    </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
-                      Transaction Status
-                    </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
-                      Status Date
-                    </Th>
-                    <Th border="1px solid black" color={"white"} p={"18px"}>
-                      Remakrs
+                    <Th border="1px solid black" color={"white"} p={"31px"}>
+                      Total Amt Bal
                     </Th>
                   </Tr>
                 </Thead>
@@ -403,63 +358,51 @@ const TransactionReport = () => {
                   {filteredBookings.map((data, index) => (
                     <Tr key={data.srNo}>
                       <Td border="1px solid black">{index + 1}</Td>
+                      <Td border="1px solid black">
+                        {data.constructionContractor}
+                      </Td>
                       <Td border="1px solid black">{data.projectName}</Td>
                       <Td border="1px solid black">{data.blockName}</Td>
-                      <Td border="1px solid black">{data.plotno}</Td>
-                      <Td border="1px solid black">{data.date}</Td>
-                      <Td border="1px solid black">{data.paymentType}</Td>
-                      <Td border="1px solid black">{data.amount}</Td>
-                      <Td border="1px solid black">{data.bankMode}</Td>
-                      <Td border="1px solid black">{data.cheqNo}</Td>
-                      <Td border="1px solid black">{data.bankName}</Td>
-                      <Td
-                        border="1px solid black"
-                        style={{
-                          backgroundColor:
-                            data.transactionStatus === "Clear"
-                              ? "#22c35e"
-                              : data.transactionStatus === "Provisional" ||
-                                data.transactionStatus === "Pending" ||
-                                data.transactionStatus === "PDC"
-                              ? "#ECC94B"
-                              : "inherit",
-                          color:
-                            data.transactionStatus === "Clear"
-                              ? "white"
-                              : data.transactionStatus === "Provisional" ||
-                                data.transactionStatus === "Pending" ||
-                                data.transactionStatus === "PDC"
-                              ? "black"
-                              : data.transactionStatus === "Bounced"
-                              ? "red" // Set text color to red when status is "Bounced"
-                              : "inherit",
-                          textDecoration:
-                            data.transactionStatus === "Bounced"
-                              ? "line-through"
-                              : "none",
-                        }}
-                      >
-                        {data.transactionStatus}
+                      <Td border="1px solid black">{data.plotNo}</Td>
+                      <Td border="1px solid black">
+                        {data.constructionAmount}
                       </Td>
-
-                      <Td border="1px solid black">{data.statusDate}</Td>
-                      <Td border="1px solid black">{data.remarks}</Td>
+                      <Td border="1px solid black"></Td>
+                      <Td border="1px solid black">
+                        {" "}
+                        {data.totalAmountPayable}
+                      </Td>
+                      {transaction.length > 0 ? (
+                        transaction
+                          .filter(
+                            (stat) =>
+                              stat.projectName === data.projectName &&
+                              stat.blockName === data.blockName &&
+                              stat.plotno === data.plotNo
+                          )
+                          .slice(-1) // Get the last element
+                          .map((stat) => (
+                            <React.Fragment key={stat.id} textAlign={"center"}>
+                              <Td border="1px solid black">
+                                {stat.totalReceived}
+                              </Td>
+                              <Td border="1px solid black">
+                                {stat.totalBalance}
+                              </Td>
+                            </React.Fragment>
+                          ))
+                      ) : (
+                        <React.Fragment>
+                          <Td border="1px solid black" textAlign={"center"}>
+                            ----
+                          </Td>
+                          <Td border="1px solid black" textAlign={"center"}>
+                            ----
+                          </Td>
+                        </React.Fragment>
+                      )}
                     </Tr>
                   ))}
-                  <Tr>
-                    <Td colSpan={6}></Td>
-                    <Td
-                      textAlign="right"
-                      border="1px solid black"
-                      bg={"#121212"}
-                      color={"white"}
-                      fontWeight={"bold"}
-                    >
-                      Total: {totalAmount}
-                    </Td>
-
-                    <Td colSpan={5}></Td>
-                  </Tr>
                 </Tbody>
               </TableContainer>
             </Table>
@@ -470,4 +413,4 @@ const TransactionReport = () => {
   );
 };
 
-export default TransactionReport;
+export default ContractorLedger;
