@@ -26,7 +26,7 @@ const NewBooking = () => {
   const [registerygender, setregisterygender] = useState("");
   const [discountApplicable, setdiscountApplicable] = useState("");
   const [constructionapplicable, setconstructionapplicable] = useState("");
-
+  const [broker, setBroker] = useState("");
   const plotTypes = ["Normal", "EWS", "1BHK", "2BHK", "3BHK", "4BHK", "5BHK"]; // Replace with actual plot types
   const genders = ["Male", "Female", "Other"]; // Replace with actual gender options
 
@@ -71,7 +71,7 @@ const NewBooking = () => {
   const onAddBook = async () => {
     const url = "https://lkgexcel.com/backend/setQuery.php";
     let query =
-      "INSERT INTO booking (id, projectName, blockName, plotNo, plotType, customerName, customerAddress, customerContact, registryGender, areaSqft, rateAreaSqft, totalAmount, discountApplicable, discountPercent, netAmount, registryAmount, serviceAmount, maintenanceAmount, miscAmount, grandTotal, constructionApplicable, constructionContractor, constructionAmount, totalAmountPayable, guidelineAmount, registryPercent, bankAmountPayable, bookingDate, cashAmountPayable, remarks) VALUES (NULL, '" +
+      "INSERT INTO booking (id, projectName, blockName, plotNo, plotType, customerName, customerAddress, customerContact, registryGender, areaSqft, rateAreaSqft, totalAmount, discountApplicable, discountPercent, netAmount, registryAmount, serviceAmount, maintenanceAmount, miscAmount, grandTotal, constructionApplicable, constructionContractor, constructionAmount, totalAmountPayable, guidelineAmount, registryPercent, bankAmountPayable, bookingDate, cashAmountPayable, broker,remarks) VALUES (NULL, '" +
       document.getElementById("projectName").value +
       "', '" +
       document.getElementById("blockName").value +
@@ -127,6 +127,8 @@ const NewBooking = () => {
       document.getElementById("bookingDate").value +
       "', '" +
       document.getElementById("cashAmountPayable").value +
+      "', '" +
+      document.getElementById("broker").value +
       "', '" +
       document.getElementById("remarks").value +
       "')";
@@ -202,7 +204,7 @@ const NewBooking = () => {
   const [plotData, setplotData] = useState([]);
   const [contractorData, setcontractorData] = useState([]);
   const [master, setMaster] = useState([]);
-
+  const [brokerData, setBrokerData] = useState([]);
   const loadBlocks = async (pname) => {
     let query = "SELECT * FROM block where projectName = '" + pname + "' ;";
     // alert(query);
@@ -248,7 +250,28 @@ const NewBooking = () => {
       console.log("Please Select Proper Input");
     }
   };
+  const loadBroker = async () => {
+    let query = "SELECT * FROM broker;";
+    // alert(query);
 
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    let fData = new FormData();
+
+    fData.append("query", query);
+
+    try {
+      const response = await axios.post(url, fData);
+
+      if (response && response.data) {
+        if (response.data.phpresult) {
+          setBrokerData(response.data.phpresult);
+          console.log(response.data.phpresult);
+        }
+      }
+    } catch (error) {
+      console.log("Please Select Proper Input");
+    }
+  };
   const loadPlots = async (bname) => {
     let query =
       "SELECT * FROM plot where blockName = '" +
@@ -555,6 +578,7 @@ const NewBooking = () => {
     // Call the loadContractor function when the component mounts
     loadProjects();
     loadContractor();
+    loadBroker();
   }, []);
 
   return (
@@ -1003,6 +1027,28 @@ const NewBooking = () => {
                   //onChange={handleChange}
                   required
                 />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Broker</FormLabel>
+
+                <Select
+                  id="broker"
+                  type="text"
+                  name="broker"
+                  value={broker}
+                  onChange={(e) => {
+                    setBroker();
+                  }}
+                  placeholder="Select "
+                >
+                  {brokerData.map((block) => {
+                    return (
+                      <option key={block.brokerName} value={block.brokerName}>
+                        {block.brokerName}
+                      </option>
+                    );
+                  })}
+                </Select>
               </FormControl>
               <FormControl>
                 <FormLabel>Remarks</FormLabel>

@@ -1,0 +1,35 @@
+   <p>Contractor: {constructionData.contractor}</p>
+      <p>Amount: {constructionData.amount}</p>
+
+
+      import React, { createContext, useContext, useState } from "react";
+
+const DataContext = createContext();
+
+export const DataProvider = ({ children }) => {
+  const [constructionData, setConstructionData] = useState({
+    contractor: "",
+    amount: 0,
+  });
+
+  const [projectData, setProjectData] = useState({
+    plotNo: "",
+    projectName: "",
+    blockName: "",
+  });
+
+  return (
+    <DataContext.Provider
+      value={{
+        constructionData,
+        setConstructionData,
+        projectData,
+        setProjectData,
+      }}
+    >
+      {children}
+    </DataContext.Provider>
+  );
+};
+
+export const useData = () => useContext(DataContext);

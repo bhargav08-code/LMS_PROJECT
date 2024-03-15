@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useReactToPrint } from "react-to-print";
-
+import { useNavigate } from "react-router-dom";
 import {
   Input,
   FormControl,
@@ -31,11 +31,12 @@ import {
   ModalCloseButton,
   TableContainer,
 } from "@chakra-ui/react";
+import { useData } from "../Context";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
-
+import { Link } from "react-router-dom";
 const PaymentTransaction = () => {
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
-
+  const { constructionData, setConstructionData } = useData();
   const [displa, setdisplay] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [transactionIdToDelete, setTransactionIdToDelete] = useState(null);
@@ -47,6 +48,8 @@ const PaymentTransaction = () => {
   const [blockName, setBlockname] = useState("");
   const [plotName, setPlotName] = useState("");
   const [contractorName, setcontractorName] = useState("");
+  const [brokerName, setbrokerName] = useState(" ");
+  const [brokerData, setbrokerData] = useState([]);
   const [showButtons, setShowButtons] = useState(true);
   const [showPayment, setShowPayment] = useState(true);
   const [showAction, setShowAction] = useState(true);
@@ -149,6 +152,31 @@ const PaymentTransaction = () => {
       console.log("Please Select Proper Input");
     }
   };
+
+  const loadBroker = async () => {
+    let query = "SELECT * FROM broker;";
+    // alert(query);
+
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    let fData = new FormData();
+
+    fData.append("query", query);
+
+    try {
+      const response = await axios.post(url, fData);
+
+      if (response && response.data) {
+        if (response.data.phpresult) {
+          setbrokerData(response.data.phpresult);
+          console.log("Broker data");
+          console.log(response.data.phpresult);
+        }
+      }
+    } catch (error) {
+      console.log("Please Select Proper Input");
+    }
+  };
+
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     onBeforeGetContent: () => {
@@ -722,6 +750,17 @@ const PaymentTransaction = () => {
 
       if (response && response.data) {
         if (response.data.phpresult) {
+          const constructionData = {
+            contractor: response.data.phpresult[0]["constructionContractor"],
+            amount: response.data.phpresult[0]["constructionAmount"],
+            projectName: projectName,
+            blockName: blockName,
+            plotNo: plotName,
+            brokerName: response.data.phpresult[0]["broker"],
+          };
+
+          setConstructionData(constructionData);
+
           setCurrentPlot(response.data.phpresult);
           console.log(response.data.phpresult);
           document.getElementById("plotType").value =
@@ -760,7 +799,7 @@ const PaymentTransaction = () => {
           setcontractorName(
             response.data.phpresult[0]["constructionContractor"]
           );
-          // document.getElementById("constructionContractor").value = response.data.phpresult[0]['constructionContractor'];
+          setbrokerName(response.data.phpresult[0]["broker"]);
           document.getElementById("totalAmountPayable").value =
             response.data.phpresult[0]["totalAmountPayable"];
           document.getElementById("guidelineAmount").value =
@@ -1054,7 +1093,7 @@ const PaymentTransaction = () => {
     loadProjects();
     loadTransferProjects();
     loadTransferAllProjects();
-
+    loadBroker();
     loadContractor();
   }, []);
   const deletePayment = async () => {
@@ -1661,7 +1700,6 @@ const PaymentTransaction = () => {
         updatedValues.totalReceived;
     }
   };
-
   const insertTransaction = async (
     projectName,
     blockName,
@@ -1677,20 +1715,45 @@ const PaymentTransaction = () => {
     remarks
   ) => {
     const url = "https://lkgexcel.com/backend/setQuery.php";
-    const query = `INSERT INTO transaction (projectName, blockName, plotno, date, paymentType, amount, bankMode, cheqNo, bankName, transactionStatus, statusDate, remarks) 
-                   VALUES ('${projectName}', '${blockName}', '${plotNo}', '${date}', '${paymentType}', ${amount}, '${bankMode}', '${cheqNo}', '${bankName}', '${transactionStatus}', '${statusDate}', '${remarks}')`;
+
+    // Construct the query to insert the transaction
+    const query = `
+      INSERT INTO transaction (projectName, blockName, plotno, date, paymentType, amount, bankMode, cheqNo, bankName, transactionStatus, statusDate, remarks) 
+      VALUES ('${projectName}', '${blockName}', '${plotNo}', '${date}', '${paymentType}', ${amount}, '${bankMode}', '${cheqNo}', '${bankName}', '${transactionStatus}', '${statusDate}', '${remarks}')
+    `;
+
+    // Construct the update query to subtract the amount from balances
+    const updateQuery = `
+      UPDATE transaction
+      SET totalReceived = totalReceived + ${amount},
+          cashReceived = cashReceived + ${paymentType === "Cash" ? amount : 0},
+          bankReceived = bankReceived + ${paymentType === "Bank" ? amount : 0},
+          cashBalance = cashBalance - ${paymentType === "Cash" ? amount : 0},
+          bankBalance = bankBalance - ${paymentType === "Bank" ? amount : 0},
+          totalBalance = totalBalance - ${amount}
+      WHERE projectName = '${projectName}' AND blockName = '${blockName}' AND plotno = '${plotNo}'
+      ORDER BY date DESC
+      LIMIT 1
+    `;
 
     const formData = new FormData();
     formData.append("query", query);
 
     try {
+      // Send the query to insert the transaction
       const response = await axios.post(url, formData);
+
+      // Send the update query to adjust balances
+      formData.set("query", updateQuery);
+      await axios.post(url, formData);
+
       return response.data; // Return the inserted data or success status
     } catch (error) {
       console.error("Error inserting transaction:", error);
       throw error; // Throw the error for handling in the calling code
     }
   };
+
   // Function to handle transfer
   const handleTransfer = async () => {
     if (transferData && transactionData[transferData.index]) {
@@ -1781,7 +1844,13 @@ const PaymentTransaction = () => {
       console.error("Error: Selected row data is undefined.");
     }
   };
-
+  const handleContractorButtonClick = () => {
+    navigate("/contractortransaction", { state: { constructionData } });
+  };
+  const handleBrokerButtonClick = () => {
+    navigate("/brokertransaction", { state: { constructionData } });
+  };
+  const navigate = useNavigate();
   return (
     <Box display={"flex"} height={"100vh"} maxW={"100vw"} ref={componentRef}>
       <Box flex={"20%"} borderRight={"1px solid grey"}>
@@ -1875,24 +1944,6 @@ const PaymentTransaction = () => {
               </Select>
             </Flex>
           </FormControl>
-
-          {/* <FormControl>
-            <Flex
-              align="center"
-              justifyContent={"space-between"}
-              padding={"0px 4px 0px 4px"}
-            >
-              <FormLabel htmlFor="plotType" fontSize={"12px"}>
-                Plot Type
-              </FormLabel>
-              <Input
-                id="plotType"
-                type="text"
-                placeholder="Enter Plot Type"
-                w={"60%"}
-              />
-            </Flex>
-          </FormControl> */}
 
           <FormControl>
             <Flex
@@ -2206,6 +2257,34 @@ const PaymentTransaction = () => {
               </Select>
             </Flex>
           </FormControl>
+          <FormControl>
+            <Flex
+              align="center"
+              justifyContent={"space-between"}
+              padding={"0px 4px 0px 4px"}
+            >
+              <FormLabel htmlFor="broker" fontSize={"12px"}>
+                Broker
+              </FormLabel>
+              <Select
+                id="broker"
+                placeholder="Select"
+                value={brokerName}
+                onChange={(e) => {
+                  setbrokerName(e.target.value); // Pass the selected value to setbrokerName
+                }}
+                w={"60%"}
+              >
+                {brokerData.map((block) => {
+                  return (
+                    <option key={block.brokerName} value={block.brokerName}>
+                      {block.brokerName}
+                    </option>
+                  );
+                })}
+              </Select>
+            </Flex>
+          </FormControl>
 
           <FormControl>
             <Flex
@@ -2318,10 +2397,26 @@ const PaymentTransaction = () => {
           <Flex padding={"0px 4px 0px 4px"} alignSelf={"end"}>
             {showAction && (
               <>
-                <Button colorScheme="blue" onClick={editPlot}>
-                  {" "}
-                  Edit
-                </Button>
+                <HStack>
+                  <Button
+                    as={Link}
+                    to="/contractortransaction"
+                    onClick={handleContractorButtonClick}
+                  >
+                    Contractor
+                  </Button>
+                  <Button
+                    as={Link}
+                    to="/brokertransaction"
+                    onClick={handleBrokerButtonClick}
+                  >
+                    Broker
+                  </Button>
+                  <Button colorScheme="blue" onClick={editPlot}>
+                    {" "}
+                    Save
+                  </Button>
+                </HStack>
               </>
             )}
           </Flex>
@@ -2386,35 +2481,35 @@ const PaymentTransaction = () => {
               >
                 <VStack>
                   <Text>
-                    Total Amount Payable = <span id="totalPayable">0</span>
+                    Total Payable = <span id="totalPayable">0</span>
                   </Text>
                   <Text>
-                    Bank Amount Payable = <span id="bankPayable">0</span>
+                    Bank Payable = <span id="bankPayable">0</span>
                   </Text>
                   <Text>
-                    Cash Amount Payable = <span id="cashPayable">0</span>
-                  </Text>
-                </VStack>
-                <VStack>
-                  <Text>
-                    Total Amount Received = <span id="totalReceived">0</span>
-                  </Text>
-                  <Text>
-                    Bank Amount Received = <span id="bankReceived">0</span>
-                  </Text>
-                  <Text>
-                    Cash Amount Received = <span id="cashReceived">0</span>
+                    Cash Payable = <span id="cashPayable">0</span>
                   </Text>
                 </VStack>
                 <VStack>
                   <Text>
-                    Total Amount Balance = <span id="totalBalance">0</span>
+                    Total Received = <span id="totalReceived">0</span>
                   </Text>
                   <Text>
-                    Bank Amount Balance = <span id="bankBalance">0</span>
+                    Bank Received = <span id="bankReceived">0</span>
                   </Text>
                   <Text>
-                    Cash Amount Balance = <span id="cashBalance">0</span>
+                    Cash Received = <span id="cashReceived">0</span>
+                  </Text>
+                </VStack>
+                <VStack>
+                  <Text>
+                    Total Balance = <span id="totalBalance">0</span>
+                  </Text>
+                  <Text>
+                    Bank Balance = <span id="bankBalance">0</span>
+                  </Text>
+                  <Text>
+                    Cash Balance = <span id="cashBalance">0</span>
                   </Text>
                 </VStack>
               </HStack>
@@ -2423,7 +2518,7 @@ const PaymentTransaction = () => {
               {showButtons && (
                 <>
                   <Button
-                    colorScheme="yellow"
+                    colorScheme="gray"
                     size={"sm"}
                     onClick={onRegistry}
                     className="hide-on-print"
@@ -2431,24 +2526,24 @@ const PaymentTransaction = () => {
                     Registry
                   </Button>
                   <Button
-                    colorScheme="yellow"
                     size={"sm"}
                     onClick={cancelPlot}
+                    colorScheme="gray"
                     className="hide-on-print"
                   >
                     Cancel Plot
                   </Button>
                   <Button
-                    colorScheme="yellow"
                     size={"sm"}
+                    colorScheme="gray"
                     onClick={deletePlot}
                     className="hide-on-print"
                   >
                     Delete Plot
                   </Button>
                   <Button
-                    colorScheme="yellow"
                     size={"sm"}
+                    colorScheme="gray"
                     className="hide-on-print"
                     onClick={() => {
                       setIsTransferAllModalOpen(true);
@@ -2457,8 +2552,8 @@ const PaymentTransaction = () => {
                     Transfer All
                   </Button>
                   <Button
-                    colorScheme="yellow"
                     size={"sm"}
+                    colorScheme="gray"
                     className="hide-on-print"
                   >
                     History
@@ -2675,13 +2770,9 @@ const PaymentTransaction = () => {
           <Divider w={"100%"} bg={"#121212"} />
           <Box display={""}>
             <TableContainer>
-              <Table>
+              <Table size={"sm"}>
                 <Thead color={"white"}>
-                  <Tr
-                    bg={"#121212"}
-                    color={"whitesmoke"}
-                    border="1px solid black"
-                  >
+                  <Tr bg={"#121212"}>
                     <Th color={"white"} border="1px solid black" p={"8px"}>
                       SrNo.
                     </Th>
@@ -2947,6 +3038,7 @@ const PaymentTransaction = () => {
                             </Button>
                             <Button
                               colorScheme="green"
+                              size={"sm"}
                               onClick={() => handleEditClick(res)}
                               isDisabled={res.Status === "Transferred"}
                             >

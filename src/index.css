@@ -16,3 +16,9 @@ tbody {
   text-decoration: line-through;
   color: red;
 }
+@media print {
+  .print {
+    font-size: 10px;
+    padding-right: 5px;
+  }
+}

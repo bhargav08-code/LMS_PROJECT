@@ -69,13 +69,35 @@ const AddBroker = () => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add your logic for form submission
+    console.log("Form Data:", formData);
+  };
   const onAdd = async () => {
     const url = "https://lkgexcel.com/backend/setQuery.php";
-    const query = `INSERT INTO broker (companyName, brokerName, contact, emailid, address, city, state) VALUES ('${formData.companyName}', '${formData.brokerName}', '${formData.contact}', '${formData.email}', '${formData.address}', '${formData.city}', '${formData.state}')`;
+    let query =
+      "INSERT INTO `broker` (`id`, `companyName`, `brokerName`, `contact`, `emailid`, `address`, `city`, `state`) VALUES (NULL, '" +
+      formData.companyName +
+      "', '" +
+      formData.brokerName +
+      "', '" +
+      formData.contact +
+      "', '" +
+      formData.email +
+      "', '" +
+      formData.address +
+      "', '" +
+      formData.city +
+      "', '" +
+      formData.state +
+      "');";
+
+    let fData = new FormData();
+    fData.append("query", query);
 
     try {
-      await axios.post(url, { query });
+      const response = await axios.post(url, fData);
       toast({
         title: "Broker added successfully!",
         status: "success",
@@ -83,6 +105,7 @@ const AddBroker = () => {
         position: "top",
         isClosable: true,
       });
+
       // Clear the form data after successful submission
       setFormData({
         companyName: "",
@@ -103,7 +126,7 @@ const AddBroker = () => {
       <Center pb={8}>
         <Heading>Add Broker</Heading>
       </Center>
-      <form onSubmit={onAdd}>
+      <form onSubmit={handleSubmit}>
         <Grid templateColumns="repeat(3, 1fr)" gap={4}>
           <FormControl colSpan={3} isRequired>
             <FormLabel>Company Name</FormLabel>
@@ -178,7 +201,7 @@ const AddBroker = () => {
             </Select>
           </FormControl>
         </Grid>
-        <Button colorScheme="blue" type="submit" mt={8}>
+        <Button colorScheme="blue" type="submit" mt={8} onClick={onAdd}>
           Add Broker
         </Button>
       </form>

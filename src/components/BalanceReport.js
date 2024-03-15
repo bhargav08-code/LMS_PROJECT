@@ -22,11 +22,20 @@ import {
   Button,
   FormLabel,
   Badge,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useReactToPrint } from "react-to-print";
+
 const BalanceReport = () => {
+  const [buttonClicked, setButtonClicked] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [transaction, setTransaction] = useState([]);
   const [plotSatus, setPlotStatus] = useState([]);
@@ -215,6 +224,14 @@ const BalanceReport = () => {
   const tableRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => tableRef.current,
+    onBeforeGetContent: () => {
+      setLoading(true);
+      setButtonClicked(true); // Set button clicked to true when print is initiated
+    },
+    onAfterPrint: () => {
+      setLoading(false);
+      setButtonClicked(false); // Reset button clicked to false after print is done
+    },
   });
   return (
     <>
@@ -414,9 +431,10 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      p={"11px"}
                       textAlign={"center"}
                       lineHeight={"10px"}
+                      className="print"
                     >
                       {" "}
                       SrNo
@@ -424,7 +442,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      p={"11px"}
+                      className="print"
                       textAlign={"center"}
                     >
                       Project
@@ -433,6 +452,7 @@ const BalanceReport = () => {
                       border="1px solid black"
                       color={"white"}
                       p={"5px "}
+                      className="print"
                       textAlign={"center"}
                     >
                       Block
@@ -440,7 +460,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      className="print"
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Plot
@@ -448,7 +469,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      className="print"
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Cust
@@ -456,7 +478,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      className="print"
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Cust Contact
@@ -464,7 +487,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      className="print"
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Const App
@@ -472,7 +496,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      className="print"
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Total Bal
@@ -480,7 +505,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      p={"11px"}
+                      className="print"
                       textAlign={"center"}
                     >
                       Bank Bal
@@ -488,7 +514,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      className="print"
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Cash Bal
@@ -496,7 +523,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      p={"11px"}
+                      className="print"
                       textAlign={"center"}
                     >
                       Total Rec
@@ -504,31 +532,35 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      className="print"
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Bank Rec
                     </Th>{" "}
                     <Th
                       border="1px solid black"
+                      className="print"
                       color={"white"}
-                      p={"12px"}
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Cash Rec
                     </Th>{" "}
                     <Th
                       border="1px solid black"
+                      className="print"
                       color={"white"}
-                      p={"12px"}
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Status Date
                     </Th>
                     <Th
                       border="1px solid black"
+                      className="print"
                       color={"white"}
-                      p={"12px"}
+                      p={"11px"}
                       textAlign={"center"}
                     >
                       Status
@@ -536,7 +568,8 @@ const BalanceReport = () => {
                     <Th
                       border="1px solid black"
                       color={"white"}
-                      p={"12px"}
+                      p={"11px"}
+                      className="print"
                       textAlign={"center"}
                     >
                       Registry
@@ -548,28 +581,32 @@ const BalanceReport = () => {
                     <Tr key={data.srNo}>
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        p={"11px"}
+                        className="print"
                         textAlign={"center"}
                       >
                         {index + 1}
                       </Td>
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        className="print"
+                        p={"11px"}
                         textAlign={"center"}
                       >
                         {data.projectName}
                       </Td>
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        p={"11px"}
+                        className="print"
                         textAlign={"center"}
                       >
                         {data.blockName}
                       </Td>
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        p={"11px"}
+                        className="print"
                         textAlign={"center"}
                       >
                         {data.plotno}
@@ -598,21 +635,24 @@ const BalanceReport = () => {
                           <React.Fragment key={stat.id}>
                             <Td
                               border="1px solid black"
-                              p={"12px"}
+                              className="print"
+                              p={"11px"}
                               textAlign={"center"}
                             >
                               {stat.customerName}
                             </Td>
                             <Td
                               border="1px solid black"
-                              p={"12px"}
+                              className="print"
+                              p={"11px"}
                               textAlign={"center"}
                             >
                               {stat.customerContact}
                             </Td>
                             <Td
                               border="1px solid black"
-                              p={"12px"}
+                              className="print"
+                              p={"11px"}
                               textAlign={"center"}
                             >
                               {stat.constructionApplicable}
@@ -621,21 +661,24 @@ const BalanceReport = () => {
                         ))}
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        p={"11px"}
+                        className="print"
                         textAlign={"center"}
                       >
                         {data.totalBalance}
                       </Td>
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        p={"11px"}
+                        className="print"
                         textAlign={"center"}
                       >
                         {data.bankBalance}
                       </Td>
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        className="print"
+                        p={"11px"}
                         textAlign={"center"}
                       >
                         {data.cashBalance}
@@ -643,28 +686,32 @@ const BalanceReport = () => {
 
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        className="print"
+                        p={"11px"}
                         textAlign={"center"}
                       >
                         {data.totalReceived}
                       </Td>
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        className="print"
+                        p={"11px"}
                         textAlign={"center"}
                       >
                         {data.bankReceived}
                       </Td>
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        className="print"
+                        p={"11px"}
                         textAlign={"center"}
                       >
                         {data.cashReceived}
                       </Td>
                       <Td
                         border="1px solid black"
-                        p={"12px"}
+                        className="print"
+                        p={"11px"}
                         textAlign={"center"}
                       >
                         {data.statusDate}
@@ -693,7 +740,7 @@ const BalanceReport = () => {
                         )
                         .map((stat) => (
                           <React.Fragment key={stat.id} textAlign={"center"}>
-                            <Td border="1px solid black">
+                            <Td border="1px solid black" className="print">
                               <Badge
                                 colorScheme={
                                   stat.plotStatus === "Available"
@@ -714,14 +761,19 @@ const BalanceReport = () => {
                                 <Td
                                   key={index}
                                   border="1px solid black"
-                                  p={"12px"}
+                                  p={"11px"}
+                                  className="print"
                                   textAlign={"center"}
                                 >
                                   {rd.registryDate}
                                 </Td>
                               ))
                             ) : (
-                              <Td border="1px solid black" textAlign={"center"}>
+                              <Td
+                                border="1px solid black"
+                                textAlign={"center"}
+                                className="print"
+                              >
                                 ----
                               </Td>
                             )}

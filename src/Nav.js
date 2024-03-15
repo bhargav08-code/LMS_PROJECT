@@ -190,7 +190,9 @@ const Nav = ({ isLoggedIn, handleLogout }) => {
                 <MenuItem as={Link} to="/brokerlist">
                   Broker List
                 </MenuItem>
-                <MenuItem>Broker Ledger</MenuItem>
+                <MenuItem as={Link} to="/brokerledger">
+                  Broker Ledger
+                </MenuItem>
               </MenuList>
             </Menu>
           </HStack>

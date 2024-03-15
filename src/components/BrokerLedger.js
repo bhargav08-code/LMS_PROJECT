@@ -25,7 +25,7 @@ import {
 import axios from "axios";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
-const ContractorLedger = () => {
+const BrokerLedger = () => {
   const [booking, setBooking] = useState([]);
   const [transaction, setTransaction] = useState([]);
   const [selectedProject, setSelectedProject] = useState([]);
@@ -150,7 +150,7 @@ const ContractorLedger = () => {
   return (
     <>
       <Center>
-        <Heading size={"md"}>Contractor Ledger</Heading>
+        <Heading size={"md"}>Broker Ledger</Heading>
       </Center>
       <Box maxW={"100%"} overflowX={"scroll"} marginTop={"2rem"}>
         <Flex justifyContent={"space-evenly"} p={"31px"}>
@@ -193,7 +193,7 @@ const ContractorLedger = () => {
           </Menu>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              Select Contractors
+              Select Broker
             </MenuButton>
             <MenuList>
               <MenuItem>
@@ -326,7 +326,7 @@ const ContractorLedger = () => {
                       SrNo
                     </Th>
                     <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Contractor Name
+                      Broker Name
                     </Th>
                     <Th border="1px solid black" color={"white"} p={"31px"}>
                       Project Name
@@ -338,10 +338,10 @@ const ContractorLedger = () => {
                       Plot No
                     </Th>
                     <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Constructor Amt
+                      Net Amount
                     </Th>
                     <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Less (%)
+                      Brokerage (%)
                     </Th>
                     <Th border="1px solid black" color={"white"} p={"31px"}>
                       Total Amt Payable
@@ -413,4 +413,4 @@ const ContractorLedger = () => {
   );
 };
 
-export default ContractorLedger;
+export default BrokerLedger;
