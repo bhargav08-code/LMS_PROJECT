@@ -32,6 +32,41 @@ const ContractorTransaction = () => {
   const [totalPayable, setTotalPayable] = useState(0);
   const [fetchData, setFetchData] = useState([""]);
   const toast = useToast(); // Define useToast hook
+  const loadAmounts = async () => {
+    const { projectName, blockName, contractor, plotNo } = constructionData;
+
+    const query = `SELECT lessPercent, totalPaid, totalBalance, totalPayable FROM contractorTransaction WHERE projectName='${projectName}' AND blockName='${blockName}' AND contractor='${contractor}' AND plotNo='${plotNo}'`;
+
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    const formData = new FormData();
+    formData.append("query", query);
+
+    try {
+      const response = await axios.post(url, formData);
+      if (
+        response &&
+        response.data &&
+        response.data.phpresult &&
+        response.data.phpresult.length > 0
+      ) {
+        const reversedResult = response.data.phpresult.reverse(); // Reverse the order of the array
+        const { lessPercent, totalPaid, totalBalance, totalPayable } =
+          reversedResult[0];
+        setLessPercent(lessPercent);
+        setTotalPaid(totalPaid);
+        setTotalBalance(totalBalance);
+        setTotalPayable(totalPayable);
+      } else {
+        // No matching data found
+        setLessPercent(0);
+        setTotalPaid(0);
+        setTotalBalance(0);
+        setTotalPayable(0);
+      }
+    } catch (error) {
+      console.log("Error fetching contractor transaction data:", error);
+    }
+  };
   const loadData = async () => {
     let query = "SELECT * FROM `contractorTransaction`;";
 
@@ -53,6 +88,7 @@ const ContractorTransaction = () => {
       console.log("Please Select Proper Input");
     }
   };
+
   // Calculate total payable only once when the component mounts
   useEffect(() => {
     const amtPayable =
@@ -65,7 +101,7 @@ const ContractorTransaction = () => {
   const handleSubmit = async () => {
     try {
       const amountPaid = parseFloat(amount);
-      const updatedTotalPaid = totalPaid + amountPaid;
+      const updatedTotalPaid = Number(totalPaid) + amountPaid;
 
       const updatedTotalBalance = totalBalance - amountPaid; // Update total balance
 
@@ -107,6 +143,7 @@ const ContractorTransaction = () => {
         setTotalPaid(updatedTotalPaid); // Update total paid state
         setTotalBalance(updatedTotalBalance); // Update total balance state
         await loadData();
+        await loadAmounts();
       } else {
         console.error("Failed to save contractor transaction:", response.data);
       }
@@ -122,6 +159,7 @@ const ContractorTransaction = () => {
   };
   useEffect(() => {
     loadData();
+    loadAmounts();
   }, []);
   return (
     <Box display={"flex"} height={"100vh"} maxW={"100vw"}>
@@ -193,7 +231,7 @@ const ContractorTransaction = () => {
                 id="amount"
                 type="number"
                 value={amount} // Value from state
-                onChange={(e) => setAmount(e.target.value)} // Update state onChange
+                onChange={(e) => setAmount(parseFloat(e.target.value))} // Update state onChange
               />
             </FormControl>
 
