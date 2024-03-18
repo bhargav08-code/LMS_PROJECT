@@ -2,34 +2,179 @@ import {
   Box,
   Text,
   VStack,
-  Flex,
   FormControl,
   FormLabel,
   Input,
   Table,
   Thead,
   Tbody,
+  HStack,
   Tr,
   Th,
   Td,
   Button,
-  useToast,
 } from "@chakra-ui/react";
 import { useData } from "../Context";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
 const BrokerTransaction = () => {
   const { constructionData } = useData();
   const [fetchData, setFetchData] = useState([]);
   const [masterData, setMasterData] = useState([]);
-  const [amountPaid, setAmountPaid] = useState(0);
+
   const [netAmount, setNetAmount] = useState(0);
   const [brokerageValue, setBrokerageValue] = useState(0);
   const [totalPayable, setTotalPayable] = useState(0);
   const [amountBalance, setAmountBalance] = useState(0);
   const [transaction, setTransaction] = useState([""]);
   const [transactionDate, setTransactionDate] = useState("");
-  const toast = useToast();
+  const [totalPaid, setTotalPaid] = useState(0);
+  const [amount, setAmount] = useState("");
+  const [cheqNo, setCheqNo] = useState("");
+  const [remarks, setRemarks] = useState("");
+  const loadBrokerAmounts = async () => {
+    const { projectName, blockName, brokerName, plotNo } = constructionData;
+
+    const query = `SELECT totalPaid, totalBalance, totalPayable FROM brokerTransaction WHERE projectName='${projectName}' AND blockName='${blockName}' AND broker='${brokerName}' AND plotNo='${plotNo}'`;
+
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    const formData = new FormData();
+    formData.append("query", query);
+
+    try {
+      const response = await axios.post(url, formData);
+      if (
+        response &&
+        response.data &&
+        response.data.phpresult &&
+        response.data.phpresult.length > 0
+      ) {
+        const reversedResult = response.data.phpresult.reverse(); // Reverse the order of the array
+        const { totalPaid, totalBalance, totalPayable } = reversedResult[0];
+        setTotalPaid(totalPaid);
+        setAmountBalance(totalBalance);
+        setTotalPayable(totalPayable);
+      } else {
+        // No matching data found
+        setTotalPaid(0);
+        setAmountBalance(0);
+        setTotalPayable(0);
+      }
+    } catch (error) {
+      console.log("Error fetching broker transaction data:", error);
+    }
+  };
+
+  const loadTransaction = async () => {
+    let query = "SELECT * FROM `brokerTransaction`;";
+
+    const url = "https://lkgexcel.com/backend/getQuery.php";
+    let fData = new FormData();
+
+    fData.append("query", query);
+
+    try {
+      const response = await axios.post(url, fData);
+
+      if (response && response.data) {
+        if (response.data.phpresult) {
+          setTransaction(response.data.phpresult);
+          console.log("master coming");
+          console.log(response.data.phpresult);
+        }
+      }
+    } catch (error) {
+      console.log("Please Select Proper Input");
+    }
+  };
+
+  useEffect(() => {
+    const fetchDataItem = fetchData.find(
+      (data) =>
+        data.projectName === constructionData.projectName &&
+        data.blockName === constructionData.blockName &&
+        data.plotNo === constructionData.plotNo
+    );
+    setNetAmount(fetchDataItem?.netAmount || 0);
+  }, [fetchData, constructionData]);
+
+  useEffect(() => {
+    const masterDataItem = masterData.find(
+      (data) => data.projectName === constructionData.projectName
+    );
+    setBrokerageValue(masterDataItem?.brokerageValue || 0);
+  }, [masterData, constructionData]);
+
+  useEffect(() => {
+    const calculatedTotalPayable = (netAmount * brokerageValue) / 100;
+    setTotalPayable(calculatedTotalPayable);
+
+    // Calculate the total balance based on the difference between totalPayable and totalPaid
+    const calculatedAmountBalance = calculatedTotalPayable - totalPaid;
+    setAmountBalance(calculatedAmountBalance);
+  }, [netAmount, brokerageValue, totalPaid]); // Make sure totalPaid is in the dependency array
+
+  const handlePaymentSubmit = async () => {
+    try {
+      const paidAmount = parseFloat(amount);
+      const updatedTotalPaid = Number(totalPaid) + paidAmount;
+      const updatedAmountBalance = totalPayable - updatedTotalPaid;
+
+      const data = {
+        broker: constructionData.brokerName,
+        projectName: constructionData.projectName,
+        blockName: constructionData.blockName,
+        plotNo: constructionData.plotNo,
+        netAmount: netAmount,
+        brokerage: brokerageValue,
+        amount: paidAmount, // The amount paid in this transaction
+        totalPayable: totalPayable, // Total payable remains the same
+        totalPaid: updatedTotalPaid, // Updated total paid
+        totalBalance: updatedAmountBalance, // Updated total balance
+        cheq: cheqNo,
+        date: transactionDate,
+        remarks: remarks,
+      };
+
+      // Prepare the SQL query string
+      const query = `INSERT INTO brokerTransaction (projectName, blockName, plotNo, broker, netAmount, brokerage, amount, totalPayable, totalPaid, totalBalance, cheq, date, remarks) VALUES ('${data.projectName}', '${data.blockName}', '${data.plotNo}', '${data.broker}', '${data.netAmount}', '${data.brokerage}', '${data.amount}', '${data.totalPayable}', '${data.totalPaid}', '${data.totalBalance}', '${data.cheq}', '${data.date}', '${data.remarks}')`;
+
+      console.log("Payment submitted:");
+      console.log("Date:", transactionDate);
+      console.log("Cheque/Ref No:", cheqNo);
+      console.log("Remarks:", remarks);
+      console.log("Amount:", amount);
+      console.log("Total Paid:", updatedTotalPaid);
+      console.log("Amount Balance:", updatedAmountBalance);
+      console.log("Query:", query); // Log the SQL query string
+
+      // Here you can add logic to save the payment transaction to your backend
+      const setQueryUrl = "https://lkgexcel.com/backend/setQuery.php";
+      const formData = new FormData();
+      formData.append("query", query);
+
+      const response = await axios.post(setQueryUrl, formData);
+
+      if (response.status === 200) {
+        console.log("Payment transaction saved successfully:", response.data);
+        // Optionally, you can update state variables or perform any additional actions after successful submission
+      } else {
+        console.error("Failed to save payment transaction:", response.data);
+      }
+      setTotalPaid(updatedTotalPaid);
+      setAmountBalance(updatedAmountBalance);
+      await loadTransaction();
+      await loadBrokerAmounts();
+      // Reset form fields after successful submission
+      setTransactionDate("");
+      setCheqNo("");
+      setRemarks("");
+      setAmount("");
+    } catch (error) {
+      console.error("Error submitting payment:", error.message);
+    }
+  };
 
   const loadData = async () => {
     let query = "SELECT * FROM `booking`;";
@@ -53,6 +198,7 @@ const BrokerTransaction = () => {
       console.log("Please Select Proper Input");
     }
   };
+
   const loadMasterData = async () => {
     let query = "SELECT * FROM `master`;";
 
@@ -76,99 +222,13 @@ const BrokerTransaction = () => {
     }
   };
 
-  const loadTransaction = async () => {
-    let query = "SELECT * FROM `brokertransaction`;";
-
-    const url = "https://lkgexcel.com/backend/getQuery.php";
-    let fData = new FormData();
-
-    fData.append("query", query);
-
-    try {
-      const response = await axios.post(url, fData);
-
-      if (response && response.data) {
-        if (response.data.phpresult) {
-          setTransaction(response.data.phpresult);
-          console.log("master coming");
-          console.log(response.data.phpresult);
-        }
-      }
-    } catch (error) {
-      console.log("Please Select Proper Input");
-    }
-  };
   useEffect(() => {
     loadData();
     loadMasterData();
     loadTransaction();
+    loadBrokerAmounts();
   }, []);
-  useEffect(() => {
-    const fetchDataItem = fetchData.find(
-      (data) =>
-        data.projectName === constructionData.projectName &&
-        data.blockName === constructionData.blockName &&
-        data.plotNo === constructionData.plotNo
-    );
-    setNetAmount(fetchDataItem?.netAmount || 0);
-  }, [fetchData, constructionData]);
 
-  useEffect(() => {
-    const masterDataItem = masterData.find(
-      (data) => data.projectName === constructionData.projectName
-    );
-    setBrokerageValue(masterDataItem?.brokerageValue || 0);
-  }, [masterData, constructionData]);
-
-  useEffect(() => {
-    const calculatedTotalPayable = (netAmount * brokerageValue) / 100;
-    setTotalPayable(calculatedTotalPayable);
-    const calculatedAmountBalance = calculatedTotalPayable - amountPaid;
-    setAmountBalance(calculatedAmountBalance);
-  }, [netAmount, brokerageValue, amountPaid]);
-  const addTransaction = async () => {
-    try {
-      const data = {
-        broker: constructionData.brokerName,
-        projectName: constructionData.projectName,
-        blockName: constructionData.blockName,
-        plotNo: constructionData.plotNo,
-        netAmount: netAmount,
-        brokerage: brokerageValue,
-        AmtPayable: totalPayable,
-        AmtPaid: amountPaid,
-        AmtBal: amountBalance,
-        date: transactionDate,
-      };
-
-      const url = "https://lkgexcel.com/backend/setQuery.php";
-      const query = `INSERT INTO brokertransaction (broker, projectName, blockName, plotNo, netAmount, brokerage, AmtPayable, AmtPaid, AmtBal, date) VALUES ('${data.broker}', '${data.projectName}', '${data.blockName}', '${data.plotNo}', '${data.netAmount}', '${data.brokerage}', '${data.AmtPayable}', '${data.AmtPaid}', '${data.AmtBal}', '${data.date}')`;
-
-      const formData = new FormData();
-      formData.append("query", query);
-
-      const response = await axios.post(url, formData);
-
-      if (response.status === 200) {
-        console.log(
-          "Contractor transaction saved successfully:",
-          response.data
-        );
-        toast({
-          title: "Transaction added successfully!",
-          status: "success",
-          duration: 3000,
-          position: "top",
-          isClosable: true,
-        });
-        loadTransaction();
-      } else {
-        console.error("Failed to save broker transaction:", response.data);
-      }
-    } catch (error) {
-      console.error("Error saving broker transaction:", error.message);
-    }
-  };
   return (
     <Box display={"flex"} height={"80vh"} maxW={"100vw"}>
       <Box flex={"15%"} borderRight={"1px solid grey"}>
@@ -194,59 +254,89 @@ const BrokerTransaction = () => {
           <Text fontSize={"18px"} fontWeight={"semibold"}>
             Total Payable :- {totalPayable}
           </Text>
-          <FormControl>
-            <Flex align="center" justifyContent={"space-between"}>
-              <FormLabel fontSize={"18px"} fontWeight={"semibold"}>
-                Amount Paid :-
-              </FormLabel>
-              <Input
-                type="number"
-                placeholder="Enter Value"
-                w={"40%"}
-                position={"relative"}
-                right={"40px"}
-                value={amountPaid}
-                onChange={(e) => setAmountPaid(parseFloat(e.target.value))}
-              />
-            </Flex>
-          </FormControl>
+          <Text fontSize={"18px"} fontWeight={"semibold"}>
+            Total Paid:-{totalPaid}
+          </Text>
           <Text fontSize={"18px"} fontWeight={"semibold"}>
             Amount Balance :- {amountBalance}
           </Text>
-          <FormControl>
-            <Flex align="center" justifyContent={"space-between"}>
-              <FormLabel fontSize={"18px"} fontWeight={"semibold"}>
-                Date :-
-              </FormLabel>
-              <Input
-                type="date"
-                w={"60%"}
-                position={"relative"}
-                right={"40px"}
-                value={transactionDate}
-                onChange={(e) => setTransactionDate(e.target.value)}
-              />
-            </Flex>
-          </FormControl>
-          <Button onClick={addTransaction}>Save</Button>
         </VStack>
       </Box>
       <Box flex={"85%"} maxW={"80%"}>
         <Text marginLeft={"10px"}>Broker Transaction</Text>
-        <Table variant="simple" marginTop={"20px"}>
+        <Box
+          display="flex"
+          alignItems={"center"}
+          justifyContent={"center"}
+          mt={"15px"}
+        >
+          <HStack alignItems={"flex-start"}>
+            <FormControl>
+              <FormLabel>Date :-</FormLabel>
+              <Input
+                type="date"
+                value={transactionDate}
+                onChange={(e) => setTransactionDate(e.target.value)}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Amount</FormLabel>
+              <Input
+                id="amount"
+                type="number"
+                value={amount} // Value from state
+                onChange={(e) => setAmount(parseFloat(e.target.value))} // Update state onChange
+              />
+            </FormControl>
+
+            {/* Input field for Cheq/Ref No */}
+            <FormControl>
+              <FormLabel>Chq/Ref No</FormLabel>
+              <Input
+                id="cheqNo"
+                type="text"
+                value={cheqNo} // Value from state
+                onChange={(e) => setCheqNo(e.target.value)} // Update state onChange
+              />
+            </FormControl>
+
+            {/* Input field for Remarks */}
+            <FormControl>
+              <FormLabel>Remarks</FormLabel>
+              <Input
+                id="remarks"
+                type="text"
+                value={remarks} // Value from state
+                onChange={(e) => setRemarks(e.target.value)} // Update state onChange
+              />
+            </FormControl>
+            <Button
+              colorScheme="telegram"
+              alignSelf={"flex-end"}
+              size={"md"}
+              w={"60%"}
+              mt={"30px"}
+              onClick={handlePaymentSubmit}
+            >
+              Submit
+            </Button>
+          </HStack>
+        </Box>
+        <Table variant="simple" marginTop={"20px"} size="sm">
           <Thead>
             <Tr bg={"#121212"} color={"whitesmoke"}>
               <Th color={"white"} border="1px solid black">
-                Broker
+                Contractor
               </Th>
               <Th color={"white"} border="1px solid black">
-                Project Name
+                Project
               </Th>
               <Th color={"white"} border="1px solid black">
-                Block Name
+                Block
               </Th>
               <Th color={"white"} border="1px solid black">
-                Plot No
+                Plot
               </Th>
               <Th color={"white"} border="1px solid black">
                 Net Amount
@@ -255,16 +345,19 @@ const BrokerTransaction = () => {
                 Brokerage
               </Th>
               <Th color={"white"} border="1px solid black">
-                Amt Payable
+                Amount
               </Th>{" "}
               <Th color={"white"} border="1px solid black">
-                Amt Paid
-              </Th>
-              <Th color={"white"} border="1px solid black">
-                Amt Bal
+                Cheq
               </Th>
               <Th color={"white"} border="1px solid black">
                 Date
+              </Th>
+              <Th color={"white"} border="1px solid black">
+                Remarks
+              </Th>
+              <Th color={"white"} border="1px solid black">
+                Action
               </Th>
             </Tr>
           </Thead>
@@ -283,10 +376,20 @@ const BrokerTransaction = () => {
                     <Td border="1px solid black">{data.plotNo}</Td>
                     <Td border="1px solid black">{data.netAmount}</Td>
                     <Td border="1px solid black">{data.brokerage}</Td>
-                    <Td border="1px solid black">{data.AmtPayable}</Td>
-                    <Td border="1px solid black">{data.AmtPaid}</Td>
-                    <Td border="1px solid black">{data.AmtBal}</Td>
+                    <Td border="1px solid black">{data.amount}</Td>
+
+                    <Td border="1px solid black">{data.cheq}</Td>
                     <Td border="1px solid black">{data.date}</Td>
+                    <Td border="1px solid black">{data.remarks}</Td>
+
+                    <Td display={"flex"} border="1px solid black" gap={"5px"}>
+                      <Button colorScheme="green" size="sm">
+                        Edit
+                      </Button>
+                      <Button colorScheme="red" size="sm">
+                        Delete
+                      </Button>
+                    </Td>
                   </Tr>
                 )
             )}
