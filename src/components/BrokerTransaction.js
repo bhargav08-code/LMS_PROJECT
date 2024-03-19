@@ -13,6 +13,7 @@ import {
   Th,
   Td,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import { useData } from "../Context";
 import { useEffect, useState } from "react";
@@ -20,6 +21,7 @@ import axios from "axios";
 
 const BrokerTransaction = () => {
   const { constructionData } = useData();
+  const toast = useToast();
   const [fetchData, setFetchData] = useState([]);
   const [masterData, setMasterData] = useState([]);
 
@@ -221,6 +223,76 @@ const BrokerTransaction = () => {
       console.log("Please Select Proper Input");
     }
   };
+  // const handleDeleteTransaction = async (index) => {
+  //   try {
+  //     const deletedTransaction = transaction[index];
+  //     const deletedAmount = parseFloat(deletedTransaction.amount);
+  //     const updatedTotalPaid = totalPaid - deletedAmount;
+  //     const updatedAmountBalance = totalPayable - updatedTotalPaid;
+
+  //     const confirmDelete = window.confirm(
+  //       "Are you sure you want to delete this transaction?"
+  //     );
+  //     if (!confirmDelete) return; // If user cancels the deletion
+
+  //     console.log("Deleting transaction:");
+  //     console.log("Deleted Amount:", deletedAmount);
+  //     console.log("Updated Total Paid:", updatedTotalPaid);
+  //     console.log("Updated Amount Balance:", updatedAmountBalance);
+
+  //     const updatedTransactions = [...transaction];
+  //     updatedTransactions.splice(index, 1);
+
+  //     setTotalPaid(updatedTotalPaid);
+  //     setAmountBalance(updatedAmountBalance);
+  //     setTransaction(updatedTransactions);
+  //   } catch (error) {
+  //     console.error("Error deleting transaction:", error.message);
+  //   }
+  // };
+  const handleDeleteTransaction = async (index) => {
+    try {
+      const deletedTransaction = transaction[index];
+      const deletedAmount = parseFloat(deletedTransaction.amount);
+      const updatedTotalPaid = totalPaid - deletedAmount;
+      const updatedAmountBalance = totalPayable - updatedTotalPaid;
+
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this transaction?"
+      );
+      if (!confirmDelete) return; // If user cancels the deletion
+
+      console.log("Deleting transaction:");
+      console.log("Deleted Amount:", deletedAmount);
+      console.log("Updated Total Paid:", updatedTotalPaid);
+      console.log("Updated Amount Balance:", updatedAmountBalance);
+
+      // Make a request to your backend to delete the transaction
+      const url = "https://lkgexcel.com/backend/setQuery.php";
+      const query = `DELETE FROM brokerTransaction WHERE id = ${deletedTransaction.id};`;
+      const formData = new FormData();
+      formData.append("query", query);
+
+      const response = await axios.post(url, formData);
+      console.log("Transaction deleted successfully:", response.data);
+
+      // If deletion is successful, update the state
+      const updatedTransactions = [...transaction];
+      updatedTransactions.splice(index, 1);
+      toast({
+        title: "Payment deleted successfully!",
+
+        duration: 3000,
+        position: "top",
+        isClosable: true,
+      });
+      setTotalPaid(updatedTotalPaid);
+      setAmountBalance(updatedAmountBalance);
+      setTransaction(updatedTransactions);
+    } catch (error) {
+      console.error("Error deleting transaction:", error.message);
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -386,7 +458,11 @@ const BrokerTransaction = () => {
                       <Button colorScheme="green" size="sm">
                         Edit
                       </Button>
-                      <Button colorScheme="red" size="sm">
+                      <Button
+                        colorScheme="red"
+                        size="sm"
+                        onClick={() => handleDeleteTransaction(index)}
+                      >
                         Delete
                       </Button>
                     </Td>

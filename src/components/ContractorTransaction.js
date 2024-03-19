@@ -157,6 +157,59 @@ const ContractorTransaction = () => {
       console.error("Error saving contractor transaction:", error.message);
     }
   };
+  const handleDeleteContractorTransaction = async (index) => {
+    try {
+      const deletedTransaction = fetchData[index];
+      const deletedAmount = parseFloat(deletedTransaction.amount);
+
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this transaction?"
+      );
+      if (!confirmDelete) return; // If user cancels the deletion
+
+      const url = "https://lkgexcel.com/backend/setQuery.php";
+      const query = `DELETE FROM contractorTransaction WHERE id = ${deletedTransaction.id}`;
+      const formData = new FormData();
+      formData.append("query", query);
+
+      const response = await axios.post(url, formData);
+
+      if (response.status === 200) {
+        console.log(
+          "Contractor transaction deleted successfully:",
+          response.data
+        );
+
+        // Calculate updated totalPaid and totalBalance
+        const updatedTotalPaid = totalPaid - deletedAmount;
+        const updatedTotalBalance = Number(totalBalance) + deletedAmount;
+
+        // If deletion is successful, update the local state
+        const updatedFetchData = [...fetchData];
+        updatedFetchData.splice(index, 1);
+        setFetchData(updatedFetchData);
+
+        setTotalPaid(updatedTotalPaid);
+        setTotalBalance(updatedTotalBalance);
+
+        toast({
+          title: "Transaction deleted successfully!",
+
+          duration: 3000,
+          position: "top",
+          isClosable: true,
+        });
+      } else {
+        console.error(
+          "Failed to delete contractor transaction:",
+          response.data
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting contractor transaction:", error.message);
+    }
+  };
+
   useEffect(() => {
     loadData();
     loadAmounts();
@@ -339,7 +392,11 @@ const ContractorTransaction = () => {
                       <Button colorScheme="green" size="sm">
                         Edit
                       </Button>
-                      <Button colorScheme="red" size="sm">
+                      <Button
+                        colorScheme="red"
+                        size="sm"
+                        onClick={() => handleDeleteContractorTransaction(index)}
+                      >
                         Delete
                       </Button>
                     </Td>
