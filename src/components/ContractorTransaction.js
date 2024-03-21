@@ -217,10 +217,6 @@ const ContractorTransaction = () => {
     }
   };
 
-  useEffect(() => {
-    loadData();
-    loadAmounts();
-  }, []);
   // Calculate total payable only once when the component mounts
   useEffect(() => {
     const amtPayable =
@@ -314,7 +310,10 @@ const ContractorTransaction = () => {
       console.error("Error updating contractor transaction:", error.message);
     }
   };
-
+  useEffect(() => {
+    loadData();
+    loadAmounts();
+  }, []);
   return (
     <Box display={"flex"} height={"100vh"} maxW={"100vw"}>
       <Box flex={"19%"} borderRight={"1px solid grey"}>

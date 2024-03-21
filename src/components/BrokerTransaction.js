@@ -12,6 +12,13 @@ import {
   Tr,
   Th,
   Td,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   Button,
   useToast,
 } from "@chakra-ui/react";
@@ -35,6 +42,13 @@ const BrokerTransaction = () => {
   const [amount, setAmount] = useState("");
   const [cheqNo, setCheqNo] = useState("");
   const [remarks, setRemarks] = useState("");
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editData, setEditData] = useState({
+    amount: "",
+    cheq: "",
+    remarks: "",
+    date: "",
+  });
   const loadBrokerAmounts = async () => {
     const { projectName, blockName, brokerName, plotNo } = constructionData;
 
@@ -223,33 +237,7 @@ const BrokerTransaction = () => {
       console.log("Please Select Proper Input");
     }
   };
-  // const handleDeleteTransaction = async (index) => {
-  //   try {
-  //     const deletedTransaction = transaction[index];
-  //     const deletedAmount = parseFloat(deletedTransaction.amount);
-  //     const updatedTotalPaid = totalPaid - deletedAmount;
-  //     const updatedAmountBalance = totalPayable - updatedTotalPaid;
 
-  //     const confirmDelete = window.confirm(
-  //       "Are you sure you want to delete this transaction?"
-  //     );
-  //     if (!confirmDelete) return; // If user cancels the deletion
-
-  //     console.log("Deleting transaction:");
-  //     console.log("Deleted Amount:", deletedAmount);
-  //     console.log("Updated Total Paid:", updatedTotalPaid);
-  //     console.log("Updated Amount Balance:", updatedAmountBalance);
-
-  //     const updatedTransactions = [...transaction];
-  //     updatedTransactions.splice(index, 1);
-
-  //     setTotalPaid(updatedTotalPaid);
-  //     setAmountBalance(updatedAmountBalance);
-  //     setTransaction(updatedTransactions);
-  //   } catch (error) {
-  //     console.error("Error deleting transaction:", error.message);
-  //   }
-  // };
   const handleDeleteTransaction = async (index) => {
     try {
       const deletedTransaction = transaction[index];
@@ -293,7 +281,95 @@ const BrokerTransaction = () => {
       console.error("Error deleting transaction:", error.message);
     }
   };
+  const handleEditDataChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  const handleEditModalOpen = (id) => {
+    const editRow = transaction.find((item) => item.id === id);
+    if (editRow) {
+      setEditData(editRow);
+      setShowEditModal(true);
+    } else {
+      console.error("Row not found for editing");
+    }
+  };
+  const handleCancelEdit = () => {
+    setShowEditModal(false);
+  };
+  const handleSaveEdit = async () => {
+    try {
+      const editedAmountPaid = parseFloat(editData.amount);
+      const originalTransaction = transaction.find(
+        (item) => item.id === editData.id
+      );
 
+      if (!originalTransaction) {
+        console.error("Edited transaction not found.");
+        return;
+      }
+
+      const originalAmountPaid = parseFloat(originalTransaction.amount);
+      const amountDifference = editedAmountPaid - originalAmountPaid;
+
+      const updatedTotalPaid = Number(totalPaid) + amountDifference;
+      const updatedTotalBalance = totalPayable - updatedTotalPaid;
+
+      const editedData = {
+        ...editData,
+        totalPaid: updatedTotalPaid,
+        totalBalance: updatedTotalBalance,
+      };
+
+      const url = "https://lkgexcel.com/backend/setQuery.php";
+      const query = `UPDATE brokerTransaction 
+                     SET 
+                       amount = ${editedData.amount},
+                       cheq = '${editedData.cheq}',
+                       remarks = '${editedData.remarks}',
+                       date = '${editedData.date}',
+                       totalPaid = '${editedData.totalPaid}',
+                       totalBalance = '${editedData.totalBalance}'
+                     WHERE 
+                       id = ${editedData.id}`;
+      const formData = new FormData();
+      formData.append("query", query);
+
+      const response = await axios.post(url, formData);
+
+      if (response.status === 200) {
+        console.log(
+          "Contractor transaction updated successfully:",
+          response.data
+        );
+        toast({
+          title: "Transaction updated successfully!",
+          status: "success",
+          duration: 3000,
+          position: "top",
+          isClosable: true,
+        });
+        setShowEditModal(false);
+
+        // Update local state if necessary
+        setTotalPaid(updatedTotalPaid);
+        setAmountBalance(updatedTotalBalance);
+
+        // Reload data if needed
+        loadTransaction();
+      } else {
+        console.error(
+          "Failed to update contractor transaction:",
+          response.data
+        );
+      }
+    } catch (error) {
+      console.error("Error updating contractor transaction:", error.message);
+    }
+  };
   useEffect(() => {
     loadData();
     loadMasterData();
@@ -455,7 +531,11 @@ const BrokerTransaction = () => {
                     <Td border="1px solid black">{data.remarks}</Td>
 
                     <Td display={"flex"} border="1px solid black" gap={"5px"}>
-                      <Button colorScheme="green" size="sm">
+                      <Button
+                        colorScheme="green"
+                        size="sm"
+                        onClick={() => handleEditModalOpen(data.id)}
+                      >
                         Edit
                       </Button>
                       <Button
@@ -472,6 +552,57 @@ const BrokerTransaction = () => {
           </Tbody>
         </Table>
       </Box>
+      <Modal isOpen={showEditModal} onClose={handleCancelEdit}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Transaction</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl>
+              <FormLabel>Amount</FormLabel>
+              <Input
+                type="number"
+                name="amount"
+                value={editData.amount}
+                onChange={handleEditDataChange}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Cheque Number</FormLabel>
+              <Input
+                type="text"
+                name="cheq"
+                value={editData.cheq}
+                onChange={handleEditDataChange}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Remarks</FormLabel>
+              <Input
+                type="text"
+                name="remarks"
+                value={editData.remarks}
+                onChange={handleEditDataChange}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Date</FormLabel>
+              <Input
+                type="date"
+                name="date"
+                value={editData.date}
+                onChange={handleEditDataChange}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>
+              Save
+            </Button>
+            <Button onClick={handleCancelEdit}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
