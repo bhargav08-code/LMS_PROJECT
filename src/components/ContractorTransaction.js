@@ -38,7 +38,14 @@ const ContractorTransaction = () => {
   const [totalBalance, setTotalBalance] = useState(0);
   const [totalPayable, setTotalPayable] = useState(0);
   const [fetchData, setFetchData] = useState([""]);
-  const toast = useToast(); // Define useToast hook
+  const toast = useToast();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editData, setEditData] = useState({
+    amount: "",
+    cheqNo: "",
+    remarks: "",
+    date: "",
+  });
 
   const loadAmounts = async () => {
     const { projectName, blockName, contractor, plotNo } = constructionData;
@@ -102,7 +109,7 @@ const ContractorTransaction = () => {
       const amountPaid = parseFloat(amount);
       const updatedTotalPaid = Number(totalPaid) + amountPaid;
 
-      const updatedTotalBalance = totalPayable - updatedTotalPaid; // Update total balance
+      const updatedTotalBalance = totalPayable - updatedTotalPaid;
 
       const data = {
         contractor: constructionData.contractor,
@@ -222,6 +229,92 @@ const ContractorTransaction = () => {
     setTotalPayable(updatedTotalBalance);
     setTotalBalance(updatedTotalBalance); // Initialize total balance with total payable
   }, [constructionData, lessPercent]);
+  const handleCancelEdit = () => {
+    setShowEditModal(false);
+  };
+  const handleEditDataChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  const handleEditModalOpen = (id) => {
+    const editRow = fetchData.find((item) => item.id === id);
+    setEditData(editRow);
+    setShowEditModal(true);
+  };
+  const handleSaveEdit = async () => {
+    try {
+      const editedAmountPaid = parseFloat(editData.amount);
+      const originalTransaction = fetchData.find(
+        (item) => item.id === editData.id
+      );
+
+      if (!originalTransaction) {
+        console.error("Edited transaction not found.");
+        return;
+      }
+
+      const originalAmountPaid = parseFloat(originalTransaction.amount);
+      const amountDifference = editedAmountPaid - originalAmountPaid;
+
+      const updatedTotalPaid = Number(totalPaid) + amountDifference;
+      const updatedTotalBalance = totalPayable - updatedTotalPaid;
+
+      const editedData = {
+        ...editData,
+        totalPaid: updatedTotalPaid,
+        totalBalance: updatedTotalBalance,
+      };
+
+      const url = "https://lkgexcel.com/backend/setQuery.php";
+      const query = `UPDATE contractorTransaction 
+                     SET 
+                       amount = ${editedData.amount},
+                       cheqNo = '${editedData.cheqNo}',
+                       remarks = '${editedData.remarks}',
+                       transactionDate = '${editedData.date}',
+                       totalPaid = '${editedData.totalPaid}',
+                       totalBalance = '${editedData.totalBalance}'
+                     WHERE 
+                       id = ${editedData.id}`;
+      const formData = new FormData();
+      formData.append("query", query);
+
+      const response = await axios.post(url, formData);
+
+      if (response.status === 200) {
+        console.log(
+          "Contractor transaction updated successfully:",
+          response.data
+        );
+        toast({
+          title: "Transaction updated successfully!",
+          status: "success",
+          duration: 3000,
+          position: "top",
+          isClosable: true,
+        });
+        setShowEditModal(false);
+
+        // Update local state if necessary
+        setTotalPaid(updatedTotalPaid);
+        setTotalBalance(updatedTotalBalance);
+
+        // Reload data if needed
+        loadData();
+      } else {
+        console.error(
+          "Failed to update contractor transaction:",
+          response.data
+        );
+      }
+    } catch (error) {
+      console.error("Error updating contractor transaction:", error.message);
+    }
+  };
+
   return (
     <Box display={"flex"} height={"100vh"} maxW={"100vw"}>
       <Box flex={"19%"} borderRight={"1px solid grey"}>
@@ -389,7 +482,7 @@ const ContractorTransaction = () => {
                       <Button
                         colorScheme="green"
                         size="sm"
-                        // onClick={() => handleEditModalOpen(data.id)}
+                        onClick={() => handleEditModalOpen(data.id)}
                       >
                         Edit
                       </Button>
@@ -407,6 +500,57 @@ const ContractorTransaction = () => {
           </Tbody>
         </Table>
       </Box>
+      <Modal isOpen={showEditModal} onClose={handleCancelEdit}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Transaction</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl>
+              <FormLabel>Amount</FormLabel>
+              <Input
+                type="number"
+                name="amount"
+                value={editData.amount}
+                onChange={handleEditDataChange}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Cheque Number</FormLabel>
+              <Input
+                type="text"
+                name="cheqNo"
+                value={editData.cheqNo}
+                onChange={handleEditDataChange}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Remarks</FormLabel>
+              <Input
+                type="text"
+                name="remarks"
+                value={editData.remarks}
+                onChange={handleEditDataChange}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Date</FormLabel>
+              <Input
+                type="date"
+                name="date"
+                value={editData.date}
+                onChange={handleEditDataChange}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>
+              Save
+            </Button>
+            <Button onClick={handleCancelEdit}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
