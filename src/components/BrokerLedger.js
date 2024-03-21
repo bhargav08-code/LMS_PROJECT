@@ -26,7 +26,6 @@ import axios from "axios";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
 const BrokerLedger = () => {
-  const [booking, setBooking] = useState([]);
   const [transaction, setTransaction] = useState([]);
   const [selectedProject, setSelectedProject] = useState([]);
   const [selectedContractor, setSelectedContractor] = useState([]);
@@ -44,29 +43,8 @@ const BrokerLedger = () => {
     }
   };
 
-  const loadBooking = async () => {
-    let query = "SELECT * FROM booking;";
-
-    const url = "https://lkgexcel.com/backend/getQuery.php";
-    let fData = new FormData();
-
-    fData.append("query", query);
-
-    try {
-      const response = await axios.post(url, fData);
-      if (response && response.data) {
-        if (response.data.phpresult) {
-          setBooking(response.data.phpresult);
-        }
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching booking data:", error);
-    }
-  };
-
   const loadTransaction = async () => {
-    let query = "SELECT * FROM transaction;";
+    let query = "SELECT * FROM brokerTransaction;";
 
     const url = "https://lkgexcel.com/backend/getQuery.php";
     let fData = new FormData();
@@ -87,7 +65,6 @@ const BrokerLedger = () => {
   };
 
   useEffect(() => {
-    loadBooking();
     loadTransaction();
   }, []);
 
@@ -95,19 +72,19 @@ const BrokerLedger = () => {
     return [...new Set(transaction.map((item) => item[key]))];
   };
   const getUniqueContractor = (key) => {
-    return [...new Set(booking.map((item) => item[key]))];
+    return [...new Set(transaction.map((item) => item[key]))];
   };
   const projectOptions = getUniqueValues("projectName");
-  const contractorOptions = getUniqueContractor("constructionContractor");
+  const contractorOptions = getUniqueContractor("broker");
 
-  const filteredBookings = booking.filter(
+  const filteredBookings = transaction.filter(
     (item) =>
       (!selectedProject.length ||
         selectedProject.includes("Select All") ||
         selectedProject.includes(item.projectName)) &&
       (!selectedContractor.length ||
         selectedContractor.includes("Select All") ||
-        selectedContractor.includes(item.constructionContractor)) &&
+        selectedContractor.includes(item.broker)) &&
       (!selectedBlock.length ||
         selectedBlock.includes("Select All") ||
         selectedBlock.includes(item.blockName)) &&
@@ -153,7 +130,7 @@ const BrokerLedger = () => {
         <Heading size={"md"}>Broker Ledger</Heading>
       </Center>
       <Box maxW={"100%"} overflowX={"scroll"} marginTop={"2rem"}>
-        <Flex justifyContent={"space-evenly"} p={"31px"}>
+        <Flex justifyContent={"space-evenly"}>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               Select Projects
@@ -317,90 +294,77 @@ const BrokerLedger = () => {
             <Text p={5} fontWeight={"bold"}>
               Count :- {filteredBookings.length}
             </Text>
-            <Table variant="simple">
+            <Table variant="simple" size={"md"}>
               <TableContainer>
                 <Thead>
                   <Tr border="1px solid black" bg={"#121212"}>
-                    <Th border="1px solid black" color={"white"}>
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
                       {" "}
                       SrNo
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Broker Name
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Project
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Project Name
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Block
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Block Name
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Plot
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Plot No
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Broker
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Net Amount
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Net Amt
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Brokerage (%)
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Brokerage
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Total Amt Payable
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Amt
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Total Amt Paid
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Total Payable
                     </Th>
-                    <Th border="1px solid black" color={"white"} p={"31px"}>
-                      Total Amt Bal
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      {" "}
+                      Total Paid
                     </Th>
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      {" "}
+                      Total Bal
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Cheq
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      Date
+                    </Th>
+                    <Th border="1px solid black" color={"white"} p={"26px"}>
+                      {" "}
+                      Remakrs
+                    </Th>{" "}
                   </Tr>
                 </Thead>
                 <Tbody>
                   {filteredBookings.map((data, index) => (
                     <Tr key={data.srNo}>
                       <Td border="1px solid black">{index + 1}</Td>
-                      <Td border="1px solid black">
-                        {data.constructionContractor}
-                      </Td>
                       <Td border="1px solid black">{data.projectName}</Td>
                       <Td border="1px solid black">{data.blockName}</Td>
                       <Td border="1px solid black">{data.plotNo}</Td>
-                      <Td border="1px solid black">
-                        {data.constructionAmount}
-                      </Td>
-                      <Td border="1px solid black"></Td>
-                      <Td border="1px solid black">
-                        {" "}
-                        {data.totalAmountPayable}
-                      </Td>
-                      {transaction.length > 0 ? (
-                        transaction
-                          .filter(
-                            (stat) =>
-                              stat.projectName === data.projectName &&
-                              stat.blockName === data.blockName &&
-                              stat.plotno === data.plotNo
-                          )
-                          .slice(-1) // Get the last element
-                          .map((stat) => (
-                            <React.Fragment key={stat.id} textAlign={"center"}>
-                              <Td border="1px solid black">
-                                {stat.totalReceived}
-                              </Td>
-                              <Td border="1px solid black">
-                                {stat.totalBalance}
-                              </Td>
-                            </React.Fragment>
-                          ))
-                      ) : (
-                        <React.Fragment>
-                          <Td border="1px solid black" textAlign={"center"}>
-                            0
-                          </Td>
-                          <Td border="1px solid black" textAlign={"center"}>
-                            0
-                          </Td>
-                        </React.Fragment>
-                      )}
+                      <Td border="1px solid black">{data.broker}</Td>
+
+                      <Td border="1px solid black">{data.netAmount}</Td>
+                      <Td border="1px solid black">{data.brokerage}</Td>
+
+                      <Td border="1px solid black">{data.amount}</Td>
+                      <Td border="1px solid black">{data.totalPayable}</Td>
+                      <Td border="1px solid black">{data.totalPaid}</Td>
+                      <Td border="1px solid black">{data.totalBalance}</Td>
+                      <Td border="1px solid black">{data.cheq}</Td>
+                      <Td border="1px solid black">{data.date}</Td>
+                      <Td border="1px solid black">{data.remarks}</Td>
                     </Tr>
                   ))}
                 </Tbody>

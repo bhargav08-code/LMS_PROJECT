@@ -1,6 +1,13 @@
 import {
   Box,
   Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   VStack,
   Flex,
   FormControl,
@@ -32,6 +39,7 @@ const ContractorTransaction = () => {
   const [totalPayable, setTotalPayable] = useState(0);
   const [fetchData, setFetchData] = useState([""]);
   const toast = useToast(); // Define useToast hook
+
   const loadAmounts = async () => {
     const { projectName, blockName, contractor, plotNo } = constructionData;
 
@@ -89,27 +97,20 @@ const ContractorTransaction = () => {
     }
   };
 
-  // Calculate total payable only once when the component mounts
-  useEffect(() => {
-    const amtPayable =
-      constructionData.amount - (constructionData.amount * lessPercent) / 100;
-    const updatedTotalBalance = isNaN(amtPayable) ? 0 : amtPayable;
-    setTotalPayable(updatedTotalBalance);
-    setTotalBalance(updatedTotalBalance); // Initialize total balance with total payable
-  }, [constructionData, lessPercent]);
-
   const handleSubmit = async () => {
     try {
       const amountPaid = parseFloat(amount);
       const updatedTotalPaid = Number(totalPaid) + amountPaid;
 
-      const updatedTotalBalance = totalBalance - amountPaid; // Update total balance
+      const updatedTotalBalance = totalPayable - updatedTotalPaid; // Update total balance
 
       const data = {
         contractor: constructionData.contractor,
         projectName: constructionData.projectName,
         blockName: constructionData.blockName,
         plotNo: constructionData.plotNo,
+        constAmt: constructionData.amount,
+
         lessPercent: lessPercent,
         date: transactionDate,
         cheqNo: cheqNo,
@@ -119,10 +120,9 @@ const ContractorTransaction = () => {
         totalPayable: totalPayable, // Assign the total payable without recalculating
         amount: amount,
       };
-      console.log(data);
 
       const url = "https://lkgexcel.com/backend/setQuery.php";
-      const query = `INSERT INTO contractorTransaction (contractor, projectName, blockName, plotNo, amount, lessPercent, cheqNo, remarks, transactionDate, totalPaid, totalBalance, totalPayable) VALUES ('${data.contractor}', '${data.projectName}', '${data.blockName}', '${data.plotNo}', '${data.amount}', '${data.lessPercent}', '${data.cheqNo}', '${data.remarks}', '${data.date}', '${data.totalPaid}', '${data.totalBalance}', '${data.totalPayable}')`;
+      const query = `INSERT INTO contractorTransaction (contractor, projectName, blockName, plotNo, amount, lessPercent, cheqNo, remarks, transactionDate, totalPaid, totalBalance, totalPayable,constAmt) VALUES ('${data.contractor}', '${data.projectName}', '${data.blockName}', '${data.plotNo}', '${data.amount}', '${data.lessPercent}', '${data.cheqNo}', '${data.remarks}', '${data.date}', '${data.totalPaid}', '${data.totalBalance}', '${data.totalPayable}','${data.constAmt}')`;
       const formData = new FormData();
       formData.append("query", query);
 
@@ -142,8 +142,7 @@ const ContractorTransaction = () => {
         });
         setTotalPaid(updatedTotalPaid); // Update total paid state
         setTotalBalance(updatedTotalBalance); // Update total balance state
-        await loadData();
-        await loadAmounts();
+        loadData();
       } else {
         console.error("Failed to save contractor transaction:", response.data);
       }
@@ -157,6 +156,7 @@ const ContractorTransaction = () => {
       console.error("Error saving contractor transaction:", error.message);
     }
   };
+
   const handleDeleteContractorTransaction = async (index) => {
     try {
       const deletedTransaction = fetchData[index];
@@ -214,6 +214,14 @@ const ContractorTransaction = () => {
     loadData();
     loadAmounts();
   }, []);
+  // Calculate total payable only once when the component mounts
+  useEffect(() => {
+    const amtPayable =
+      constructionData.amount - (constructionData.amount * lessPercent) / 100;
+    const updatedTotalBalance = isNaN(amtPayable) ? 0 : amtPayable;
+    setTotalPayable(updatedTotalBalance);
+    setTotalBalance(updatedTotalBalance); // Initialize total balance with total payable
+  }, [constructionData, lessPercent]);
   return (
     <Box display={"flex"} height={"100vh"} maxW={"100vw"}>
       <Box flex={"19%"} borderRight={"1px solid grey"}>
@@ -354,15 +362,6 @@ const ContractorTransaction = () => {
                 Date
               </Th>
               <Th color={"white"} border="1px solid black">
-                Paid
-              </Th>{" "}
-              <Th color={"white"} border="1px solid black">
-                Balance
-              </Th>{" "}
-              <Th color={"white"} border="1px solid black">
-                Payable
-              </Th>
-              <Th color={"white"} border="1px solid black">
                 Action
               </Th>
             </Tr>
@@ -385,11 +384,13 @@ const ContractorTransaction = () => {
                     <Td border="1px solid black">{data.cheqNo}</Td>
                     <Td border="1px solid black">{data.remarks}</Td>
                     <Td border="1px solid black">{data.transactionDate}</Td>
-                    <Td border="1px solid black">{data.totalPaid}</Td>
-                    <Td border="1px solid black">{data.totalBalance}</Td>
-                    <Td border="1px solid black">{data.totalPayable}</Td>
+
                     <Td display={"flex"} border="1px solid black" gap={"5px"}>
-                      <Button colorScheme="green" size="sm">
+                      <Button
+                        colorScheme="green"
+                        size="sm"
+                        // onClick={() => handleEditModalOpen(data.id)}
+                      >
                         Edit
                       </Button>
                       <Button
