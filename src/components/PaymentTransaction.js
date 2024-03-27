@@ -839,126 +839,6 @@ const PaymentTransaction = () => {
     }
   };
 
-  // const addPayment = async () => {
-  //   const url = "https://lkgexcel.com/backend/setQuery.php";
-  //   const date = document.getElementById("date").value;
-  //   const paymentType = document.getElementById("paymentType").value;
-  //   const amount = parseInt(document.getElementById("amount").value);
-  //   const bankMode = document.getElementById("bankMode").value;
-  //   const cheqNo = document.getElementById("cheqNo").value;
-  //   const bankName = document.getElementById("bankName").value;
-  //   const transactionStatus =
-  //     document.getElementById("transactionStatus").value;
-  //   const statusDate = document.getElementById("statusDate").value;
-  //   const remarks = document.getElementById("remarks").value;
-
-  //   if (
-  //     !date ||
-  //     !paymentType ||
-  //     isNaN(amount) ||
-  //     !bankMode ||
-  //     !cheqNo ||
-  //     !bankName ||
-  //     !transactionStatus ||
-  //     !statusDate ||
-  //     !remarks
-  //   ) {
-  //     alert("Please fill in all required fields.");
-  //     return; // Don't submit if any field is empty
-  //   }
-
-  //   try {
-  //     // Subtract payment amount from total balance
-  //     const totalBalanceElem = document.getElementById("totalBalance");
-  //     let totalBalance = parseInt(totalBalanceElem.innerHTML) || 0;
-  //     totalBalance -= amount;
-  //     totalBalanceElem.innerHTML = totalBalance;
-  //     console.log(`Total Balance: ${totalBalance}`);
-
-  //     // Subtract payment amount from bank balance if payment type is Bank
-  //     const bankBalanceElem = document.getElementById("bankBalance");
-  //     let bankBalance = parseInt(bankBalanceElem.innerHTML) || 0;
-  //     if (paymentType === "Bank") {
-  //       bankBalance -= amount;
-  //       bankBalanceElem.innerHTML = bankBalance;
-  //       console.log(`Bank Balance: ${bankBalance}`);
-  //     }
-
-  //     // Subtract payment amount from cash balance if payment type is Cash
-  //     const cashBalanceElem = document.getElementById("cashBalance");
-  //     let cashBalance = parseInt(cashBalanceElem.innerHTML) || 0;
-  //     if (paymentType === "Cash") {
-  //       cashBalance -= amount;
-  //       cashBalanceElem.innerHTML = cashBalance;
-  //       console.log(`Cash Balance: ${cashBalance}`);
-  //     }
-
-  //     // Update total received and bank received
-  //     let totalReceivedElem = document.getElementById("totalReceived");
-  //     let bankReceivedElem = document.getElementById("bankReceived");
-  //     let cashReceivedElem = document.getElementById("cashReceived");
-  //     let totalReceived = parseInt(totalReceivedElem.innerHTML) || 0;
-  //     let bankReceived = parseInt(bankReceivedElem.innerHTML) || 0;
-  //     let cashReceived = parseInt(cashReceivedElem.innerHTML) || 0;
-
-  //     totalReceived += amount;
-  //     totalReceivedElem.innerHTML = totalReceived;
-  //     console.log(`Total Received: ${totalReceived}`);
-
-  //     if (paymentType === "Cash") {
-  //       cashReceived = amount; // Accumulate cashReceived for all cash payments
-  //       cashReceivedElem.innerHTML = cashReceived;
-  //       console.log(`Cash Received: ${cashReceived}`);
-  //     } else {
-  //       cashReceived = 0;
-  //     }
-
-  //     if (paymentType === "Bank") {
-  //       bankReceived = amount; // Accumulate bankReceived for all bank payments
-  //       bankReceivedElem.innerHTML = bankReceived;
-  //       console.log(`Bank Received: ${bankReceived}`);
-  //     } else {
-  //       bankReceived = 0;
-  //     }
-
-  //     const query = `INSERT INTO transaction (id, projectName, blockName, plotno, date, paymentType, amount, bankMode, cheqNo, bankName, transactionStatus, statusDate, remarks, totalBalance, bankBalance, cashBalance, totalReceived, bankReceived, cashReceived) VALUES (NULL, '${plotData[0]["projectName"]}', '${plotData[0]["blockName"]}', '${plotData[0]["plotNo"]}', '${date}', '${paymentType}', '${amount}', '${bankMode}', '${cheqNo}', '${bankName}', '${transactionStatus}', '${statusDate}', '${remarks}', '${totalBalance}', '${bankBalance}', '${cashBalance}', '${totalReceived}', '${bankReceived}', '${cashReceived}');`;
-
-  //     const formData = new FormData();
-  //     formData.append("query", query);
-
-  //     const response = await axios.post(url, formData);
-
-  //     toast({
-  //       title: "Payment added successfully!",
-  //       status: "success",
-  //       duration: 3000,
-  //       position: "top",
-  //       isClosable: true,
-  //     });
-
-  //     loadAmounts();
-  //     loadTransaction();
-  //     loadAmountsBAR();
-  //     loadAmountsCAR();
-
-  //     setTimeout(function () {
-  //       calcAmounts();
-  //     }, 500);
-
-  //     // Reset form fields
-  //     document.getElementById("date").value = "";
-  //     document.getElementById("paymentType").value = "";
-  //     document.getElementById("amount").value = "";
-  //     document.getElementById("bankMode").value = "";
-  //     document.getElementById("cheqNo").value = "";
-  //     document.getElementById("bankName").value = "";
-  //     document.getElementById("transactionStatus").value = "";
-  //     document.getElementById("statusDate").value = "";
-  //     document.getElementById("remarks").value = "";
-  //   } catch (error) {
-  //     console.log(error.toJSON());
-  //   }
-  // };
   const addPayment = async () => {
     const url = "https://lkgexcel.com/backend/setQuery.php";
     const date = document.getElementById("date").value;
@@ -1036,19 +916,6 @@ const PaymentTransaction = () => {
         // bankReceived = 0;
         console.log(`Cash Received: ${cashReceived}`);
       }
-      // if (paymentType === "Bank") {
-      //   bankReceived += amount;
-      //   bankReceivedElem.innerHTML = bankReceived;
-      //   cashReceived = 0; // Set cashReceived to 0 if paymentType is Bank
-      //   cashReceivedElem.innerHTML = cashReceived; // Update cashReceived display
-      //   console.log(`Bank Received: ${bankReceived}`);
-      // } else if (paymentType === "Cash") {
-      //   cashReceived += amount;
-      //   cashReceivedElem.innerHTML = cashReceived;
-      //   bankReceived = 0; // Set bankReceived to 0 if paymentType is Cash
-      //   bankReceivedElem.innerHTML = bankReceived; // Update bankReceived display
-      //   console.log(`Cash Received: ${cashReceived}`);
-      // }
 
       const query = `INSERT INTO transaction (id, projectName, blockName, plotno, date, paymentType, amount, bankMode, cheqNo, bankName, transactionStatus, statusDate, remarks, totalBalance, bankBalance, cashBalance, totalReceived, bankReceived, cashReceived) VALUES (NULL, '${plotData[0]["projectName"]}', '${plotData[0]["blockName"]}', '${plotData[0]["plotNo"]}', '${date}', '${paymentType}', '${amount}', '${bankMode}', '${cheqNo}', '${bankName}', '${transactionStatus}', '${statusDate}', '${remarks}', '${totalBalance}', '${bankBalance}', '${cashBalance}', '${totalReceived}', '${bankReceived}', '${cashReceived}');`;
 
@@ -1543,77 +1410,7 @@ const PaymentTransaction = () => {
     setTransferData(finalTransferData);
     setIsTransferModalOpen(true);
   };
-  // const trasnferTransactionStatus = async (id) => {
-  //   const url = "https://lkgexcel.com/backend/setQuery.php";
-  //   const query =
-  //     "UPDATE transaction SET Status = 'Transferred' WHERE id = '" + id + "';";
 
-  //   const fData = new FormData();
-  //   fData.append("query", query);
-
-  //   try {
-  //     const response = await axios.post(url, fData);
-  //     return true; // Indicate success
-  //   } catch (error) {
-  //     console.log(error.toJSON());
-  //     return false; // Indicate failure
-  //   }
-  // };
-
-  // const trasnferTransactionStatus = async (id, selectedRow) => {
-  //   const url = "https://lkgexcel.com/backend/setQuery.php";
-
-  //   // Initialize the properties in selectedRow if they are undefined
-  //   selectedRow.cashReceived = selectedRow.cashReceived || 0;
-  //   selectedRow.cashBalance = selectedRow.cashBalance || 0;
-  //   selectedRow.totalBalance = selectedRow.totalBalance || 0;
-  //   selectedRow.totalReceived = selectedRow.totalReceived || 0;
-
-  //   // Calculate new values
-  //   let { cashReceived, cashBalance, totalBalance, totalReceived } =
-  //     selectedRow;
-
-  //   // Adjust calculations based on payment type
-  //   if (selectedRow.paymentType === "Cash") {
-  //     cashReceived -= selectedRow.amount;
-  //     cashBalance -= selectedRow.amount;
-  //     totalBalance += selectedRow.amount;
-  //     totalReceived -= selectedRow.amount;
-  //   }
-
-  //   // Construct the query to update data only
-  //   const query = `
-  //       UPDATE transaction
-  //       SET
-  //           cashReceived = '${cashReceived}',
-  //           cashBalance = '${cashBalance}',
-  //           totalBalance = '${totalBalance}',
-  //           totalReceived = '${totalReceived}'
-  //       WHERE
-  //           id = '${id}';
-  //   `;
-
-  //   const formData = new FormData();
-  //   formData.append("query", query);
-
-  //   try {
-  //     await axios.post(url, formData);
-
-  //     // Update the UI with the new values if payment type is 'Cash'
-  //     if (selectedRow.paymentType === "Cash") {
-  //       document.getElementById("cashReceived").innerHTML = cashReceived;
-  //       document.getElementById("cashBalance").innerHTML = cashBalance;
-  //       document.getElementById("totalBalance").innerHTML = totalBalance;
-  //       document.getElementById("totalReceived").innerHTML = totalReceived;
-  //     }
-
-  //     console.log("Transaction data updated successfully:", query);
-  //     return true; // Indicate success
-  //   } catch (error) {
-  //     console.error("Error updating transaction data:", error);
-  //     return false; // Indicate failure
-  //   }
-  // };
   const trasnferTransactionStatus = async (id, selectedRow) => {
     // Initialize the properties in selectedRow if they are undefined
     selectedRow.cashReceived = selectedRow.cashReceived || 0;
@@ -1755,6 +1552,8 @@ const PaymentTransaction = () => {
   };
 
   // Function to handle transfer
+  // Function to handle transfer
+  // Function to handle transfer
   const handleTransfer = async () => {
     if (transferData && transactionData[transferData.index]) {
       const selectedRow = transactionData[transferData.index];
@@ -1762,88 +1561,106 @@ const PaymentTransaction = () => {
       const fromBlock = selectedRow.blockName;
       const fromPlot = selectedRow.plotno;
 
-      // Set the transfer project, block, and plot names
       setTransferProjectName(selectedRow.projectName);
       setTransferBlockName(selectedRow.blockName);
       setTransferPlotName(selectedRow.plotno);
 
-      // Update the selected row with transfer project, block, and plot names
-      selectedRow.projectName = transferProjectName;
-      selectedRow.blockName = transferBlockName;
-      selectedRow.plotno = transferPlotName;
+      const transferRemark = `Transfer to ${transferProjectName} ${transferBlockName} ${transferPlotName}`;
+      const receivedRemark = `Received from ${fromProject} ${fromBlock} ${fromPlot}`;
 
-      // Insert the transferred transaction into the new project, block, and plot
-      try {
-        await insertTransaction(
-          transferProjectName,
-          transferBlockName,
-          transferPlotName,
-          selectedRow.date,
-          selectedRow.paymentType,
-          selectedRow.amount,
-          selectedRow.bankMode,
-          selectedRow.cheqNo,
-          selectedRow.bankName,
-          selectedRow.transactionStatus,
-          selectedRow.statusDate,
-          selectedRow.remarks
-        );
-      } catch (error) {
-        console.error("Error inserting transferred transaction:", error);
-        return; // Abort further processing if insertion fails
-      }
+      // Show confirmation dialog
+      const confirmed = window.confirm(
+        `Do you want to transfer this transaction from ${fromProject} ${fromBlock} ${fromPlot} to ${transferProjectName} ${transferBlockName} ${transferPlotName}?`
+      );
 
-      // Log the transfer details
-      const logMessage = `Payment transaction for row ${
-        transferData.index + 1
-      } has been transferred from ${fromProject} ${fromBlock} ${fromPlot} to ${transferProjectName} ${transferBlockName} ${transferPlotName} with payment type: ${
-        selectedRow.paymentType
-      }, amount: ${selectedRow.amount}, bank mode: ${
-        selectedRow.bankMode
-      }, CHQ/REF NO: ${selectedRow.cheqNo}, bank name: ${selectedRow.bankName}`;
-      console.log(logMessage);
+      if (confirmed) {
+        if (fromProject !== transferProjectName) {
+          selectedRow.remarks = transferRemark;
 
-      // Perform the transfer of transaction status
-      try {
-        const statusUpdateSuccess = await trasnferTransactionStatus(
-          selectedRow.id,
-          selectedRow
-        );
-        if (!statusUpdateSuccess) {
-          console.error("Failed to update transaction status.");
-          return; // Abort further processing if status update fails
+          const transferredRow = {
+            ...selectedRow,
+            projectName: transferProjectName,
+            blockName: transferBlockName,
+            plotno: transferPlotName,
+            remarks: receivedRemark,
+          };
+
+          try {
+            await insertTransaction(
+              transferProjectName,
+              transferBlockName,
+              transferPlotName,
+              transferredRow.date,
+              transferredRow.paymentType,
+              transferredRow.amount,
+              transferredRow.bankMode,
+              transferredRow.cheqNo,
+              transferredRow.bankName,
+              transferredRow.transactionStatus,
+              transferredRow.statusDate,
+              transferredRow.remarks
+            );
+          } catch (error) {
+            console.error("Error inserting transferred transaction:", error);
+            return;
+          }
         }
-      } catch (error) {
-        console.error("Error updating transaction status:", error);
-        return; // Abort further processing if status update throws an error
+
+        const updatedTransactionData = [...transactionData];
+        updatedTransactionData[transferData.index] = selectedRow;
+
+        setTransactionData(updatedTransactionData);
+
+        const tableRow = document.getElementById(`row-${transferData.index}`);
+        const remarksCell = tableRow.cells[tableRow.cells.length - 1];
+        remarksCell.textContent = selectedRow.remarks;
+
+        const logMessage = `Payment transaction for row ${
+          transferData.index + 1
+        } has been transferred from ${fromProject} ${fromBlock} ${fromPlot} to ${transferProjectName} ${transferBlockName} ${transferPlotName} with payment type: ${
+          selectedRow.paymentType
+        }, amount: ${selectedRow.amount}, bank mode: ${
+          selectedRow.bankMode
+        }, CHQ/REF NO: ${selectedRow.cheqNo}, bank name: ${
+          selectedRow.bankName
+        }`;
+        console.log(logMessage);
+
+        try {
+          const statusUpdateSuccess = await trasnferTransactionStatus(
+            selectedRow.id,
+            selectedRow
+          );
+          if (!statusUpdateSuccess) {
+            console.error("Failed to update transaction status.");
+            return;
+          }
+        } catch (error) {
+          console.error("Error updating transaction status:", error);
+          return;
+        }
+
+        setTransferredRows([...transferredRows, transferData.index]);
+
+        toast({
+          title: "Transfer Successful",
+          description: `Payment transaction has been transferred from ${fromProject} ${fromBlock} ${fromPlot} to ${transferProjectName} ${transferBlockName} ${transferPlotName}.`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+
+        // Reload the page
+        window.location.reload();
+
+        setIsTransferModalOpen(false);
       }
-
-      // Update the transaction data with the updated row
-      const updatedTransactionData = [...transactionData];
-      updatedTransactionData[transferData.index] = selectedRow;
-
-      // Set the updated transaction data
-      setTransactionData(updatedTransactionData);
-
-      // Set the transferred rows
-      setTransferredRows([...transferredRows, transferData.index]);
-
-      // Display a success message
-      toast({
-        title: "Transfer Successful",
-        description: `Payment transaction has been transferred from ${fromProject} ${fromBlock} ${fromPlot} to ${transferProjectName} ${transferBlockName} ${transferPlotName}.`,
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
-
-      // Close the transfer modal
-      setIsTransferModalOpen(false);
     } else {
       console.error("Error: Selected row data is undefined.");
     }
   };
+
   const handleContractorButtonClick = () => {
     navigate("/contractortransaction", { state: { constructionData } });
   };
@@ -2820,7 +2637,7 @@ const PaymentTransaction = () => {
                 </Thead>
                 <Tbody>
                   {transactionData.map((res, index) => (
-                    <tr key={res.date}>
+                    <tr key={res.date} id={`row-${index}`}>
                       <Td
                         border="1px solid black"
                         p={"8px"}
@@ -2855,7 +2672,6 @@ const PaymentTransaction = () => {
                               : "none",
                         }}
                       >
-                        {" "}
                         {res.date}
                       </Td>
                       <Td
@@ -2953,8 +2769,10 @@ const PaymentTransaction = () => {
                         p={"8px"}
                         style={{
                           backgroundColor:
+                            res.Status === "Transferred" ? "white" : "inherit",
+                          color:
                             res.Status === "Transferred"
-                              ? "white"
+                              ? "#E53E3E"
                               : res.transactionStatus === "Clear"
                               ? "#22c35e"
                               : res.transactionStatus === "Provisional"
@@ -2962,16 +2780,6 @@ const PaymentTransaction = () => {
                               : res.transactionStatus === "Pending" ||
                                 res.transactionStatus === "PDC"
                               ? "#ECC94B"
-                              : "inherit",
-                          color:
-                            res.Status === "Transferred"
-                              ? "#E53E3E"
-                              : res.transactionStatus === "Clear"
-                              ? "white"
-                              : res.transactionStatus === "Provisional"
-                              ? "black"
-                              : res.transactionStatus === "Bounced"
-                              ? "#E53E3E"
                               : "inherit",
                           textDecoration:
                             res.transactionStatus === "Bounced" ||
@@ -3018,47 +2826,46 @@ const PaymentTransaction = () => {
                       >
                         {res.remarks}
                       </Td>
+                      {/* Action Cell */}
                       {showAction && (
-                        <>
-                          <Td
-                            display={"flex"}
-                            gap={"10px"}
-                            border="1px solid black"
-                            p={"8px"}
-                            className="hide-on-print"
+                        <Td
+                          display={"flex"}
+                          gap={"10px"}
+                          border="1px solid black"
+                          p={"8px"}
+                          className="hide-on-print"
+                        >
+                          <Button
+                            onClick={() =>
+                              handleTransferButtonClick(res, index)
+                            }
+                            size={"sm"}
+                            isDisabled={res.Status === "Transferred"}
                           >
-                            <Button
-                              onClick={() =>
-                                handleTransferButtonClick(res, index)
-                              }
-                              size={"sm"}
-                              isDisabled={res.Status === "Transferred"}
-                            >
-                              Transfer
-                            </Button>
-                            <Button
-                              colorScheme="green"
-                              size={"sm"}
-                              onClick={() => handleEditClick(res)}
-                              isDisabled={res.Status === "Transferred"}
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              colorScheme="red"
-                              onClick={() => handleDeletePayment(res.id)}
-                              size={"sm"}
-                              isDisabled={res.Status === "Transferred"}
-                            >
-                              Delete
-                            </Button>
-                            <DeleteConfirmationDialog
-                              isOpen={isDeleteDialogOpen}
-                              onClose={() => setIsDeleteDialogOpen(false)}
-                              onConfirm={deletePayment}
-                            />
-                          </Td>
-                        </>
+                            Transfer
+                          </Button>
+                          <Button
+                            colorScheme="green"
+                            size={"sm"}
+                            onClick={() => handleEditClick(res)}
+                            isDisabled={res.Status === "Transferred"}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            colorScheme="red"
+                            onClick={() => handleDeletePayment(res.id)}
+                            size={"sm"}
+                            isDisabled={res.Status === "Transferred"}
+                          >
+                            Delete
+                          </Button>
+                          <DeleteConfirmationDialog
+                            isOpen={isDeleteDialogOpen}
+                            onClose={() => setIsDeleteDialogOpen(false)}
+                            onConfirm={deletePayment}
+                          />
+                        </Td>
                       )}
                     </tr>
                   ))}
@@ -3214,7 +3021,6 @@ const PaymentTransaction = () => {
                       </ModalFooter>
                     </ModalContent>
                   </Modal>
-
                   {/* tranfer modal */}
                   <Modal
                     isOpen={isTransferModalOpen}
@@ -3533,14 +3339,15 @@ const PaymentTransaction = () => {
                 </Tbody>
               </Table>
             </TableContainer>
-            {showAction && (
-              <>
-                <Button onClick={handlePrint} className="hide-on-print">
-                  Print
-                </Button>
-              </>
-            )}
           </Box>
+
+          {showAction && (
+            <>
+              <Button onClick={handlePrint} className="hide-on-print">
+                Print
+              </Button>
+            </>
+          )}
         </Box>
       </Box>
     </Box>

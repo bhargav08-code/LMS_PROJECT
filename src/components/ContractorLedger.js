@@ -84,7 +84,7 @@ const ContractorLedger = () => {
         selectedProject.includes(item.projectName)) &&
       (!selectedContractor.length ||
         selectedContractor.includes("Select All") ||
-        selectedContractor.includes(item.constructionContractor)) &&
+        selectedContractor.includes(item.contractor)) &&
       (!selectedBlock.length ||
         selectedBlock.includes("Select All") ||
         selectedBlock.includes(item.blockName)) &&

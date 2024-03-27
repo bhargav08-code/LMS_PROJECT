@@ -24,11 +24,14 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useData } from "../Context";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { useReactToPrint } from "react-to-print";
 
 const ContractorTransaction = () => {
   const { constructionData } = useData();
+  const [isPrinting, setIsPrinting] = useState(true);
+  const componentRef = useRef();
   const [amount, setAmount] = useState("");
   const [cheqNo, setCheqNo] = useState("");
   const [remarks, setRemarks] = useState("");
@@ -47,6 +50,15 @@ const ContractorTransaction = () => {
     date: "",
   });
 
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    onBeforeGetContent: () => {
+      setIsPrinting(false);
+    },
+    onAfterPrint: () => {
+      setIsPrinting(true);
+    },
+  });
   const loadAmounts = async () => {
     const { projectName, blockName, contractor, plotNo } = constructionData;
 
@@ -315,23 +327,23 @@ const ContractorTransaction = () => {
     loadAmounts();
   }, []);
   return (
-    <Box display={"flex"} height={"100vh"} maxW={"100vw"}>
-      <Box flex={"19%"} borderRight={"1px solid grey"}>
+    <Box display={"flex"} height={"100vh"} maxW={"100vw"} ref={componentRef}>
+      <Box flex={"22%"} borderRight={"1px solid grey"}>
         <VStack alignItems={"flex-start"} gap={8}>
           <Text fontSize={"18px"} fontWeight={"semibold"}>
             Contractor :- {constructionData.contractor}
           </Text>
           <Text fontSize={"18px"} fontWeight={"semibold"}>
-            Project Name :- {constructionData.projectName}
+            Project :- {constructionData.projectName}
           </Text>{" "}
           <Text fontSize={"18px"} fontWeight={"semibold"}>
-            Block Name :- {constructionData.blockName}
+            Block :- {constructionData.blockName}
           </Text>{" "}
           <Text fontSize={"18px"} fontWeight={"semibold"}>
-            Plot No :- {constructionData.plotNo}
+            Plot :- {constructionData.plotNo}
           </Text>
           <Text fontSize={"18px"} fontWeight={"semibold"}>
-            Construction Amount :- {constructionData.amount}
+            Const Amount :- {constructionData.amount}
           </Text>
           <FormControl>
             <Flex align="center" justifyContent={"space-between"}>
@@ -350,18 +362,19 @@ const ContractorTransaction = () => {
             </Flex>
           </FormControl>
           <Text fontSize={"18px"} fontWeight={"semibold"}>
-            Total Payable :- {totalPayable}
+            Payable :- {totalPayable}
           </Text>
           <Text fontSize={"18px"} fontWeight={"semibold"}>
-            Total Paid :- {totalPaid}
+            Paid :- {totalPaid}
           </Text>{" "}
           <Text fontSize={"18px"} fontWeight={"semibold"}>
-            Total Bal :- {totalBalance}
+            Bal :- {totalBalance}
           </Text>{" "}
         </VStack>
       </Box>
-      <Box flex={"89%"} maxW={"89%"}>
+      <Box flex={"80%"} maxW={"80%"}>
         <Text marginLeft={"10px"}>Contractor Transaction</Text>
+
         <Box
           display="flex"
           alignItems={"center"}
@@ -476,23 +489,32 @@ const ContractorTransaction = () => {
                     <Td border="1px solid black">{data.cheqNo}</Td>
                     <Td border="1px solid black">{data.remarks}</Td>
                     <Td border="1px solid black">{data.transactionDate}</Td>
-
-                    <Td display={"flex"} border="1px solid black" gap={"5px"}>
-                      <Button
-                        colorScheme="green"
-                        size="sm"
-                        onClick={() => handleEditModalOpen(data.id)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        colorScheme="red"
-                        size="sm"
-                        onClick={() => handleDeleteContractorTransaction(index)}
-                      >
-                        Delete
-                      </Button>
-                    </Td>
+                    {isPrinting && (
+                      <>
+                        <Td
+                          display={"flex"}
+                          border="1px solid black"
+                          gap={"5px"}
+                        >
+                          <Button
+                            colorScheme="green"
+                            size="sm"
+                            onClick={() => handleEditModalOpen(data.id)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            colorScheme="red"
+                            size="sm"
+                            onClick={() =>
+                              handleDeleteContractorTransaction(index)
+                            }
+                          >
+                            Delete
+                          </Button>
+                        </Td>
+                      </>
+                    )}
                   </Tr>
                 )
             )}
